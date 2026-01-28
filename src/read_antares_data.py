@@ -1,0 +1,233 @@
+from configparser import ConfigParser
+from dataclasses import dataclass
+import os
+import numpy as np
+
+class Reservoir:
+    """Describes reservoir parameters"""
+
+    weeks_in_year = 52
+    hours_in_week = 168
+    hours_in_day = 24
+    days_in_week = hours_in_week // hours_in_day
+    days_in_year = weeks_in_year * days_in_week
+
+    def __init__(
+        self,
+        dir_study: str,
+        name_area: str
+    ) -> None:
+        """
+        Create a new reservoir.
+
+        Parameters
+        ----------
+        dir_study:str :
+            Path to the Antares study
+        name_area:str :
+            Name of the area where is located the reservoir
+
+        Returns
+        -------
+        None
+        """
+
+        self.area = name_area
+        hydro_ini_file = self.get_hydro_ini_file(dir_study=dir_study)
+
+        self.read_capacity(hydro_ini_file=hydro_ini_file)
+        self.read_efficiency(hydro_ini_file=hydro_ini_file)
+        self.read_rule_curves(dir_study)
+        self.read_inflow(dir_study)
+        self.read_max_power(dir_study)
+        self.read_allocation_matrix(dir_study)
+
+    def read_max_power(self, dir_study: str) -> None:
+        max_power_data = np.loadtxt(
+            f"{dir_study}/input/hydro/common/capacity/maxpower_{self.area}.txt"
+        )
+        hourly_energy = max_power_data[ : self.days_in_year]
+        daily_energy = hourly_energy * self.hours_in_day
+        weekly_energy = daily_energy.reshape(
+            (self.weeks_in_year, self.days_in_week, 4)
+        ).sum(axis=1)
+
+        self.max_hourly_turb = np.repeat(hourly_energy[:, 0],24)
+        self.max_hourly_pump = np.repeat(hourly_energy[:, 2],24)
+
+        self.max_daily_turb = daily_energy[:, 0]
+        self.max_daily_pump = daily_energy[:, 2]
+
+        self.max_weekly_turb = weekly_energy[:, 0]
+        self.max_weekly_pump = weekly_energy[:, 2]
+        
+    def read_inflow(self, dir_study: str) -> None:
+        daily_inflow = np.loadtxt(f"{dir_study}/input/hydro/series/{self.area}/mod.txt")
+
+        daily_inflow = daily_inflow[: self.days_in_year]
+
+        if daily_inflow.ndim==1:
+            self.nb_scenarios = 1
+        else:
+            self.nb_scenarios = daily_inflow.shape[1]
+
+        self.weekly_inflow = daily_inflow.reshape(
+            (self.weeks_in_year, self.days_in_week, self.nb_scenarios)
+        ).sum(axis=1)
+
+        self.hourly_inflow = np.repeat(daily_inflow/24.0,24,axis=0)
+
+
+    def read_rule_curves(self, dir_study: str) -> None:
+        rule_curves = (
+            np.loadtxt(
+                f"{dir_study}/input/hydro/common/capacity/reservoir_{self.area}.txt"
+            )[:, [0, 2]]
+            * self.capacity
+        )
+        self.initial_level = np.mean([rule_curves[0, 0], rule_curves[0, 1]])
+
+        self.daily_lower_rule_curve = rule_curves[:,0]
+        self.daily_upper_rule_curve = rule_curves[:,1]
+
+        self.weekly_lower_rule_curve = rule_curves[7::7, 0]
+        self.weekly_upper_rule_curve = rule_curves[7::7, 1]
+
+
+    def get_hydro_ini_file(self, dir_study: str) -> ConfigParser:
+        hydro_ini_file = ConfigParser()
+        hydro_ini_file.read(dir_study + "/input/hydro/hydro.ini")
+
+        return hydro_ini_file
+
+    def read_capacity(self, hydro_ini_file: ConfigParser) -> None:
+
+        capacity = hydro_ini_file.getfloat("reservoir capacity", self.area)
+
+        self.capacity = capacity
+
+    def read_efficiency(self, hydro_ini_file: ConfigParser) -> None:
+        efficiency = hydro_ini_file.getfloat("pumping efficiency", self.area)
+        self.efficiency = efficiency
+
+    def read_allocation_matrix(self, dir_study: str) -> None:
+        allocation_file = os.path.join(dir_study, "input", "hydro", "allocation", f"{self.area}.ini")
+        parser = ConfigParser()
+        parser.read(allocation_file)
+        self.allocation_dict = {}
+        if parser.has_section("[allocation]"):
+            for area in parser.options("[allocation]"):
+                val = float(parser.get("[allocation]", area))
+                self.allocation_dict[area] = val
+
+
+@dataclass
+class NetLoad:
+
+    def __init__(self, reservoir : Reservoir,dir_study: str, name_area: str) -> None:
+        self.area = name_area
+        self.dir_study = dir_study
+        self.nb_scenarios = reservoir.nb_scenarios
+        self.net_load=self.compute_net_load()
+        
+
+    def read_load(self) -> np.ndarray:
+        path_load = f"{self.dir_study}/input/load/series/load_{self.area}.txt"
+        if os.path.exists(path_load) and os.path.getsize(path_load) != 0:
+            load = np.loadtxt(path_load)
+            if load.size==0:
+                load = np.zeros((8760, self.nb_scenarios))
+        else:
+            load = np.zeros((8760, self.nb_scenarios))
+
+        assert load.shape[1]==self.nb_scenarios
+
+        return load
+
+
+    def compute_ror(self) -> np.ndarray:
+        ror_path = os.path.join(self.dir_study, "input", "hydro", "series", self.area, "ror.txt")
+
+        if not os.path.exists(ror_path) or os.path.getsize(ror_path) == 0:
+            return np.zeros((8760, self.nb_scenarios))
+
+        data = np.loadtxt(ror_path)
+        assert data.shape[1]==self.nb_scenarios
+        return data
+
+    def compute_renewables(self) -> np.ndarray:
+
+        cluster_file = f"{self.dir_study}/input/renewables/clusters/{self.area}/list.ini"
+        base_series_path = f"{self.dir_study}/input/renewables/series/{self.area}"
+
+        total_renewable = np.zeros((8760, self.nb_scenarios))
+        found_cluster = False
+
+        if os.path.exists(cluster_file) and os.path.getsize(cluster_file) > 0:
+            config = ConfigParser()
+            config.read(cluster_file)
+
+            for section in config.sections():
+                if not config.has_option(section, "nominalcapacity"):
+                    continue
+
+                try:
+                    capacity = float(config.get(section, "nominalcapacity"))
+                except ValueError:
+                    capacity = 0.0
+
+                series_file = os.path.join(base_series_path, section, "series.txt")
+                if not os.path.exists(series_file) or os.path.getsize(series_file) == 0:
+                    continue
+
+                try:
+                    data = np.loadtxt(series_file)
+                    assert data.shape[1]==self.nb_scenarios
+                    total_renewable += data * capacity
+                    found_cluster = True
+                except Exception:
+                    continue
+
+        if not found_cluster:
+            fallback_paths = [
+                f"{self.dir_study}/input/solar/series/solar_{self.area}.txt",
+                f"{self.dir_study}/input/wind/series/wind_{self.area}.txt"
+            ]
+
+            for fallback_file in fallback_paths:
+                if os.path.exists(fallback_file) and os.path.getsize(fallback_file) > 0:
+                    try:
+                        data = np.loadtxt(fallback_file)
+                        assert data.shape[1]==self.nb_scenarios
+                        total_renewable += data 
+                    except Exception:
+                        continue
+
+        return total_renewable
+
+    def read_misc_gen(self) -> np.ndarray:
+        file_path = os.path.join(
+            self.dir_study, "input", "misc-gen", f"miscgen-{self.area}.txt"
+        )
+
+        # Cas fichier manquant ou vide
+        if not os.path.exists(file_path) or os.path.getsize(file_path) == 0:
+            return np.zeros((8760, 1))
+
+
+        data = np.loadtxt(file_path)
+
+        if data.ndim == 1:
+            data = data[:, np.newaxis]  # conversion (8760,) → (8760, 1)
+
+
+        misc_gen = np.sum(data, axis=1)  # shape: (8760,)
+        return misc_gen[:, np.newaxis]   # shape: (8760, 1)
+
+
+    def compute_net_load(self) -> np.ndarray:
+        load = self.read_load()
+        renewables = self.compute_renewables()
+        ror = self.compute_ror()
+        misc_gen = self.read_misc_gen()
+        return load-renewables-ror-misc_gen
