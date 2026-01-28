@@ -115,9 +115,9 @@ class Reservoir:
         parser = ConfigParser()
         parser.read(allocation_file)
         self.allocation_dict = {}
-        if parser.has_section("[allocation]"):
-            for area in parser.options("[allocation]"):
-                val = float(parser.get("[allocation]", area))
+        if parser.has_section("allocation"):
+            for area in parser.options("allocation"):
+                val = float(parser.get("allocation", area))
                 self.allocation_dict[area] = val
 
 
