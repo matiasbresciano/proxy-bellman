@@ -1,13 +1,14 @@
-from proxy_stage_cost_function import ProxyStageCostFunction
-from proxy_bellman_trajectories import BellmanValuesProxy, OptimalTrajectories
-from proxy_exporter import Exporter, ModifyAntaresStudy, UndoAntaresModifications
-from proxy_plotter import Plotter
+from hydro.stage_cost_function import ProxyStageCostFunction
+from hydro.bellman import BellmanValuesProxy
+from hydro.trajectories import OptimalTrajectories
+from hydro.exporter import Exporter, ModifyAntaresStudy, UndoAntaresModifications
+from hydro.plotter import Plotter
 import os, argparse, traceback
 from datetime import datetime
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
-from proxy_bellman_trajectories import STOCK_DISCR
-from proxy_stage_cost_function import THRESHOLDS
+from hydro.bellman import STOCK_DISCR
+from hydro.stage_cost_function import THRESHOLDS
 import time
 
 ALPHA = 2

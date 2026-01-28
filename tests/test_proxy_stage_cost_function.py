@@ -1,5 +1,5 @@
 import pytest
-from proxy_stage_cost_function import ProxyStageCostFunction
+from hydro.stage_cost_function import ProxyStageCostFunction
 from tqdm import tqdm
 import numpy as np
 

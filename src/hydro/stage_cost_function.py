@@ -1,4 +1,4 @@
-from read_antares_data import Reservoir,NetLoad
+from utils.read_antares_data import Reservoir,NetLoad
 import numpy as np
 from scipy.interpolate import interp1d
 from tqdm import tqdm

@@ -1,5 +1,6 @@
-from proxy_stage_cost_function import ProxyStageCostFunction
-from proxy_bellman_trajectories import BellmanValuesProxy, OptimalTrajectories
+from hydro.stage_cost_function import ProxyStageCostFunction
+from hydro.bellman import BellmanValuesProxy
+from hydro.trajectories import OptimalTrajectories
 import numpy as np
 import pandas as pd
 from configparser import ConfigParser

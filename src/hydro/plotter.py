@@ -1,4 +1,5 @@
-from proxy_bellman_trajectories import BellmanValuesProxy, OptimalTrajectories
+from hydro.bellman import BellmanValuesProxy
+from hydro.trajectories import OptimalTrajectories
 import plotly.graph_objects as go
 import plotly.express as px
 import os
