@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from utils.read_antares_data import Reservoir,NetLoad
-from tempo.proxy_tempo import GainFunctionTempo,BellmanValuesTempo,TrajectoriesTempo
+from tempo.tempo import GainFunctionTempo,BellmanValuesTempo,TrajectoriesTempo
 
 dir_study = "test_data/two_nodes"
 area = "area1"
