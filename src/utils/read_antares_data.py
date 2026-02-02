@@ -109,16 +109,31 @@ class Reservoir:
     def read_efficiency(self, hydro_ini_file: ConfigParser) -> None:
         efficiency = hydro_ini_file.getfloat("pumping efficiency", self.area)
         self.efficiency = efficiency
-
+    
     def read_allocation_matrix(self, dir_study: str) -> None:
-        allocation_file = os.path.join(dir_study, "input", "hydro", "allocation", f"{self.area}.ini")
+        allocation_file = os.path.join(
+            dir_study, "input", "hydro", "allocation", f"{self.area}.ini"
+        )
+
         parser = ConfigParser()
         parser.read(allocation_file)
+
         self.allocation_dict = {}
-        if parser.has_section("allocation"):
-            for area in parser.options("allocation"):
-                val = float(parser.get("allocation", area))
-                self.allocation_dict[area] = val
+
+        possible_sections = ["allocation", "[allocation]"]
+
+        for section in possible_sections:
+            if parser.has_section(section):
+                for area in parser.options(section):
+                    val = float(parser.get(section, area))
+                    self.allocation_dict[area] = val
+                return 
+
+
+        raise ValueError(
+            f"No allocation found in {allocation_file} "
+        )
+
 
 
 @dataclass
@@ -202,7 +217,6 @@ class NetLoad:
                         total_renewable += data 
                     except Exception:
                         continue
-
         return total_renewable
 
     def read_misc_gen(self) -> np.ndarray:
