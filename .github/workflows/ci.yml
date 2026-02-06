@@ -26,7 +26,7 @@ jobs:
 
       - name: Test
         run: |
-          pytest --cov=src tests/
+          pytest --cov=src
 
       - name: Check typing
         run: |
