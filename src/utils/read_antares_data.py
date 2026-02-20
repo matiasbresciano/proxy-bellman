@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import os
 import numpy as np
 
+
 class Reservoir:
     """Describes reservoir parameters"""
 
@@ -55,8 +56,8 @@ class Reservoir:
         self.max_hourly_turb = np.repeat(hourly_energy[:, 0],24)
         self.max_hourly_pump = np.repeat(hourly_energy[:, 2],24)
 
-        self.max_daily_turb = daily_energy[:, 0]
-        self.max_daily_pump = daily_energy[:, 2]
+        # self.max_daily_turb = daily_energy[:, 0]
+        # self.max_daily_pump = daily_energy[:, 2]
 
         self.max_weekly_turb = weekly_energy[:, 0]
         self.max_weekly_pump = weekly_energy[:, 2]
@@ -77,7 +78,6 @@ class Reservoir:
 
         self.hourly_inflow = np.repeat(daily_inflow/24.0,24,axis=0)
 
-
     def read_rule_curves(self, dir_study: str) -> None:
         rule_curves = (
             np.loadtxt(
@@ -87,12 +87,11 @@ class Reservoir:
         )
         self.initial_level = np.mean([rule_curves[0, 0], rule_curves[0, 1]])
 
-        self.daily_lower_rule_curve = rule_curves[:,0]
-        self.daily_upper_rule_curve = rule_curves[:,1]
+        # self.daily_lower_rule_curve = rule_curves[:,0]
+        # self.daily_upper_rule_curve = rule_curves[:,1]
 
         self.weekly_lower_rule_curve = rule_curves[7::7, 0]
         self.weekly_upper_rule_curve = rule_curves[7::7, 1]
-
 
     def get_hydro_ini_file(self, dir_study: str) -> ConfigParser:
         hydro_ini_file = ConfigParser()

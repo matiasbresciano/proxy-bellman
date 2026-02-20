@@ -5,8 +5,9 @@ from tqdm import tqdm
 
 THRESHOLDS = 25
 
+
 class ProxyStageCostFunction:
-    def __init__(self, dir_study: str, name_area: str, MC_years:int, alpha:float,pbar:tqdm) -> None:
+    def __init__(self, dir_study: str, name_area: str, MC_years: int, alpha: float, pbar: tqdm) -> None:
         """
         Initialize the object with study directory, area, number of Monte-Carlo scenarios,
         cost exponent alpha.
@@ -21,19 +22,19 @@ class ProxyStageCostFunction:
         self.name_area = name_area
         self.reservoir = Reservoir(dir_study, name_area)
         self.pbar = pbar
-        
 
-        self.turb_efficiency=1
-        self.alpha=alpha
+        self.turb_efficiency = 1
+        self.alpha = alpha
 
-        self.nb_weeks=52
-        self.scenarios=range(self.reservoir.nb_scenarios)[:MC_years]
-        
+        self.nb_weeks = 52
+        self.scenarios = range(self.reservoir.nb_scenarios)[:MC_years]
+
+        self.stage_cost_upper_bounds = np.empty((self.nb_weeks, len(self.scenarios)), dtype=float)
+
         self.weighted_net_load = self.compute_weighted_net_load()
         self.stage_cost_functions = self.compute_stage_cost_functions()
 
-    
-    def compute_weighted_net_load(self)-> np.ndarray:
+    def compute_weighted_net_load(self) -> np.ndarray:
         """
         Compute the weighted net load using the allocation weights.
 
@@ -107,7 +108,6 @@ class ProxyStageCostFunction:
 
         return weekly_control, costs
 
-
     def stage_cost_function(self, week: int, scenario: int) -> tuple:
         """
         Compute the cost for a given week and scenario,
@@ -117,10 +117,10 @@ class ProxyStageCostFunction:
             Interpolator (scipy interp1d): cost(control),
         """
         weekly_net_load = self.weighted_net_load[week * 168:(week + 1) * 168, scenario]
-        max_hourly_turb = self.reservoir.max_hourly_turb[(week)*168:(week+1)*168]
-        max_hourly_pump = self.reservoir.max_hourly_pump[(week)*168:(week+1)*168]
+        max_hourly_turb = self.reservoir.max_hourly_turb[week*168:(week+1)*168]
+        max_hourly_pump = self.reservoir.max_hourly_pump[week*168:(week+1)*168]
         null_pump = np.allclose(self.reservoir.max_hourly_pump, 0)
-        
+
         low = np.min(weekly_net_load - max_hourly_turb)
         raw_high = np.max(weekly_net_load + max_hourly_pump) * (self.turb_efficiency / self.reservoir.efficiency) ** (1 / (self.alpha - 1))
         high = np.max(weekly_net_load) if null_pump else raw_high
@@ -134,7 +134,7 @@ class ProxyStageCostFunction:
             max_hourly_pump=max_hourly_pump,
             null_pump=null_pump
         )
-        
+
         idx = np.argsort(weekly_control)
         weekly_control = weekly_control[idx]
         costs = costs[idx]
@@ -143,10 +143,9 @@ class ProxyStageCostFunction:
 
         stage_cost_function = interp1d(weekly_control, costs, fill_value="extrapolate")
         
-        return stage_cost_function,ub_cost
+        return stage_cost_function, ub_cost
 
-
-    def compute_stage_cost_functions(self)->np.ndarray:
+    def compute_stage_cost_functions(self) -> np.ndarray:
         """
         Compute and store cost-related interpolators for all weeks and scenarios.
 
@@ -159,13 +158,11 @@ class ProxyStageCostFunction:
             dtype=object
         )
 
-        self.stage_cost_upper_bounds = np.empty((self.nb_weeks, len(self.scenarios)), dtype=float)
-
         if hasattr(self, "pbar"):
             self.pbar.set_postfix_str("Stage cost functions computing")        
         for w in range(self.nb_weeks):
             for s in self.scenarios:
-                if hasattr(self,"pbar"):
+                if hasattr(self, "pbar"):
                     self.pbar.update(1)
 
                 stage_cost_function, ub = self.stage_cost_function(w, s)
@@ -173,7 +170,6 @@ class ProxyStageCostFunction:
                 self.stage_cost_upper_bounds[w, s] = ub
 
         return cost_functions
-        
 
     def upper_bound_cost(self, week: int) -> float:
         """

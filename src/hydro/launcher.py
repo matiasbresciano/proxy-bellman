@@ -185,7 +185,6 @@ def main() -> None:
     parser.add_argument("--TS_selection", type=int, nargs='+', default=None, help="List of TS to consider when calculating Bellman values. Default is all TS.")
     parser.add_argument("--actions", type=str, nargs='*', default=None, help="List of actions to perform.")
 
-
     args = parser.parse_args()
 
     # If only undo_modifications action, do not create export directories
@@ -206,7 +205,6 @@ def main() -> None:
 
     run_date = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_date_pretty = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
 
     global_export_dir = os.path.join(
         args.dir_study,

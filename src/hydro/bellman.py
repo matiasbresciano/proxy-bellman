@@ -4,10 +4,11 @@ from typing import Callable
 from scipy.interpolate import interp1d
 from tqdm import tqdm
 
-STOCK_DISCR=2
+STOCK_DISCR = 2
+
 
 class BellmanValuesProxy:
-    def __init__(self, proxy: ProxyStageCostFunction, pbar : tqdm,TS_selection:list[int]|None=None)->None:
+    def __init__(self, proxy: ProxyStageCostFunction, pbar: tqdm, TS_selection:list[int]|None=None) -> None:
         """
         Initialize BellmanValuesProxy with given Proxy.
         Sets up cost functions, storage arrays, then computes Bellman and usage values.
@@ -15,7 +16,7 @@ class BellmanValuesProxy:
         self.proxy = proxy
         self.nb_weeks = proxy.nb_weeks
         self.scenarios = proxy.scenarios
-        self.TS_selection=TS_selection if TS_selection is not None else self.scenarios
+        self.TS_selection = TS_selection if TS_selection is not None else self.scenarios
         self.pbar = pbar
 
         self.stage_cost_functions = self.proxy.stage_cost_functions
@@ -38,8 +39,8 @@ class BellmanValuesProxy:
         Returns a piecewise penalty function penalizing deviations outside the weekly lower and upper rule curves.
         Penalties grow linearly beyond ±1% of reservoir capacity from the rule curves.
         """
-        if week_idx == self.nb_weeks -1 :
-            return lambda x:0
+        if week_idx == self.nb_weeks - 1:
+            return lambda x: 0
         
         ub_cost = self.proxy.upper_bound_cost(week_idx)
         penalty = interp1d(
@@ -70,13 +71,13 @@ class BellmanValuesProxy:
             fill_value="extrapolate",
         )
 
-    def iterate_over_controls_vec(self,controls:np.ndarray, current_stock:float, weekly_inflow:float,
-                              stage_cost_function:interp1d, future_bellman_function:interp1d, 
-                              penalty_function:interp1d)-> tuple:
+    def iterate_over_controls_vec(self, controls: np.ndarray, current_stock: float, weekly_inflow: float,
+                                  stage_cost_function: interp1d, future_bellman_function: interp1d,
+                                  penalty_function: interp1d) -> tuple:
         next_stock = current_stock - controls + weekly_inflow
         total_value = (stage_cost_function(controls)
-                    + future_bellman_function(next_stock)
-                    + penalty_function(next_stock))
+                       + future_bellman_function(next_stock)
+                       + penalty_function(next_stock))
         j = int(np.argmin(total_value))
         return float(total_value[j]), float(next_stock[j]), float(controls[j])
 
@@ -106,8 +107,8 @@ class BellmanValuesProxy:
         controls = current_stock - next_stock_grid + weekly_inflow
         feasible = (
             (controls >= -max_week_pump * self.proxy.reservoir.efficiency) &
-            (controls <=  max_week_turb * self.proxy.turb_efficiency) &
-            (controls <=  max_control)
+            (controls <= max_week_turb * self.proxy.turb_efficiency) &
+            (controls <= max_control)
         )
 
         if not np.any(feasible):
@@ -154,8 +155,8 @@ class BellmanValuesProxy:
 
             for c in range(0, 101, STOCK_DISCR):
                 current_stock = (c / 100) * self.proxy.reservoir.capacity
-                bv=np.zeros((len(self.TS_selection)))
-                for i,s in enumerate(self.TS_selection):
+                bv = np.zeros((len(self.TS_selection)))
+                for i, s in enumerate(self.TS_selection):
 
                     self.pbar.update(1)
                     weekly_inflow = self.proxy.reservoir.weekly_inflow[w + 1, s]
@@ -170,7 +171,6 @@ class BellmanValuesProxy:
                         future_bellman_function=future_bellman_function,
                         penalty_function=penalty_function
                     )
-
 
                     final_best_value, _, _ = self.iterate_over_stock_levels_vec(
                         best_value=best_value,

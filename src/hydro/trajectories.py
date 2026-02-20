@@ -2,20 +2,21 @@ from hydro.bellman import BellmanValuesProxy
 import numpy as np
 from tqdm import tqdm
 
+
 class OptimalTrajectories:
     def __init__(self,
-                 bellman_values : BellmanValuesProxy,
-                 pbar : tqdm):
+                 bellman_values: BellmanValuesProxy,
+                 pbar: tqdm):
         """
         Initialize OptimalTrajectories with a BellmanValuesProxy instance.
         Prepares data and computes optimal trajectories.
         """
-        self.bellman_values=bellman_values
+        self.bellman_values = bellman_values
         self.nb_weeks = bellman_values.nb_weeks
         self.scenarios = bellman_values.scenarios
         self.pbar = pbar
         
-        self.mean_bv=bellman_values.mean_bv
+        self.mean_bv = bellman_values.mean_bv
         self.compute_trajectories()
 
     def compute_trajectories(self) -> None:
@@ -43,7 +44,6 @@ class OptimalTrajectories:
                 weekly_inflow = self.bellman_values.proxy.reservoir.weekly_inflow[w, s]
                 hourly_inflow = self.bellman_values.proxy.reservoir.hourly_inflow[w * 168:(w + 1) * 168, s]
 
-
                 cost_function = self.bellman_values.stage_cost_functions[w, s]
                 penalty_function = penalty_by_week[w]
 
@@ -58,7 +58,7 @@ class OptimalTrajectories:
                                                                  week=w, 
                                                                  stock_init=current_stock, 
                                                                  inflow=hourly_inflow)                
-                if max_control < controls[-1]  :
+                if max_control < controls[-1]:
                     controls = controls[controls < max_control]
                     controls = np.concatenate([controls, [max_control]])
 

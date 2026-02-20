@@ -86,6 +86,8 @@ class ModifyAntaresStudy:
         if os.path.exists(pmax_path):
             os.rename(pmax_path, pmax_backup_path)
 
+        # TODO LRI : au dessus on a vérifié que le fichier existait, mais si il existait pas cette étape là va pas
+        #  fonctionner non plus
         pmax = np.loadtxt(pmax_backup_path)
         pmax[:, 0] = 0
         pmax[:, 2] = 0
@@ -132,6 +134,7 @@ enabled = true
         else:
             modulation_withdrawal = pmax_withdrawal_hourly / np.max(self.bv.proxy.reservoir.max_hourly_turb)
 
+        # TODO LRI : est-ce que c'est pas redondant avec ce qu'on fait si pmax est à 0 ?
         modulation_injection = np.concatenate([modulation_injection, np.full(24, modulation_injection[-1])])
         modulation_withdrawal = np.concatenate([modulation_withdrawal, np.full(24, modulation_withdrawal[-1])])
 
@@ -172,7 +175,7 @@ enabled = true
             lines.append(f"sts,{self.name_area},{mc},lt_stock_proxy_{self.name_area}={trajectory}")
             lines.append(f"s,{self.name_area},{mc},lt_stock_proxy_{self.name_area}={trajectory}")
 
-        sb_dir = os.path.join(self.dir_study, "user","tmp", "scenariobuilder_lines")
+        sb_dir = os.path.join(self.dir_study, "user", "tmp", "scenariobuilder_lines")
         os.makedirs(sb_dir, exist_ok=True)
         with open(os.path.join(sb_dir, f"{self.name_area}.txt"), "w") as f:
             f.write("\n".join(lines) + "\n")
@@ -292,9 +295,8 @@ enabled = true
             load_data = np.loadtxt(load_backup_path)
         else:
             load_data = np.zeros((8760, S))
-    
 
-        if os.path.exists(solar_backup_path) and os.path.getsize(solar_backup_path)!=0:
+        if os.path.exists(solar_backup_path) and os.path.getsize(solar_backup_path)!= 0:
             solar_data = np.loadtxt(solar_backup_path)
         else:
             solar_data = np.zeros((8760, S))
@@ -315,8 +317,6 @@ enabled = true
         np.savetxt(miscgen_path, miscgen_data, fmt="%.20f", delimiter="\t")
         np.savetxt(load_path, load_data, fmt="%.20f", delimiter="\t")
         np.savetxt(solar_path, solar_data, fmt="%.20f", delimiter="\t")
-
-    
 
     def apply_all(self) -> None:
         """

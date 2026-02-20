@@ -98,11 +98,11 @@ class BellmanValuesTempo:
         # Time horizon for resolution : 1st July (start of year in Antares) -> 30 June (61 weeks)
         self.mean_bv = np.zeros((61, self.capacity + 1))  # CVaR aggregated values over scenarios
         self.lower_rule_curve = lower_rule_curve
-        self.upper_rule_curve = upper_rule_curve if upper_rule_curve is not None else np.repeat(self.capacity,61)
+        self.upper_rule_curve = upper_rule_curve if upper_rule_curve is not None else np.repeat(self.capacity, 61)
 
         self.compute_bellman_values()
 
-    def penalty(self,week : int) -> Callable:
+    def penalty(self, week: int) -> Callable:
         """
         Return a penalty function (linear interpolation) heavily penalizing states outside [0, capacity].
         """
@@ -167,7 +167,6 @@ class BellmanValuesTempo:
                 sorted_bv = np.sort(best_per_scenario)
                 self.mean_bv[w, c] = float(np.mean(sorted_bv[cutoff_index:]))
 
-
     def compute_usage_values(self) -> np.ndarray:
         """
         Compute marginal usage values as difference of Bellman mean values between successive capacity levels.
@@ -196,7 +195,7 @@ class TrajectoriesTempo:
 
         self.stock_trajectories_red = stock_trajectories_red
 
-        self.control_trajectories,self.stock_trajectories=self.compute_trajectories()
+        self.control_trajectories, self.stock_trajectories = self.compute_trajectories()
         self.control_trajectories_white,self.stock_trajectories_white=self.compute_trajectories_white()
 
     def compute_trajectories(self) -> tuple:
@@ -213,16 +212,15 @@ class TrajectoriesTempo:
         stock_trajectories[:, :self.start_week] = self.capacity
 
         controls = np.arange(self.max_control + 1, dtype=int)  # (A,)
-        S = self.nb_scenarios
 
         # Active scenarios (used to emulate early break per scenario when stock hits 0)
-        active = np.ones(S, dtype=bool)
+        active = np.ones(self.nb_scenarios, dtype=bool)
 
         for w in range(self.start_week, self.end_week + 1):
             penalty = self.bv.penalty(w)
 
-            # If start_week>0 and previous stock == 0 => set rest to 0 and stop updating this scenario
-            if self.start_week > 0:
+            # If week>0 and previous stock == 0 => set rest to 0 and stop updating this scenario
+            if w >= 1:
                 prev_stock = stock_trajectories[:, w - 1]
                 just_deactivated = active & (prev_stock == 0)
                 if np.any(just_deactivated):
@@ -264,6 +262,8 @@ class TrajectoriesTempo:
             best_control = controls[np.argmax(total_values, axis=1)].astype(float)  # (S_act,)
 
             # Apply "red" constraints exactly like your code (post-adjustment, no re-argmax)
+            # TODO LRI : est-ce que c'est vraiment possible que les trajectoires blanc rouge utilise aient un contrôle
+            #  inférieur aux trajectoires rouges ?
             if self.stock_trajectories_red is not None:
                 red_now = self.stock_trajectories_red[s_idx, w]       # (S_act,)
                 red_prev = self.stock_trajectories_red[s_idx, w - 1]  # (S_act,)
@@ -289,6 +289,7 @@ class TrajectoriesTempo:
         Compute the 'white' stock and control trajectories as residuals after
         subtracting the 'red' stock trajectories, if provided.
         """
+        # TODO LRI : si on fait ça en dehors de trajectories, pbt pas besoin de calculer les contrôles avec une boucle
         stock_trajectories_white = np.zeros((self.nb_scenarios, 61))
         control_trajectories_white = np.zeros((self.nb_scenarios, 61))
 
@@ -630,18 +631,19 @@ class LaunchTempo:
 
         gain_function_tempo = GainFunctionTempo(net_load=net_load)
 
+        lower_red = np.concatenate([np.repeat(22,18),self.lower_rc,np.repeat(0,22)])
+
         bellman_values_r = BellmanValuesTempo(gain_function=gain_function_tempo, capacity=22,
                                               start_week=18, end_week=38, CVar=self.CVar, max_control=5,
-                                              lower_rule_curve=
-                                              np.concatenate([np.repeat(22,18),self.lower_rc,np.repeat(0,22)]))
+                                              lower_rule_curve=lower_red)
         
         bellman_values_wr = BellmanValuesTempo(gain_function=gain_function_tempo, capacity=65,
                                                start_week=9, end_week=60, CVar=self.CVar, max_control=6,
-                                              lower_rule_curve=
-                                              np.concatenate([np.repeat(22,18),self.lower_rc,np.repeat(0,22)]))
+                                               lower_rule_curve=lower_red)
 
         trajectories_r = TrajectoriesTempo(bv=bellman_values_r)
-        trajectories_white_and_red = TrajectoriesTempo(bv=bellman_values_wr, stock_trajectories_red=trajectories_r.stock_trajectories)
+        trajectories_white_and_red = TrajectoriesTempo(bv=bellman_values_wr,
+                                                       stock_trajectories_red=trajectories_r.stock_trajectories)
         end = time.time()
         print(f"Execution time: {end - start:.2f} seconds")
 
