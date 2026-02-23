@@ -23,11 +23,11 @@ class Reservoir:
         hourly_inflow (np.ndarray): the added amount for each hour
     """
     capacity: int | float = 100
-    lower_guide: np.ndarray[52, np.float64] = field(default_factory=lambda: np.zeros(shape=52, dtype=np.float64))
-    upper_guide: np.ndarray[52, np.float64] | None = None
+    lower_guide: np.ndarray = field(default_factory=lambda: np.zeros(shape=52, dtype=np.float64))
+    upper_guide: np.ndarray | None = None
     initial_level: int | float = 0
     final_level: int | float = 0
-    hourly_inflow: np.ndarray[8760, np.float64] = field(default_factory=lambda: np.zeros(shape=8760, dtype=np.float64))
+    hourly_inflow: np.ndarray = field(default_factory=lambda: np.zeros(shape=8760, dtype=np.float64))
 
     def __post_init__(self) -> None:
         if self.upper_guide is None:
