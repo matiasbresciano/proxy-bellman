@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 import numpy as np
 from scipy.interpolate import interp1d
 
+from reservoir import Reservoir
+
 """
 Base modelisation of the gain function used to compute a trajectory
 """
@@ -11,14 +13,17 @@ class GainFunction(ABC):
     """This abstract class is a model for gain functions
 
     Attributes:
-        residual_load (np.ndarray): residual_load of the different scenarios provided (hourly)
-        gain_function (np.ndarray): gain function computed for the different controls and stock levels possible
+        _residual_load (np.ndarray): residual_load of the different scenarios provided (hourly)
+        _reservoir (Reservoir): Reservoir describing the stock
+        _gain_function (np.ndarray): gain function computed for the different controls and stock levels possible
     """
-    residual_load: np.ndarray
-    gain_function: np.ndarray | interp1d
+    _residual_load: np.ndarray
+    _reservoir: Reservoir
+    _gain_function: np.ndarray | interp1d
 
-    def __init__(self, residual_load) -> None:
-        self.residual_load = residual_load
+    def __init__(self, residual_load: np.ndarray, reservoir: Reservoir) -> None:
+        self._residual_load = residual_load
+        self._reservoir = reservoir
 
     @abstractmethod
     def _compute_gain_function(self) -> None:
