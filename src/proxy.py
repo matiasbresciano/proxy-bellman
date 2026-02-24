@@ -64,7 +64,7 @@ class Proxy(ABC):
         return res
 
     def get_bellman_values(self) -> typing.List[np.ndarray]:
-        res = []
+        res: list[np.ndarray] = []
         for b in self._bellman:
             res += b.get_bellman_values()
         return res
