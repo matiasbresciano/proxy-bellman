@@ -37,12 +37,12 @@ class Trajectory(ABC):
     def _compute_trajectories(self) -> None:
         pass
 
-    def get_trajectories(self) -> np.ndarray:
+    def get_trajectories(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
         if self._trajectories is None:
             self._compute_trajectories()
         return self._trajectories
 
-    def get_controls(self) -> np.ndarray:
+    def get_controls(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
         if self._controls is None:
             self._compute_trajectories()
         return self._controls

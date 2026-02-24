@@ -46,19 +46,19 @@ class Proxy(ABC):
         self._week_day_of_first_data = week_day_of_first_data
 
     def get_trajectories(self) -> typing.List[np.ndarray]:
-        res = []
+        res: list[np.ndarray] = []
         for t in self._trajectory:
             res += t.get_trajectories()
         return res
 
     def get_controls(self) -> typing.List[np.ndarray]:
-        res = []
+        res: list[np.ndarray] = []
         for t in self._trajectory:
             res += t.get_controls()
         return res
 
     def get_usage_values(self) -> typing.List[np.ndarray]:
-        res = []
+        res: list[np.ndarray] = []
         for b in self._bellman:
             res += b.get_usage_values()
         return res
