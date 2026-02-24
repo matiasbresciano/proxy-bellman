@@ -21,6 +21,7 @@ class Reservoir:
         initial_level (int|float): the initial amount in stock
         final_level (int|float): the intended final amount in stock
         hourly_inflow (np.ndarray): the added amount for each hour
+        step (int): discretisation step
     """
     capacity: int | float = 100
     lower_guide: np.ndarray = field(default_factory=
@@ -30,6 +31,7 @@ class Reservoir:
     final_level: int | float = 0
     hourly_inflow: np.ndarray = field(default_factory=
                                       lambda: np.zeros(shape=constants.NB_HOURS, dtype=np.float64))
+    step: int = 1
 
     def __post_init__(self) -> None:
         if self.upper_guide is None:

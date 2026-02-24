@@ -4,6 +4,7 @@ import numpy as np
 from reservoir import Reservoir
 from gain_function import GainFunction
 from bellman import Bellman
+import constants
 
 """
 Base for the trajectories computation classes
@@ -23,27 +24,27 @@ class Trajectory(ABC):
     _reservoir: Reservoir
     _gain_function: GainFunction
     _bellman: Bellman
-    _trajectories: np.ndarray[tuple[int, int], np.dtype[np.number]] | None
-    _controls: np.ndarray[tuple[int, int], np.dtype[np.number]] | None
+    _trajectories: np.ndarray[tuple[int, int], np.dtype[np.number]]
+    _controls: np.ndarray[tuple[int, int], np.dtype[np.number]]
 
     def __init__(self, reservoir: Reservoir, gain_function: GainFunction, bellman: Bellman) -> None:
         self._reservoir = reservoir
         self._gain_function = gain_function
         self._bellman = bellman
-        self._trajectories = None
-        self._controls = None
+        self._trajectories = np.zeros(shape=(1, 1), dtype=np.float64)
+        self._controls = np.zeros(shape=(1, 1), dtype=np.float64)
 
     @abstractmethod
     def _compute_trajectories(self) -> None:
         pass
 
     def get_trajectories(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
-        if self._trajectories is None:
+        if self._trajectories.shape[0] != constants.RESULTS_SIZE:
             self._compute_trajectories()
         return self._trajectories
 
     def get_controls(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
-        if self._controls is None:
+        if self._controls.shape[0] != constants.RESULTS_SIZE:
             self._compute_trajectories()
         return self._controls
 
