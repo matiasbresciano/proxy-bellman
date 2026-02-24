@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
 import numpy as np
+import constants
 
 """
 Base modelisation of the stock on witch a trajectory must be computed
 """
 
 
-# TODO LRI : changer 52 par ... TRAJECTORY_SIZE ? GUIDE_SIZE ?
 @dataclass
 class Reservoir:
     """This class is the base modelisation of the stock on witch a trajectory must be computed
@@ -21,13 +21,17 @@ class Reservoir:
         initial_level (int|float): the initial amount in stock
         final_level (int|float): the intended final amount in stock
         hourly_inflow (np.ndarray): the added amount for each hour
+        step (int): discretisation step
     """
     capacity: int | float = 100
-    lower_guide: np.ndarray = field(default_factory=lambda: np.zeros(shape=52, dtype=np.float64))
+    lower_guide: np.ndarray = field(default_factory=
+                                    lambda: np.zeros(shape=constants.RESULTS_SIZE, dtype=np.float64))
     upper_guide: np.ndarray | None = None
     initial_level: int | float = 0
     final_level: int | float = 0
-    hourly_inflow: np.ndarray = field(default_factory=lambda: np.zeros(shape=8760, dtype=np.float64))
+    hourly_inflow: np.ndarray = field(default_factory=
+                                      lambda: np.zeros(shape=constants.NB_HOURS, dtype=np.float64))
+    step: int = 1
 
     def __post_init__(self) -> None:
         if self.upper_guide is None:
