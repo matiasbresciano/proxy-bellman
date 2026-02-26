@@ -1,4 +1,4 @@
-from hydro.stage_cost_function import ProxyStageCostFunction
+from hydro.hydro_gain_function import ProxyStageCostFunction
 from hydro.bellman import BellmanValuesProxy
 from hydro.trajectories import OptimalTrajectories
 import numpy as np

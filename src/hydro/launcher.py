@@ -1,4 +1,4 @@
-from hydro.stage_cost_function import ProxyStageCostFunction, THRESHOLDS
+from hydro.hydro_gain_function import ProxyStageCostFunction, THRESHOLDS
 from hydro.bellman import BellmanValuesProxy, STOCK_DISCR
 from hydro.trajectories import OptimalTrajectories
 from hydro.exporter import Exporter, ModifyAntaresStudy, UndoAntaresModifications

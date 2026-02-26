@@ -19,11 +19,12 @@ class GainFunction(ABC):
     """
     _residual_load: np.ndarray
     _reservoir: Reservoir
-    _gain_function: np.ndarray | interp1d
+    _gain_function: np.ndarray[tuple[int, int], np.dtype[interp1d | np.number]] | None
 
     def __init__(self, residual_load: np.ndarray, reservoir: Reservoir) -> None:
         self._residual_load = residual_load
         self._reservoir = reservoir
+        self._gain_function = None
 
     @abstractmethod
     def _compute_gain_function(self) -> None:
@@ -31,6 +32,6 @@ class GainFunction(ABC):
         pass
 
     @abstractmethod
-    def get_gain(self, stock: float | int, control: float | int, sce_id: int) -> float:
-        """get the gain value linked to a stock level, a control and a scenario"""
+    def get_gain(self, week_ind: int, sce_ind: int, control: float | int) -> float:
+        """get the gain value linked to a week, a control and a scenario"""
         pass

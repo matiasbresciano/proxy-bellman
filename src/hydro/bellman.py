@@ -1,4 +1,4 @@
-from hydro.stage_cost_function import ProxyStageCostFunction
+from hydro.hydro_gain_function import ProxyStageCostFunction
 import numpy as np
 from typing import Callable
 from scipy.interpolate import interp1d
