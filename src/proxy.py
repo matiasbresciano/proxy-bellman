@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import typing
 
-from gain_function import GainFunction
+from cost_function import CostFunction
 from reservoir import Reservoir
 from bellman import Bellman
 from trajectory import Trajectory
@@ -26,7 +26,7 @@ class Proxy(ABC):
     _day_of_first_data: int
     _week_day_of_first_data: int
     _reservoir: typing.List[Reservoir]
-    _gain_function: typing.List[GainFunction]
+    _gain_function: typing.List[CostFunction]
     _bellman: typing.List[Bellman]
     _trajectory: typing.List[Trajectory]
 

@@ -1,4 +1,4 @@
-from gain_function import GainFunction
+from cost_function import CostFunction
 from hydro.hydro_reservoir import HydroReservoir
 import constants
 
@@ -6,41 +6,41 @@ import numpy as np
 from scipy.interpolate import interp1d
 
 
-class HydroGainFunction(GainFunction):
-    """Gain function class for hydro. Inherits from GainFunction
+class HydroCostFunction(CostFunction):
+    """Cost function class for hydro. Inherits from CostFunction
 
-    Computes and provides gain values and minimum_gain over a week (for penalty values)
+    Computes and provides cost values and maximum_cost over a week (for penalty values)
 
     Attributes:
-        turb_threshold (int)
-        alpha (int)
-        __min_gain (np.array) minimum gain for each week to use as penalty
+        turb_threshold (int): number of values on which the cost function is computed (default is 25)
+        alpha (int): parameter for the computation of the costs value and the turbine vs pumping ratio
+        __max_cost (np.array): maximum cost for each week to use as penalty
     """
     turb_threshold: int
     alpha: int
-    __min_gain: np.ndarray[tuple[int, int], np.dtype[np.number]] | None
+    __max_cost: np.ndarray[tuple[int, int], np.dtype[np.number]] | None
 
     def __init__(self, residual_load: np.ndarray, reservoir: HydroReservoir, turb_threshold: int = 25,
                  alpha: int = 2):
         super().__init__(residual_load, reservoir)
         self.turb_threshold = turb_threshold
         self.alpha = alpha
-        self.__min_gain = None
+        self.__max_cost = None
 
-    def _compute_gain_function(self) -> None:
+    def _compute_cost_function(self) -> None:
         """
         Compute and store cost-related interpolators for all weeks and scenarios.
         """
-        self._gain_function = np.empty(
+        self._cost_function = np.empty(
             (constants.RESULTS_SIZE, self._residual_load.shape[1]),
             dtype=object
         )
-        self.__min_gain = np.empty(
+        self.__max_cost = np.empty(
             (constants.RESULTS_SIZE, self._residual_load.shape[1]),
             dtype=object
         )
-        for w in range(self._gain_function.shape[0]):
-            for s in range(self._gain_function.shape[1]):
+        for w in range(self._cost_function.shape[0]):
+            for s in range(self._cost_function.shape[1]):
                 self.__stage_cost_function(w, s)
 
     def __stage_cost_function(self, week: int, scenario: int) -> None:
@@ -66,7 +66,7 @@ class HydroGainFunction(GainFunction):
 
         turb_thresholds = np.unique(np.linspace(low, high, self.turb_threshold))
 
-        weekly_control, gains = self.__compute_control_with_thresholds(
+        weekly_control, costs = self.__compute_control_with_thresholds(
             turb_thresholds=turb_thresholds,
             weekly_net_load=weekly_net_load,
             max_hourly_turb=max_hourly_turb,
@@ -76,11 +76,11 @@ class HydroGainFunction(GainFunction):
 
         idx = np.argsort(weekly_control)
         weekly_control = weekly_control[idx]
-        gains = gains[idx]
+        costs = costs[idx]
 
-        self.__min_gain[week, scenario] = float(min(gains[0], gains[-1]))
+        self.__max_cost[week, scenario] = float(max(costs[0], costs[-1]))
 
-        self._gain_function[week, scenario] = interp1d(weekly_control, gains, fill_value="extrapolate")
+        self._cost_function[week, scenario] = interp1d(weekly_control, costs, fill_value="extrapolate")
 
     def __compute_control_with_thresholds(
             self,
@@ -140,45 +140,45 @@ class HydroGainFunction(GainFunction):
 
         # Aggregations
         weekly_control = (turb * self._reservoir.turb_efficiency - pump * self._reservoir.pump_efficiency).sum(axis=1)
-        gains = -1 * (np.abs(net_after) ** self.alpha).sum(axis=1)
+        costs = (np.abs(net_after) ** self.alpha).sum(axis=1)
 
-        return weekly_control, gains
+        return weekly_control, costs
 
-    def get_gain(self, week_ind: int, sce_ind: int, control: float | int) -> float:
-        """Returns the gain value associated to a week, scenario and control.
+    def get_cost(self, week_ind: int, sce_ind: int, control: float | int) -> float:
+        """Returns the cost value associated to a week, scenario and control.
 
-        Returns the gain value associated to a week, scenario and control. If needed, launches the
-        gain function computation first.
+        Returns the cost value associated to a week, scenario and control. If needed, launches the
+        cost function computation first.
 
         Returns:
-            gain value corresponding to the parameters
+            cost value corresponding to the parameters
         """
-        if self._gain_function is None:
-            self._compute_gain_function()
+        if self._cost_function is None:
+            self._compute_cost_function()
 
-        assert isinstance(self._gain_function, np.ndarray)
-        gain_function: interp1d = self._gain_function[week_ind, sce_ind]
-        assert isinstance(gain_function, interp1d)
-        return gain_function(control)
+        assert isinstance(self._cost_function, np.ndarray)
+        cost_function: interp1d = self._cost_function[week_ind, sce_ind]
+        assert isinstance(cost_function, interp1d)
+        return cost_function(control)
 
-    def min_gain(self, week: int) -> float:
+    def min_cost(self, week: int) -> float:
         """
-        Compute a conservative minimum gain for a given week.
+        Compute a conservative minimum cost for a given week.
 
         For each scenario at the given week, this inspects the interpolated
-        gain function c_w^s(u) at the two extreme control values available
+        cost function c_w^s(u) at the two extreme control values available
         in its grid (controls[0] and controls[-1]), and returns the minimum over
         both extremes and all scenarios:
 
-            min_gain = min_s  min( c_w^s(u_min), c_w^s(u_max) )
+            min_cost = min_s  min( c_w^s(u_min), c_w^s(u_max) )
 
         Args:
             week (int): Week index.
 
         Returns:
-            float: minimum gain of the stage cost for the given week across scenarios.
+            float: minimum cost of the stage cost for the given week across scenarios.
         """
-        if self.__min_gain is None:
-            self._compute_gain_function()
-        assert isinstance(self.__min_gain, np.ndarray)
-        return self.__min_gain[week].max()
+        if self.__max_cost is None:
+            self._compute_cost_function()
+        assert isinstance(self.__max_cost, np.ndarray)
+        return self.__max_cost[week].max()
