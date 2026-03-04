@@ -10,8 +10,11 @@ import constants
 
 
 class HydroBellman(Bellman):
-    def __init__(self, nb_sce: int, cost_function: HydroCostFunction, reservoir: HydroReservoir):
+    penalty_factor: float
+
+    def __init__(self, nb_sce: int, penalty_factor: float, cost_function: HydroCostFunction, reservoir: HydroReservoir):
         super().__init__(nb_sce, cost_function, reservoir)
+        self.penalty_factor = penalty_factor
 
     def _compute_penalty(self) -> None:
         """
@@ -27,26 +30,17 @@ class HydroBellman(Bellman):
 
         for week_idx in range(constants.RESULTS_SIZE - 1):
             max_cost = self._cost_function.max_cost(week_idx)
-            penalty = interp1d(
-                [
-                    self._reservoir.lower_guide[week_idx] - 0.01 * self._reservoir.capacity,
-                    self._reservoir.lower_guide[week_idx],
-                    self._reservoir.upper_guide[week_idx],
-                    self._reservoir.upper_guide[week_idx] + 0.01 * self._reservoir.capacity,
-                ],
-                [
-                    max_cost,
-                    0,
-                    0,
-                    max_cost,
-                ],
-                fill_value='extrapolate',
-            )
-            self._penalty[week_idx] = penalty
+
+            lower = self._reservoir.lower_guide[week_idx]
+            upper = self._reservoir.upper_guide[week_idx]
+            cap = self._reservoir.capacity
+            mid = 0.5 * (lower + upper)
+            alpha = self._cost_function.alpha
+            self._penalty[week_idx] = lambda x: self.penalty_factor * max_cost * ((x - mid) / cap) ** alpha
         week_idx = constants.RESULTS_SIZE - 1
         max_cost = self._cost_function.max_cost(week_idx)
         self._penalty[week_idx] = lambda x: abs(x - self._reservoir.final_level) / (
-                10 * self._reservoir.final_level) * 100 * max_cost
+                10 * self._reservoir.capacity) * 100 * max_cost
 
     def bellman_function(self, week: int) -> interp1d:
         """
@@ -62,14 +56,10 @@ class HydroBellman(Bellman):
             fill_value="extrapolate"
         )
 
-    def iterate_over_controls_vec(self, controls: np.ndarray, current_stock: float, week_ind: int,
+    def iterate_over_controls_vec(self, controls: np.ndarray, next_stock: np.ndarray, week_ind: int,
                                   sce_ind: int) -> tuple[float, float, float]:
         assert isinstance(self._penalty, np.ndarray)
 
-        weekly_inflow = self._reservoir.hourly_inflow[
-                        week_ind * constants.RESULTS_INTERVAL_HOURS:
-                        (week_ind + 1) * constants.RESULTS_INTERVAL_HOURS, sce_ind].sum(axis=0)
-        next_stock = current_stock - controls + weekly_inflow
         cost = [self._cost_function.get_cost(week_ind, sce_ind, ctrl) for ctrl in controls]
         penalty = self._penalty[week_ind](next_stock)
         total_value = cost + penalty
@@ -79,7 +69,7 @@ class HydroBellman(Bellman):
     def iterate_over_stock_levels_vec(
             self,
             best_value: tuple[float, float | None, float | None],
-            current_stock: float,
+            current_stock_with_inflow: float,
             week_ind: int,
             sce_ind: int,
             future_bellman_function: interp1d,
@@ -91,15 +81,11 @@ class HydroBellman(Bellman):
         and keeps the best.
         """
         assert isinstance(self._penalty, np.ndarray)
-
-        weekly_inflow = self._reservoir.hourly_inflow[
-                        week_ind * constants.RESULTS_INTERVAL_HOURS:
-                        (week_ind + 1) * constants.RESULTS_INTERVAL_HOURS, sce_ind].sum(axis=0)
         capacity = float(self._reservoir.capacity)
 
         next_stock_grid = (np.arange(0, 101, self._reservoir.step, dtype=float) / 100.0) * capacity
 
-        controls = current_stock - next_stock_grid + weekly_inflow
+        controls = current_stock_with_inflow - next_stock_grid
         assert isinstance(self._reservoir, HydroReservoir)
         max_week_pump = self._reservoir.weekly_max_pump[week_ind]
         max_week_turb = self._reservoir.weekly_max_turb[week_ind]
@@ -151,18 +137,24 @@ class HydroBellman(Bellman):
                 current_stock = (c / 100) * self._reservoir.capacity
                 bv_sce = np.zeros(self._nb_sce)
                 for i in range(self._nb_sce):
+                    weekly_inflow = self._reservoir.hourly_inflow[
+                                    week_ind * constants.RESULTS_INTERVAL_HOURS:
+                                    (week_ind + 1) * constants.RESULTS_INTERVAL_HOURS, i].sum(axis=0)
                     controls = self._cost_function.get_controls(week_ind)
+                    next_stock = current_stock + weekly_inflow - controls
+                    feasible = (next_stock >= 0) & (next_stock <= self._reservoir.capacity + 1e-6)
+                    controls = controls[feasible]
 
                     best_value = self.iterate_over_controls_vec(
                         controls=controls,
-                        current_stock=current_stock,
+                        next_stock=next_stock[feasible],
                         week_ind=week_ind,
                         sce_ind=i
                     )
 
                     final_best_value, _, _ = self.iterate_over_stock_levels_vec(
                         best_value=best_value,
-                        current_stock=current_stock,
+                        current_stock_with_inflow=current_stock + weekly_inflow,
                         week_ind=week_ind,
                         sce_ind=i,
                         future_bellman_function=future_bellman_function,

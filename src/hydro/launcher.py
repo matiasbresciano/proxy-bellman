@@ -10,6 +10,7 @@ from tqdm import tqdm
 import time
 
 ALPHA = 2
+PENALTY_FACTOR = 0.001
 
 """
 Long-Term Storage Trajectories Generator for Antares Studies
@@ -35,7 +36,6 @@ Arguments:
   --areas           (list)   : List of study areas to process, space-separated (required)
   --MC_years        (int)    : Number of Monte-Carlo years to simulate (default: 200)
   --TS_selection    (list)   : List of TS to consider when calculating Bellman values (default: =MC_years)
-  --alpha           (float)  : Cost function alpha parameter (default: 2)
   --actions         (list)   : Actions to perform (required)
       Available actions include:
       - export_controls
@@ -96,7 +96,7 @@ class Launch:
             pbar=pbar
         )
         pbar.update(1)
-        self.bv = BellmanValuesProxy(self.proxy,pbar=pbar,TS_selection=self.TS_selection)
+        self.bv = BellmanValuesProxy(self.proxy,pbar=pbar,PENALTY_FACTOR=PENALTY_FACTOR,TS_selection=self.TS_selection)
         pbar.update(1)
         self.trajectories = OptimalTrajectories(self.bv,pbar=pbar)
         pbar.update(1)
@@ -225,7 +225,8 @@ def main() -> None:
         f.write(f"TS_selection        : {args.TS_selection}\n")
         f.write(f"STOCK_DISCR         : {STOCK_DISCR}\n")
         f.write(f"THRESHOLDS          : {THRESHOLDS}\n")
-        f.write(f"alpha               : {ALPHA}\n")
+        f.write(f"ALPHA               : {ALPHA}\n")
+        f.write(f"PENALTY_FACTOR      : {PENALTY_FACTOR}\n")
         f.write("\n")
 
     if len(args.areas) == 1:

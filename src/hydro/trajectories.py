@@ -64,14 +64,17 @@ class OptimalTrajectories:
 
                 weekly_inflow -= np.sum(self.inflow_adjust_overflow[w, s])
 
+                next_stock = current_stock + weekly_inflow - controls
+                feasible = (next_stock >= 0) & (next_stock <= self.bellman_values.proxy.reservoir.capacity+1e-6)
+                controls = controls[feasible]
+
                 best_value, best_stock, best_control = self.bellman_values.iterate_over_controls_vec(
-                        controls=controls,
-                        current_stock=current_stock,
-                        weekly_inflow=weekly_inflow,
-                        stage_cost_function=cost_function,
-                        future_bellman_function=future_bellman_function,
-                        penalty_function=penalty_function
-                    )
+                    controls=controls,
+                    current_stock=current_stock,
+                    weekly_inflow=weekly_inflow,
+                    stage_cost_function=cost_function,
+                    future_bellman_function=future_bellman_function,
+                    penalty_function=penalty_function)
 
                 __, final_best_stock, final_best_control = self.bellman_values.iterate_over_stock_levels_vec(
                     best_value=best_value,

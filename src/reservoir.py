@@ -30,7 +30,7 @@ class Reservoir:
     initial_level: int | float = 0
     final_level: int | float = 0
     hourly_inflow: np.ndarray = field(default_factory=
-                                      lambda: np.zeros(shape=constants.NB_HOURS, dtype=np.float64))
+                                      lambda: np.zeros(shape=(constants.NB_HOURS, 1) , dtype=np.float64))
     step: int = 1
 
     def __post_init__(self) -> None:
