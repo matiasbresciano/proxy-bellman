@@ -39,8 +39,9 @@ class HydroBellman(Bellman):
             self._penalty[week_idx] = lambda x: self.penalty_factor * max_cost * ((x - mid) / cap) ** alpha
         week_idx = constants.RESULTS_SIZE - 1
         max_cost = self._cost_function.max_cost(week_idx)
-        self._penalty[week_idx] = lambda x: abs(x - self._reservoir.final_level) / (
-                10 * self._reservoir.capacity) * 100 * max_cost
+        self._penalty[week_idx] = lambda x: (
+                10 * max_cost * abs(x - self._reservoir.final_level) / self._reservoir.capacity
+        )
 
     def bellman_function(self, week: int) -> interp1d:
         """
