@@ -1,5 +1,5 @@
 from hydro.stage_cost_function import ProxyStageCostFunction, THRESHOLDS
-from hydro.bellman import BellmanValuesProxy, STOCK_DISCR, PENALTY_FACTOR
+from hydro.bellman import BellmanValuesProxy, STOCK_DISCR
 from hydro.trajectories import OptimalTrajectories
 from hydro.exporter import Exporter, ModifyAntaresStudy, UndoAntaresModifications
 from hydro.plotter import Plotter
@@ -10,6 +10,7 @@ from tqdm import tqdm
 import time
 
 ALPHA = 2
+PENALTY_FACTOR = 0.001
 
 """
 Long-Term Storage Trajectories Generator for Antares Studies
@@ -95,7 +96,7 @@ class Launch:
             pbar=pbar
         )
         pbar.update(1)
-        self.bv = BellmanValuesProxy(self.proxy,pbar=pbar,TS_selection=self.TS_selection)
+        self.bv = BellmanValuesProxy(self.proxy,pbar=pbar,PENALTY_FACTOR=PENALTY_FACTOR,TS_selection=self.TS_selection)
         pbar.update(1)
         self.trajectories = OptimalTrajectories(self.bv,pbar=pbar)
         pbar.update(1)
