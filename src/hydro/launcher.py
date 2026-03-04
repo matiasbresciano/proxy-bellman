@@ -35,7 +35,6 @@ Arguments:
   --areas           (list)   : List of study areas to process, space-separated (required)
   --MC_years        (int)    : Number of Monte-Carlo years to simulate (default: 200)
   --TS_selection    (list)   : List of TS to consider when calculating Bellman values (default: =MC_years)
-  --alpha           (float)  : Cost function alpha parameter (default: 2)
   --actions         (list)   : Actions to perform (required)
       Available actions include:
       - export_controls
