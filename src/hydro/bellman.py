@@ -5,10 +5,9 @@ from scipy.interpolate import interp1d
 from tqdm import tqdm
 
 STOCK_DISCR=2
-PENALTY_FACTOR=0.001
 
 class BellmanValuesProxy:
-    def __init__(self, proxy: ProxyStageCostFunction, pbar : tqdm,TS_selection:list[int]|None=None)->None:
+    def __init__(self, proxy: ProxyStageCostFunction, PENALTY_FACTOR: float, pbar : tqdm,TS_selection:list[int]|None=None)->None:
         """
         Initialize BellmanValuesProxy with given Proxy.
         Sets up cost functions, storage arrays, then computes Bellman and usage values.
@@ -18,6 +17,7 @@ class BellmanValuesProxy:
         self.scenarios = proxy.scenarios
         self.TS_selection=TS_selection if TS_selection is not None else self.scenarios
         self.pbar = pbar
+        self.PENALTY_FACTOR = PENALTY_FACTOR
 
         self.stage_cost_functions = self.proxy.stage_cost_functions
 
@@ -51,7 +51,7 @@ class BellmanValuesProxy:
             distance = (x - mid) / cap
 
             #inside band
-            penalty = PENALTY_FACTOR*ub_cost * distance**self.proxy.alpha
+            penalty = self.PENALTY_FACTOR*ub_cost * distance**self.proxy.alpha
 
             return penalty
 
