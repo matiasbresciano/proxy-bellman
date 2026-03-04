@@ -5,6 +5,7 @@ from scipy.interpolate import interp1d
 from tqdm import tqdm
 
 STOCK_DISCR=2
+PENALTY_FACTOR=0.001
 
 class BellmanValuesProxy:
     def __init__(self, proxy: ProxyStageCostFunction, pbar : tqdm,TS_selection:list[int]|None=None)->None:
@@ -32,32 +33,30 @@ class BellmanValuesProxy:
         penalty = lambda x:abs(x-self.proxy.reservoir.initial_level)/(10*self.proxy.reservoir.initial_level) * 100 * self.proxy.upper_bound_cost(self.nb_weeks-1)
 
         return penalty
-
+    
     def penalty_rule_curves(self, week_idx: int) -> Callable:
-        """
-        Returns a piecewise penalty function penalizing deviations outside the weekly lower and upper rule curves.
-        Penalties grow linearly beyond ±1% of reservoir capacity from the rule curves.
-        """
-        if week_idx == self.nb_weeks -1 :
-            return lambda x:0
-        
+        if week_idx == self.nb_weeks - 1:
+            return lambda x: 0
+
         ub_cost = self.proxy.upper_bound_cost(week_idx)
-        penalty = interp1d(
-            [
-                self.proxy.reservoir.weekly_lower_rule_curve[week_idx] - 0.01 * self.proxy.reservoir.capacity,
-                self.proxy.reservoir.weekly_lower_rule_curve[week_idx],
-                self.proxy.reservoir.weekly_upper_rule_curve[week_idx],
-                self.proxy.reservoir.weekly_upper_rule_curve[week_idx] + 0.01 * self.proxy.reservoir.capacity,
-            ],
-            [
-                ub_cost,
-                0,
-                0,
-                ub_cost,
-            ],
-            fill_value='extrapolate',
-        )
-        return penalty
+
+        lower = self.proxy.reservoir.weekly_lower_rule_curve[week_idx]
+        upper = self.proxy.reservoir.weekly_upper_rule_curve[week_idx]
+        cap = self.proxy.reservoir.capacity
+
+        mid = 0.5 * (lower + upper)
+
+        def smooth_penalty(x):
+            x = np.asarray(x)
+            distance = (x - mid) / cap
+
+            #inside band
+            penalty = PENALTY_FACTOR*ub_cost * distance**self.proxy.alpha
+
+            return penalty
+
+        return smooth_penalty
+
 
     def bellman_function(self, week: int) -> interp1d:
         """
