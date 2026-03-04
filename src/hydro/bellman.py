@@ -30,7 +30,7 @@ class BellmanValuesProxy:
         Returns a penalty function based on deviation from initial reservoir level at final week.
         The penalty scales with the upper bound cost and relative negative deviation percentage (10%).
         """
-        penalty = lambda x:abs(x-self.proxy.reservoir.initial_level)/(10*self.proxy.reservoir.initial_level) * 100 * self.proxy.upper_bound_cost(self.nb_weeks-1)
+        penalty = lambda x:10*self.proxy.upper_bound_cost(self.nb_weeks-1)*abs(x-self.proxy.reservoir.initial_level)/(self.proxy.reservoir.capacity)
 
         return penalty
     
