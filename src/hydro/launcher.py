@@ -1,5 +1,5 @@
 from hydro.stage_cost_function import ProxyStageCostFunction, THRESHOLDS
-from hydro.bellman import BellmanValuesProxy, STOCK_DISCR
+from hydro.bellman import BellmanValuesProxy, STOCK_DISCR, PENALTY_FACTOR
 from hydro.trajectories import OptimalTrajectories
 from hydro.exporter import Exporter, ModifyAntaresStudy, UndoAntaresModifications
 from hydro.plotter import Plotter
@@ -227,7 +227,8 @@ def main() -> None:
         f.write(f"TS_selection        : {args.TS_selection}\n")
         f.write(f"STOCK_DISCR         : {STOCK_DISCR}\n")
         f.write(f"THRESHOLDS          : {THRESHOLDS}\n")
-        f.write(f"alpha               : {ALPHA}\n")
+        f.write(f"ALPHA               : {ALPHA}\n")
+        f.write(f"PENALTY_FACTOR      : {PENALTY_FACTOR}\n")
         f.write("\n")
 
     if len(args.areas) == 1:
