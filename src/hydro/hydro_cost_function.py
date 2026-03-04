@@ -35,10 +35,11 @@ class HydroCostFunction(CostFunction):
             (constants.RESULTS_SIZE, self._residual_load.shape[1]),
             dtype=object
         )
-        self.__max_cost = np.empty(
-            (constants.RESULTS_SIZE, self._residual_load.shape[1]),
-            dtype=object
+        self.__max_cost = np.zeros(
+            (constants.RESULTS_SIZE, self._residual_load.shape[1], self.turb_threshold),
+            dtype=np.float64
         )
+        self._controls = np.zeros(shape=constants.RESULTS_SIZE, dtype=object)
         for w in range(self._cost_function.shape[0]):
             for s in range(self._cost_function.shape[1]):
                 self.__stage_cost_function(w, s)
@@ -52,6 +53,9 @@ class HydroCostFunction(CostFunction):
             Interpolator (scipy interp1d): cost(control),
         """
         assert isinstance(self._reservoir, HydroReservoir)  # to avoid typing errors
+        assert isinstance(self._controls, np.ndarray)  # to avoid typing errors
+        assert isinstance(self.__max_cost, np.ndarray)  # to avoid typing errors
+        assert isinstance(self._cost_function, np.ndarray)  # to avoid typing errors
 
         weekly_net_load = self._residual_load[week * 168:(week + 1) * 168, scenario]
         max_hourly_turb = self._reservoir.hourly_max_turb[week * 168:(week + 1) * 168]
@@ -73,6 +77,8 @@ class HydroCostFunction(CostFunction):
             max_hourly_pump=max_hourly_pump,
             null_pump=null_pump
         )
+
+        self._controls[week] = weekly_control.copy()
 
         idx = np.argsort(weekly_control)
         weekly_control = weekly_control[idx]
@@ -161,9 +167,9 @@ class HydroCostFunction(CostFunction):
         assert isinstance(cost_function, interp1d)
         return cost_function(control)
 
-    def min_cost(self, week: int) -> float:
+    def max_cost(self, week: int) -> float:
         """
-        Compute a conservative minimum cost for a given week.
+        Compute a conservative maximum cost for a given week.
 
         For each scenario at the given week, this inspects the interpolated
         cost function c_w^s(u) at the two extreme control values available

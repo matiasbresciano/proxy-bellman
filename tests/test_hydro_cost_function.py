@@ -15,8 +15,8 @@ def test_zero_net_load():
         week = np.random.randint(0, constants.RESULTS_SIZE)
         control = np.random.uniform(0.1, 1)  # 1 : valeurs de max turb
         assert cost_function.get_cost(week, 0, 0) == pytest.approx(0.), "failed " + str(week) + " " + str(control)
-        assert cost_function.get_cost(week, 0, control) < 0., "failed " + str(week) + " " + str(control)
-        assert cost_function.get_cost(week, 0, -control) < 0., "failed " + str(week) + " " + str(control)
+        assert cost_function.get_cost(week, 0, control) > 0., "failed " + str(week) + " " + str(control)
+        assert cost_function.get_cost(week, 0, -control) > 0., "failed " + str(week) + " " + str(control)
 
 
 def test_random_net_load():

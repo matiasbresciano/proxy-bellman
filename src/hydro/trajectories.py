@@ -1,22 +1,22 @@
-from hydro.bellman import BellmanValuesProxy
+from hydro.bellman import BellmanHydro
 import numpy as np
 from tqdm import tqdm
 
 
 class OptimalTrajectories:
     def __init__(self,
-                 bellman_values: BellmanValuesProxy,
+                 bellman_values: BellmanHydro,
                  pbar: tqdm):
         """
         Initialize OptimalTrajectories with a BellmanValuesProxy instance.
         Prepares data and computes optimal trajectories.
         """
         self.bellman_values = bellman_values
-        self.nb_weeks = bellman_values.nb_weeks
-        self.scenarios = bellman_values.scenarios
+        # self.nb_weeks = bellman_values.nb_weeks
+        # self.scenarios = bellman_values.scenarios
         self.pbar = pbar
         
-        self.mean_bv = bellman_values.mean_bv
+        # self.mean_bv = bellman_values.mean_bv
         self.compute_trajectories()
 
     def compute_trajectories(self) -> None:
