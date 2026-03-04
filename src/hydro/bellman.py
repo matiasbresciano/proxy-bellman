@@ -46,7 +46,7 @@ class BellmanValuesProxy:
 
         mid = 0.5 * (lower + upper)
 
-        def smooth_penalty(x):
+        def smooth_penalty(x)->float:
             x = np.asarray(x)
             distance = (x - mid) / cap
 
