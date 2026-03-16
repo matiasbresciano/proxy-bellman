@@ -2,8 +2,8 @@ import pytest
 import numpy as np
 import math
 
-from hydro.hydro_cost_function import HydroCostFunction
-from hydro.hydro_reservoir import HydroReservoir
+from hydro.cost_function import HydroCostFunction
+from hydro.reservoir import HydroReservoir
 import constants
 
 

@@ -16,35 +16,37 @@ class Trajectory(ABC):
 
     Attributes:
         _reservoir (Reservoir): Reservoir describing the stock
-        _gain_function (CostFunction): gain function to use for computing bellman values
+        _cost_function (CostFunction): gain function to use for computing bellman values
         _bellman (np.ndarray): bellman values
         _trajectories (np.ndarray): for each scenario, for each week the computed stock level
         _controls (np.ndarray): for each scenario, for each week, the amount used
     """
     _reservoir: Reservoir
-    _gain_function: CostFunction
+    _cost_function: CostFunction
     _bellman: Bellman
-    _trajectories: np.ndarray[tuple[int, int], np.dtype[np.number]]
-    _controls: np.ndarray[tuple[int, int], np.dtype[np.number]]
+    _trajectories: np.ndarray[tuple[int, int], np.dtype[np.number]]|None
+    _controls: np.ndarray[tuple[int, int], np.dtype[np.number]]|None
+    nb_sce: int
 
-    def __init__(self, reservoir: Reservoir, gain_function: CostFunction, bellman: Bellman) -> None:
+    def __init__(self, nb_sce: int,  reservoir: Reservoir, gain_function: CostFunction, bellman: Bellman) -> None:
         self._reservoir = reservoir
-        self._gain_function = gain_function
+        self._cost_function = gain_function
         self._bellman = bellman
-        self._trajectories = np.zeros(shape=(1, 1), dtype=np.float64)
-        self._controls = np.zeros(shape=(1, 1), dtype=np.float64)
+        self._trajectories = None
+        self._controls = None
+        self._nb_sce = nb_sce
 
     @abstractmethod
     def _compute_trajectories(self) -> None:
         pass
 
     def get_trajectories(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
-        if self._trajectories.shape[0] != constants.RESULTS_SIZE:
+        if self._trajectories is None:
             self._compute_trajectories()
         return self._trajectories
 
     def get_controls(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
-        if self._controls.shape[0] != constants.RESULTS_SIZE:
+        if self._controls is None:
             self._compute_trajectories()
         return self._controls
 

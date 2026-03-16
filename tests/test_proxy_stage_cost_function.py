@@ -1,5 +1,5 @@
 import pytest
-from hydro.hydro_cost_function import HydroCostFunction
+from hydro.cost_function import HydroCostFunction
 from tqdm import tqdm
 import numpy as np
 

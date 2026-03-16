@@ -3,13 +3,20 @@ import typing
 import numpy as np
 from scipy.interpolate import interp1d
 
-from hydro.hydro_cost_function import HydroCostFunction
-from hydro.hydro_reservoir import HydroReservoir
+from hydro.cost_function import HydroCostFunction
+from hydro.reservoir import HydroReservoir
 from bellman import Bellman
 import constants
 
 
 class HydroBellman(Bellman):
+    """Bellman class for hydro. Inherits from Bellman
+
+    Computes and provides bellman values and penalties for each week
+
+    Attributes:
+        penalty_factor (float): factor to modulate how important it is to respect guidelines
+    """
     penalty_factor: float
 
     def __init__(self, nb_sce: int, penalty_factor: float, cost_function: HydroCostFunction, reservoir: HydroReservoir):
@@ -59,10 +66,20 @@ class HydroBellman(Bellman):
 
     def iterate_over_controls_vec(self, controls: np.ndarray, next_stock: np.ndarray, week_ind: int,
                                   sce_ind: int) -> tuple[float, float, float]:
-        assert isinstance(self._penalty, np.ndarray)
+        """
+        Computes the best value over the different provided controls
 
+        Parameters:
+             controls (np.ndarray): different controls to test
+             next_stock (np.ndarray): stock values corresponding to the controls
+             week_ind (int): considered week
+             sce_ind (int): considered scenario
+
+        Returns:
+            best value, corresponding next stock, corresponding control
+        """
         cost = [self._cost_function.get_cost(week_ind, sce_ind, ctrl) for ctrl in controls]
-        penalty = self._penalty[week_ind](next_stock)
+        penalty = self.get_penalties()[week_ind](next_stock)
         total_value = cost + penalty
         j = int(np.argmin(total_value))
         return float(total_value[j]), float(next_stock[j]), float(controls[j])
@@ -73,15 +90,26 @@ class HydroBellman(Bellman):
             current_stock_with_inflow: float,
             week_ind: int,
             sce_ind: int,
-            future_bellman_function: interp1d,
+            bellman_function: interp1d,
             max_control: float
     ) -> tuple[float, float | None, float | None]:
         """
         Enumerates next stock levels on the 0..100% grid,
         computes implied control, filters infeasible controls, evaluates total value,
         and keeps the best.
+
+        Parameters:
+             best_value (np.ndarray): previously computed best value (over controls), corresponding next stock,
+                corresponding control
+             current_stock_with_inflow (float): stock values corresponding to the controls
+             week_ind (int): considered week
+             sce_ind (int): considered scenario
+             bellman_function (interp1d): bellman fonction to use
+             max_control: max_control possible
+
+        Returns:
+            best value, corresponding next stock, corresponding control
         """
-        assert isinstance(self._penalty, np.ndarray)
         capacity = float(self._reservoir.capacity)
 
         next_stock_grid = (np.arange(0, 101, self._reservoir.step, dtype=float) / 100.0) * capacity
@@ -102,10 +130,10 @@ class HydroBellman(Bellman):
         ns = next_stock_grid[feasible]
         ctrl = controls[feasible]
 
-        penalty = self._penalty[week_ind](ns)
+        penalty = self.get_penalties()[week_ind](ns)
         cost = [self._cost_function.get_cost(week_ind, sce_ind, c) for c in ctrl]
 
-        total_value = cost + future_bellman_function(ns) + penalty
+        total_value = cost + bellman_function(ns) + penalty
 
         j = int(np.argmin(total_value))
         cand_value = float(total_value[j])
@@ -120,7 +148,6 @@ class HydroBellman(Bellman):
         Computes Bellman values at end of each week by backward induction over weeks and scenarios.
         Applies penalties and selects optimal controls to minimize cost-to-go.
         """
-
         self._bellman_values = np.zeros(shape=(constants.RESULTS_SIZE, 100//self._reservoir.step + 1), dtype=np.float64)
         assert isinstance(self._reservoir, HydroReservoir)
         if self._penalty is None:
@@ -132,7 +159,6 @@ class HydroBellman(Bellman):
         ])
 
         for week_ind in reversed(range(constants.RESULTS_SIZE - 1)):
-            future_bellman_function = self.bellman_function(week_ind + 1)
 
             for c in range(0, 101, self._reservoir.step):
                 current_stock = (c / 100) * self._reservoir.capacity
@@ -158,9 +184,9 @@ class HydroBellman(Bellman):
                         current_stock_with_inflow=current_stock + weekly_inflow,
                         week_ind=week_ind,
                         sce_ind=i,
-                        future_bellman_function=future_bellman_function,
+                        bellman_function=self.bellman_function(week_ind+1),
                         max_control=controls[-1])
 
                     bv_sce[i] = final_best_value
 
-                self._bellman_values[week_ind, c // self._reservoir.capacity] = np.mean(bv_sce)
+                self._bellman_values[week_ind, c // self._reservoir.step] = np.mean(bv_sce)

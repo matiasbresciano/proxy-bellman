@@ -26,6 +26,7 @@ class CostFunction(ABC):
         self._residual_load = residual_load
         self._reservoir = reservoir
         self._cost_function = None
+        self._controls = None
 
     @abstractmethod
     def _compute_cost_function(self) -> None:

@@ -1,5 +1,5 @@
 from cost_function import CostFunction
-from hydro.hydro_reservoir import HydroReservoir
+from hydro.reservoir import HydroReservoir
 import constants
 
 import numpy as np
