@@ -37,7 +37,6 @@ class HydroBellman(Bellman):
 
         for week_idx in range(constants.RESULTS_SIZE - 1):
             max_cost = self._cost_function.max_cost(week_idx)
-
             lower = self._reservoir.lower_guide[week_idx]
             upper = self._reservoir.upper_guide[week_idx]
             cap = self._reservoir.capacity
@@ -171,6 +170,9 @@ class HydroBellman(Bellman):
                     next_stock = current_stock + weekly_inflow - controls
                     feasible = (next_stock >= 0) & (next_stock <= self._reservoir.capacity + 1e-6)
                     controls = controls[feasible]
+
+                    if len(controls) == 0:
+                        print("oups")
 
                     best_value = self.iterate_over_controls_vec(
                         controls=controls,
