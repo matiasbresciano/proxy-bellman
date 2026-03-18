@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import typing
 import antares.craft as ac
+from antares.craft.model.study import Study
 
 from cost_function import CostFunction
 from reservoir import Reservoir
@@ -87,10 +88,22 @@ class AntaresProxy(ABC):
     """
     study_path: str
     area: str
+    study: Study
     _proxy: Proxy
     _residual_load: np.ndarray[tuple[int, int], np.dtype[np.float64]]
 
     def __init__(self, study_path: str, area: str, mc_years: int, sce_selection: list[int] | None) -> None:
         self.study_path = study_path
         self.area = area
-        self._residual_load = ac.read_study_local(study_path).get_areas()
+        self.study = ac.read_study_local(study_path)
+        # TODO LRI : ajouter gestion de mc_years, sce_selection
+        self._residual_load = self.study.get_areas()[area].get_load_matrix().values
+
+    def get_trajectories(self):
+        return self._proxy.get_trajectories()
+
+    def get_controls(self):
+        return self._proxy.get_controls()
+
+    def get_bellman_values(self):
+        return self._proxy.get_bellman_values()
