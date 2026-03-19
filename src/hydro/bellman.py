@@ -77,7 +77,8 @@ class HydroBellman(Bellman):
         Returns:
             best value, corresponding next stock, corresponding control
         """
-        cost = [self._cost_function.get_cost(week_ind, sce_ind, ctrl) for ctrl in controls]
+        assert isinstance(self._cost_function, HydroCostFunction)
+        cost = self._cost_function.get_exact_costs(week_ind, sce_ind)
         penalty = self.get_penalties()[week_ind](next_stock)
         total_value = cost + penalty
         j = int(np.argmin(total_value))
@@ -166,17 +167,15 @@ class HydroBellman(Bellman):
                     weekly_inflow = self._reservoir.hourly_inflow[
                                     week_ind * constants.RESULTS_INTERVAL_HOURS:
                                     (week_ind + 1) * constants.RESULTS_INTERVAL_HOURS, i].sum(axis=0)
-                    controls = self._cost_function.get_controls(week_ind)
+                    controls = self._cost_function.get_controls(week_ind, i)
                     next_stock = current_stock + weekly_inflow - controls
-                    feasible = (next_stock >= 0) & (next_stock <= self._reservoir.capacity + 1e-6)
-                    controls = controls[feasible]
 
                     if len(controls) == 0:
                         print("oups")
 
                     best_value = self.iterate_over_controls_vec(
                         controls=controls,
-                        next_stock=next_stock[feasible],
+                        next_stock=next_stock,
                         week_ind=week_ind,
                         sce_ind=i
                     )

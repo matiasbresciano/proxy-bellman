@@ -20,7 +20,7 @@ class CostFunction(ABC):
     _residual_load: np.ndarray
     _reservoir: Reservoir
     _cost_function: np.ndarray[tuple[int, int], np.dtype[interp1d | np.number]] | None
-    _controls: np.ndarray[tuple[int], object] | None
+    _controls: np.ndarray[tuple[int, int], object] | None
 
     def __init__(self, residual_load: np.ndarray, reservoir: Reservoir) -> None:
         self._residual_load = residual_load
@@ -38,8 +38,8 @@ class CostFunction(ABC):
         """get the cost value linked to a week, a control and a scenario"""
         pass
 
-    def get_controls(self, week_ind: int) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+    def get_controls(self, week_ind: int, sce_ind: int) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
         if self._controls is None:
             self._compute_cost_function()
         assert isinstance(self._controls, np.ndarray)
-        return self._controls[week_ind]
+        return self._controls[week_ind, sce_ind]

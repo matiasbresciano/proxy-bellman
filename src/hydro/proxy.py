@@ -40,19 +40,20 @@ class HydroProxy(Proxy):
 
 class HydroAntaresProxy(AntaresProxy):
     def __init__(self, study_path: str,
-                 area: str,
+                 area_name: str,
                  mc_years: int,
                  sce_selection: list[int] | None = None,
                  turb_threshold: int = 25,
                  alpha: int = 2,
                  penalty_factor: int = 1):
-        super().__init__(study_path, area, mc_years, sce_selection)
+        super().__init__(study_path, area_name, mc_years, sce_selection)
         area = self.study.get_areas()[self.area]
         capacity = area.hydro.properties.reservoir_capacity
-        lower_guide = area.hydro.get_reservoir()[0][7::7].values
-        upper_guide = area.hydro.get_reservoir()[1][7::7].values
+        lower_guide = area.hydro.get_reservoir()[0][7::7].values * capacity
+        upper_guide = area.hydro.get_reservoir()[1][7::7].values * capacity
         initial_level = (lower_guide[0] + upper_guide[0]) / 2
-        final_level = (lower_guide[-1] + upper_guide[-1]) / 2  # TODO LRI: vérifier qu'on garde ça
+        # final_level = (lower_guide[-1] + upper_guide[-1]) / 2  # TODO LRI: vérifier qu'on garde ça
+        final_level = initial_level
         daily_inflow = area.hydro.get_mod_series()[:constants.NB_DAYS]
         hourly_inflow = np.repeat(daily_inflow/constants.NB_HOURS_IN_DAY, constants.NB_HOURS_IN_DAY, axis=0)
         max_turb = area.hydro.get_maxpower()[0][:constants.NB_DAYS].values
@@ -78,5 +79,12 @@ class HydroAntaresProxy(AntaresProxy):
                                    hourly_max_turb=hourly_turb,
                                    hourly_max_pump=hourly_pump,
                                    # turb_efficiency=turb_eff,
-                                   pump_efficiency=pump_eff)
+                                   pump_efficiency=pump_eff,
+                                   step=2)
+
+        # weights
+        for alloc in area.hydro.allocation:
+            load = self._area_loads[alloc.area_id] * alloc.coefficient
+            self._residual_load = self._residual_load + load
+
         self._proxy = HydroProxy(self._residual_load, reservoir, turb_threshold, alpha, penalty_factor)

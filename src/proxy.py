@@ -90,6 +90,7 @@ class AntaresProxy(ABC):
     area: str
     study: Study
     _proxy: Proxy
+    _area_loads: dict[str, np.ndarray]
     _residual_load: np.ndarray[tuple[int, int], np.dtype[np.float64]]
 
     def __init__(self, study_path: str, area: str, mc_years: int, sce_selection: list[int] | None) -> None:
@@ -97,7 +98,19 @@ class AntaresProxy(ABC):
         self.area = area
         self.study = ac.read_study_local(study_path)
         # TODO LRI : ajouter gestion de mc_years, sce_selection
-        self._residual_load = self.study.get_areas()[area].get_load_matrix().values
+        self._area_loads = dict()
+        self.compute_area_residual_loads()
+        self._residual_load = np.zeros(shape=self._area_loads[area].shape, dtype=np.float64)
+
+    def compute_area_residual_loads(self):
+        for ar_name, ar_value in self.study.get_areas().items():
+            load = ar_value.get_load_matrix().values
+            renewables = np.zeros(shape=load.shape, dtype=np.float64)
+            for ren in ar_value.get_renewables().values():
+                renewables += ren.get_timeseries().values * ren.properties.nominal_capacity
+            ror = ar_value.hydro.get_ror_series().values[:load.shape[0], :load.shape[1]]
+            misc = ar_value.get_misc_gen_matrix().values.sum(axis=1)
+            self._area_loads[ar_name] = load - ror - misc[:, np.newaxis] - renewables
 
     def get_trajectories(self):
         return self._proxy.get_trajectories()

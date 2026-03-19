@@ -14,18 +14,19 @@ class HydroCostFunction(CostFunction):
     Attributes:
         turb_threshold (int): number of values on which the cost function is computed (default is 25)
         alpha (int): parameter for the computation of the costs value and the turbine vs pumping ratio
-        __max_cost (np.array): maximum cost for each week to use as penalty
+        __max_costs (np.array): maximum cost for each week to use as penalty
     """
     turb_threshold: int
     alpha: int
-    __max_cost: np.ndarray[tuple[int, int], np.dtype[np.number]] | None
+    __max_costs: np.ndarray[tuple[int, int], np.dtype[np.number]] | None
+    __exact_costs: np.ndarray[tuple[int, int, int], np.dtype[np.number]] | None
 
     def __init__(self, residual_load: np.ndarray, reservoir: HydroReservoir, turb_threshold: int = 25,
                  alpha: int = 2):
         super().__init__(residual_load, reservoir)
         self.turb_threshold = turb_threshold
         self.alpha = alpha
-        self.__max_cost = None
+        self.__max_costs = None
 
     def _compute_cost_function(self) -> None:
         """
@@ -35,11 +36,15 @@ class HydroCostFunction(CostFunction):
             (constants.RESULTS_SIZE, self._residual_load.shape[1]),
             dtype=object
         )
-        self.__max_cost = np.zeros(
+        self.__max_costs = np.zeros(
+            (constants.RESULTS_SIZE, self._residual_load.shape[1]),
+            dtype=np.float64
+        )
+        self.__exact_costs = np.zeros(
             (constants.RESULTS_SIZE, self._residual_load.shape[1], self.turb_threshold),
             dtype=np.float64
         )
-        self._controls = np.zeros(shape=constants.RESULTS_SIZE, dtype=object)
+        self._controls = np.zeros(shape=(constants.RESULTS_SIZE, self._residual_load.shape[1]), dtype=object)
         for w in range(self._cost_function.shape[0]):
             for s in range(self._cost_function.shape[1]):
                 self.__stage_cost_function(w, s)
@@ -54,8 +59,9 @@ class HydroCostFunction(CostFunction):
         """
         assert isinstance(self._reservoir, HydroReservoir)  # to avoid typing errors
         assert isinstance(self._controls, np.ndarray)  # to avoid typing errors
-        assert isinstance(self.__max_cost, np.ndarray)  # to avoid typing errors
+        assert isinstance(self.__max_costs, np.ndarray)  # to avoid typing errors
         assert isinstance(self._cost_function, np.ndarray)  # to avoid typing errors
+        assert isinstance(self.__exact_costs, np.ndarray)  # to avoid typing errors
 
         weekly_net_load = self._residual_load[week * 168:(week + 1) * 168, scenario]
         max_hourly_turb = self._reservoir.hourly_max_turb[week * 168:(week + 1) * 168]
@@ -78,13 +84,14 @@ class HydroCostFunction(CostFunction):
             null_pump=null_pump
         )
 
-        self._controls[week] = weekly_control.copy()
+        self._controls[week, scenario] = weekly_control[:]
+        self.__exact_costs[week, scenario] = costs[:]
 
         idx = np.argsort(weekly_control)
         weekly_control = weekly_control[idx]
         costs = costs[idx]
 
-        self.__max_cost[week, scenario] = float(max(costs[0], costs[-1]))
+        self.__max_costs[week, scenario] = float(max(costs[0], costs[-1]))
 
         self._cost_function[week, scenario] = interp1d(weekly_control, costs, fill_value="extrapolate")
 
@@ -184,7 +191,12 @@ class HydroCostFunction(CostFunction):
         Returns:
             float: minimum cost of the stage cost for the given week across scenarios.
         """
-        if self.__max_cost is None:
+        if self.__max_costs is None:
             self._compute_cost_function()
-        assert isinstance(self.__max_cost, np.ndarray)
-        return self.__max_cost[week].max()
+        assert isinstance(self.__max_costs, np.ndarray)
+        return self.__max_costs[week].max()
+
+    def get_exact_costs(self, week, sce) -> np.ndarray:
+        if self.__exact_costs is None:
+            self._compute_cost_function()
+        return self.__exact_costs[week, sce]
