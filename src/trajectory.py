@@ -43,11 +43,13 @@ class Trajectory(ABC):
     def get_trajectories(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
         if self._trajectories is None:
             self._compute_trajectories()
+        assert isinstance(self._trajectories, np.ndarray)
         return self._trajectories
 
     def get_controls(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
         if self._controls is None:
             self._compute_trajectories()
+        assert isinstance(self._controls, np.ndarray)
         return self._controls
 
 

@@ -48,7 +48,7 @@ class HydroTrajectory(Trajectory):
                 hourly_inflow = self._reservoir.hourly_inflow[w * 168:(w + 1) * 168, s]
                 weekly_inflow: float = hourly_inflow.sum()
 
-                controls = self._cost_function.get_controls(w)
+                controls = self._cost_function.get_controls(w, s)
 
                 max_control = self.adjust_hourly_inflow_overflow(scenario=s, 
                                                                  week=w, 
@@ -68,7 +68,8 @@ class HydroTrajectory(Trajectory):
                     controls=controls,
                     next_stock=next_stock[feasible],
                     week_ind=w,
-                    sce_ind=s
+                    sce_ind=s,
+                    exact_ctrls=False
                 )
 
                 __, final_best_stock, final_best_control = self._bellman.iterate_over_stock_levels_vec(
@@ -76,11 +77,11 @@ class HydroTrajectory(Trajectory):
                     current_stock_with_inflow=current_stock + weekly_inflow,
                     week_ind=w,
                     sce_ind=s,
-                    bellman_function=self._bellman.bellman_function(w),
                     max_control=controls[-1])
 
                 self._trajectories[s, w] = final_best_stock
                 self._controls[s, w] = final_best_control
+                assert isinstance(final_best_stock, float)
                 current_stock = final_best_stock
 
     def adjust_hourly_inflow_overflow(
@@ -95,6 +96,7 @@ class HydroTrajectory(Trajectory):
         Returns the maximum feasible control (turbining) for the week after adjustments and taking in account potential overflow or negative stock during the week.
         """
         assert isinstance(self._reservoir, HydroReservoir)
+        assert isinstance(self.inflow_adjust_overflow, np.ndarray)
         cap = float(self._reservoir.capacity)
 
         turb = self._reservoir.hourly_max_turb[week * 168:(week + 1) * 168]

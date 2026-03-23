@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from hydro.trajectories import HydroTrajectory
+from hydro.trajectory import HydroTrajectory
 from hydro.bellman import HydroBellman
 from hydro.cost_function import HydroCostFunction
 from hydro.reservoir import HydroReservoir

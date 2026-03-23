@@ -34,16 +34,11 @@ class Bellman(ABC):
         self._nb_sce = nb_sce
         self._cost_function = cost_function
         self._reservoir = reservoir
-        self._penalty = None
         self._bellman_values = None
         self._usage_value = None
 
     @abstractmethod
     def _compute_bellman_values(self) -> None:
-        pass
-
-    @abstractmethod
-    def _compute_penalty(self) -> None:
         pass
 
     def _compute_usage_values(self) -> None:
@@ -61,12 +56,10 @@ class Bellman(ABC):
         assert isinstance(self._bellman_values, np.ndarray)
         return self._bellman_values
 
-    def get_penalties(self) -> np.ndarray[tuple[int], np.dtype[typing.Any]]:
-        """Returns the array containing all penalty functions np.array(interp1D)"""
-        if self._penalty is None:
-            self._compute_penalty()
-        assert isinstance(self._penalty, np.ndarray)
-        return self._penalty
+    @abstractmethod
+    def get_penalty(self, week: int, stock: float) -> float:
+        """Returns the computed penalty for given week and stock"""
+        pass
 
     def get_usage_values(self) -> np.ndarray[tuple[int, int], np.dtype[np.float64]]:
         if self._usage_value is None:

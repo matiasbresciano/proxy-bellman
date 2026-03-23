@@ -102,7 +102,7 @@ class AntaresProxy(ABC):
         self.compute_area_residual_loads()
         self._residual_load = np.zeros(shape=self._area_loads[area].shape, dtype=np.float64)
 
-    def compute_area_residual_loads(self):
+    def compute_area_residual_loads(self) -> None:
         for ar_name, ar_value in self.study.get_areas().items():
             load = ar_value.get_load_matrix().values
             renewables = np.zeros(shape=load.shape, dtype=np.float64)
@@ -112,11 +112,11 @@ class AntaresProxy(ABC):
             misc = ar_value.get_misc_gen_matrix().values.sum(axis=1)
             self._area_loads[ar_name] = load - ror - misc[:, np.newaxis] - renewables
 
-    def get_trajectories(self):
+    def get_trajectories(self) -> list[np.ndarray]:
         return self._proxy.get_trajectories()
 
-    def get_controls(self):
+    def get_controls(self) -> list[np.ndarray]:
         return self._proxy.get_controls()
 
-    def get_bellman_values(self):
+    def get_bellman_values(self) -> list[np.ndarray]:
         return self._proxy.get_bellman_values()

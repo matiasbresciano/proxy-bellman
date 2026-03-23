@@ -1,7 +1,7 @@
 import numpy as np
 
 from proxy import Proxy, AntaresProxy
-from hydro.trajectories import HydroTrajectory
+from hydro.trajectory import HydroTrajectory
 from hydro.bellman import HydroBellman
 from hydro.cost_function import HydroCostFunction
 from hydro.reservoir import HydroReservoir
@@ -18,7 +18,7 @@ class HydroProxy(Proxy):
                  reservoir: HydroReservoir,
                  turb_threshold: int = 25,
                  alpha: int = 2,
-                 penalty_factor: int = 1) -> None:
+                 penalty_factor: float = 1) -> None:
         """Initialises the proxy
 
         Parameters:
@@ -45,14 +45,13 @@ class HydroAntaresProxy(AntaresProxy):
                  sce_selection: list[int] | None = None,
                  turb_threshold: int = 25,
                  alpha: int = 2,
-                 penalty_factor: int = 1):
+                 penalty_factor: float = 1):
         super().__init__(study_path, area_name, mc_years, sce_selection)
         area = self.study.get_areas()[self.area]
         capacity = area.hydro.properties.reservoir_capacity
         lower_guide = area.hydro.get_reservoir()[0][7::7].values * capacity
-        upper_guide = area.hydro.get_reservoir()[1][7::7].values * capacity
-        initial_level = (lower_guide[0] + upper_guide[0]) / 2
-        # final_level = (lower_guide[-1] + upper_guide[-1]) / 2  # TODO LRI: vérifier qu'on garde ça
+        upper_guide = area.hydro.get_reservoir()[2][7::7].values * capacity
+        initial_level = (area.hydro.get_reservoir()[0][0] + area.hydro.get_reservoir()[2][0]) / 2 * capacity
         final_level = initial_level
         daily_inflow = area.hydro.get_mod_series()[:constants.NB_DAYS]
         hourly_inflow = np.repeat(daily_inflow/constants.NB_HOURS_IN_DAY, constants.NB_HOURS_IN_DAY, axis=0)

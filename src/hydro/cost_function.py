@@ -84,12 +84,13 @@ class HydroCostFunction(CostFunction):
             null_pump=null_pump
         )
 
-        self._controls[week, scenario] = weekly_control[:]
-        self.__exact_costs[week, scenario] = costs[:]
 
         idx = np.argsort(weekly_control)
         weekly_control = weekly_control[idx]
         costs = costs[idx]
+
+        self._controls[week, scenario] = weekly_control[:]
+        self.__exact_costs[week, scenario] = costs[:]
 
         self.__max_costs[week, scenario] = float(max(costs[0], costs[-1]))
 
@@ -196,7 +197,8 @@ class HydroCostFunction(CostFunction):
         assert isinstance(self.__max_costs, np.ndarray)
         return self.__max_costs[week].max()
 
-    def get_exact_costs(self, week, sce) -> np.ndarray:
+    def get_exact_costs(self, week: int, sce: int) -> np.ndarray:
         if self.__exact_costs is None:
             self._compute_cost_function()
+        assert isinstance(self.__exact_costs, np.ndarray)
         return self.__exact_costs[week, sce]
