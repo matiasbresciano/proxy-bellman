@@ -17580,7 +17580,7 @@ def test_turb_pump_control_costs()->None:
     expected_weekly_control.reverse()
     expected_weekly_control = np.array(expected_weekly_control, dtype=float)
 
-    expected_cost = [84986111862.9907,
+    expected_costs = [84986111862.9907,
           84862846602.8492,
           87304679888.1178,
           94967135565.8448,
@@ -17591,8 +17591,8 @@ def test_turb_pump_control_costs()->None:
           148608700825.147,
           151164876233.726]
 
-    expected_cost.reverse()
-    expected_costs = np.array(expected_cost, dtype=float)
+    expected_costs.reverse()
+    expected_costs = np.array(expected_costs, dtype=float)
 
     assert np.allclose(costs, expected_costs)
     assert np.allclose(weekly_control, expected_weekly_control)
