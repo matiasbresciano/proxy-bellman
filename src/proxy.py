@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pathlib import Path
 import numpy as np
 import typing
 import antares.craft as ac
@@ -96,7 +97,7 @@ class AntaresProxy(ABC):
     def __init__(self, study_path: str, area: str, mc_years: int, sce_selection: list[int] | None) -> None:
         self.study_path = study_path
         self.area = area
-        self.study = ac.read_study_local(study_path)
+        self.study = ac.read_study_local(Path(study_path))
         # TODO LRI : ajouter gestion de mc_years, sce_selection
         self._area_loads = dict()
         self.compute_area_residual_loads()
