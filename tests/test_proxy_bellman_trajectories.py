@@ -2,7 +2,7 @@ import pytest
 from hydro.proxy import HydroAntaresProxy
 import numpy as np
 
-dir_study = "../test_data/two_nodes"
+dir_study = "test_data/two_nodes"
 area1 = "area1"
 proxy = HydroAntaresProxy(dir_study, area1, 10, alpha=2, penalty_factor=0.4)
 

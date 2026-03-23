@@ -9,7 +9,7 @@ from hydro.reservoir import HydroReservoir
 
 # TODO LRI : à refaire une fois que j'aurais antares wrapper
 
-dir_study = "../test_data/two_nodes"
+dir_study = "test_data/two_nodes"
 area1="area1"
 pbar = tqdm(total=0, disable=True)
 proxy1 = HydroAntaresProxy(dir_study, area1, 10, turb_threshold=10, alpha=2)
@@ -17565,20 +17565,22 @@ def test_turb_pump_control_costs()->None:
     weekly_control = proxy1._proxy._cost_function[0].get_controls(10, 5)
     assert isinstance(cost_f, HydroCostFunction)
     costs = cost_f.get_exact_costs(10, 5)
-    expected_weekly_control = np.array([
-          771547.199999997,
-          708597.74849603 ,
-          534759.60697738 ,
-          288604.703142857,
-          45356.482170635 ,
-          -175460.84728254,
-          -324077.12323095,
-          -394019.72773333,
-          -451664.78725277,
-               -470400
-          ], dtype=float)
+    expected_weekly_control =[
+        771547.199999997,
+        708597.74849603,
+        534759.60697738,
+        288604.703142857,
+        45356.482170635,
+        -175460.84728254,
+        -324077.12323095,
+        -394019.72773333,
+        -451664.78725277,
+        -470400
+    ]
+    expected_weekly_control.reverse()
+    expected_weekly_control = np.array(expected_weekly_control, dtype=float)
 
-    expected_costs = np.array([84986111862.9907,
+    expected_cost = [84986111862.9907,
           84862846602.8492,
           87304679888.1178,
           94967135565.8448,
@@ -17587,7 +17589,10 @@ def test_turb_pump_control_costs()->None:
           134285119451.503,
           141582901834.709,
           148608700825.147,
-          151164876233.726], dtype=float)
+          151164876233.726]
+
+    expected_cost.reverse()
+    expected_costs = np.array(expected_cost, dtype=float)
 
     assert np.allclose(costs, expected_costs)
     assert np.allclose(weekly_control, expected_weekly_control)

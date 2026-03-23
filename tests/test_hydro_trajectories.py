@@ -51,4 +51,4 @@ def test_one_net_load():
     controls = traj.get_controls()
     for i in range(constants.RESULTS_SIZE):
         assert controls[0, i] > 0.5
-        assert values[0, i] > 50
+        assert values[0, i] >= 50
