@@ -21,7 +21,7 @@ class CostFunction(ABC):
     _residual_load: np.ndarray
     _reservoir: Reservoir
     _cost_function: np.ndarray[tuple[int, int], np.dtype[interp1d | np.number]] | None
-    _controls: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None
+    _controls: np.ndarray[tuple[int, int, int], np.dtype[np.float64]] | None
 
     def __init__(self, residual_load: np.ndarray, reservoir: Reservoir) -> None:
         self._residual_load = residual_load
