@@ -37,14 +37,17 @@ class HydroCostFunction(CostFunction):
             dtype=object
         )
         self.__max_costs = np.zeros(
-            (constants.RESULTS_SIZE, self._residual_load.shape[1]),
+            (constants.RESULTS_SIZE, self._residual_load.shape[1], self.turb_threshold),
             dtype=np.float64
         )
         self.__exact_costs = np.zeros(
             (constants.RESULTS_SIZE, self._residual_load.shape[1], self.turb_threshold),
             dtype=np.float64
         )
-        self._controls = np.zeros(shape=(constants.RESULTS_SIZE, self._residual_load.shape[1]), dtype=object)
+        self._controls = np.zeros(
+            shape=(constants.RESULTS_SIZE, self._residual_load.shape[1], self.turb_threshold),
+            dtype=np.float64
+        )
         for w in range(self._cost_function.shape[0]):
             for s in range(self._cost_function.shape[1]):
                 self.__stage_cost_function(w, s)
