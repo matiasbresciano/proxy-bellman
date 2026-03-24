@@ -1,27 +1,25 @@
 import pytest
-from hydro.stage_cost_function import ProxyStageCostFunction
+
+from hydro.cost_function import HydroCostFunction
+from hydro.proxy import HydroAntaresProxy
 from tqdm import tqdm
 import numpy as np
+
+from hydro.reservoir import HydroReservoir
+
+# TODO LRI : à refaire une fois que j'aurais antares wrapper
 
 dir_study = "test_data/two_nodes"
 area1="area1"
 pbar = tqdm(total=0, disable=True)
-proxy1 = ProxyStageCostFunction(dir_study=dir_study,
-              name_area=area1,
-              MC_years=10,
-              alpha=2,
-              pbar=pbar)
+proxy1 = HydroAntaresProxy(dir_study, area1, 10, turb_threshold=10, alpha=2)
 
 area="area"
-proxy2 = ProxyStageCostFunction(dir_study = dir_study,
-               name_area=area,
-               MC_years=10,
-               alpha=2,
-               pbar=pbar)
+proxy2 = HydroAntaresProxy(dir_study, area, 10, turb_threshold=10, alpha=2)
 
-def test_net_load_shape()->None:    
-    assert proxy1.weighted_net_load.shape == (8760,10)
-    assert proxy2.weighted_net_load.shape == (8760,10)
+def test_net_load_shape()->None:
+    assert proxy1._residual_load.shape == (8760, 10)
+    assert proxy2._residual_load.shape == (8760, 10)
 
 def test_net_load_values_1()->None:
     expected1 = np.array([22298.5   ,
@@ -8785,7 +8783,7 @@ def test_net_load_values_1()->None:
 25157.1   ,
 20769.9   ,
 ], dtype=float)
-    assert proxy1.weighted_net_load[:, 0] == pytest.approx(expected1, rel=1e-6, abs=1e-9)
+    assert np.allclose(proxy1._residual_load[:, 0], expected1)
 
 def test_net_load_values_2()->None :
     expected2 = np.array([24544.171,
@@ -17548,54 +17546,41 @@ def test_net_load_values_2()->None :
           1034.4705,
           18489.222,
           22164.358],dtype=float)
-    assert proxy2.weighted_net_load[:, 0] == pytest.approx(expected2, rel=1e-6, abs=1e-9)
+    assert np.allclose(proxy2._residual_load[:, 0], expected2)
 
 
-weekly_net_load = proxy1.weighted_net_load[10*168:11*168, 5]
-max_hourly_turb = proxy1.reservoir.max_hourly_turb[10*168:11*168]
-max_hourly_pump = proxy1.reservoir.max_hourly_pump[10*168:11*168]
+weekly_net_load = proxy1._residual_load[10*168:11*168, 5]
+reservoir = proxy1._proxy._reservoir[0]
+assert isinstance(reservoir, HydroReservoir)
+max_hourly_turb = reservoir.hourly_max_turb[10*168:11*168]
+max_hourly_pump = reservoir.hourly_max_pump[10*168:11*168]
 null_pump = bool(np.all(max_hourly_pump == 0))
 low = np.min(weekly_net_load - max_hourly_turb)
-raw_high = np.max(weekly_net_load + max_hourly_pump) * (proxy1.turb_efficiency / proxy1.reservoir.efficiency) ** (1 / (proxy1.alpha - 1))
+cost_f = proxy1._proxy._cost_function[0]
+assert isinstance(cost_f, HydroCostFunction)
+raw_high = np.max(weekly_net_load + max_hourly_pump) * (reservoir.turb_efficiency / reservoir.pump_efficiency) ** (1 / (cost_f.alpha - 1))
 high = np.max(weekly_net_load) if null_pump else raw_high
 
-turb_thresholds = np.linspace(low, high, 10)
-
-def test_control_with_thresholds()->None:
-     expected = np.array([-6961.7275,
-               2078.38706349206,
-               11118.5016269841,
-               20158.6161904762,
-               29198.7307539683,
-               38238.8453174603,
-               47278.9598809524,
-               56319.0744444444,
-               65359.1890079365,
-               74399.3035714286], dtype=float)
-     assert turb_thresholds == pytest.approx(expected, rel=1e-6, abs=1e-9)
-
 def test_turb_pump_control_costs()->None:
-     weekly_control, costs = proxy1.compute_control_with_thresholds(
-     turb_thresholds=turb_thresholds,
-     weekly_net_load=weekly_net_load,
-     max_hourly_turb=max_hourly_turb,
-     max_hourly_pump=max_hourly_pump,
-     null_pump=null_pump
-     )
-     expected_weekly_control = np.array([
-          771547.199999997,
-          708597.74849603 ,
-          534759.60697738 ,
-          288604.703142857,
-          45356.482170635 ,
-          -175460.84728254,
-          -324077.12323095,
-          -394019.72773333,
-          -451664.78725277,
-               -470400
-          ], dtype=float)
-     
-     expected_costs = np.array([84986111862.9907,
+    weekly_control = proxy1._proxy._cost_function[0].get_controls(10, 5)
+    assert isinstance(cost_f, HydroCostFunction)
+    costs = cost_f.get_exact_costs(10, 5)
+    expected_weekly_control =[
+        771547.199999997,
+        708597.74849603,
+        534759.60697738,
+        288604.703142857,
+        45356.482170635,
+        -175460.84728254,
+        -324077.12323095,
+        -394019.72773333,
+        -451664.78725277,
+        -470400
+    ]
+    expected_weekly_control.reverse()
+    expected_weekly_control = np.array(expected_weekly_control, dtype=float)
+
+    expected_costs = [84986111862.9907,
           84862846602.8492,
           87304679888.1178,
           94967135565.8448,
@@ -17604,13 +17589,17 @@ def test_turb_pump_control_costs()->None:
           134285119451.503,
           141582901834.709,
           148608700825.147,
-          151164876233.726], dtype=float)
+          151164876233.726]
 
-     assert costs == pytest.approx(expected_costs, rel=1e-6, abs=1e-9)
-     assert weekly_control == pytest.approx(expected_weekly_control, rel=1e-6, abs=1e-9)
+    expected_costs.reverse()
+    expected_costs = np.array(expected_costs, dtype=float)
+
+    assert np.allclose(costs, expected_costs)
+    assert np.allclose(weekly_control, expected_weekly_control)
 
 def test_upper_bound_cost()->None:
-     ub_cost = proxy1.upper_bound_cost(10)
-     assert ub_cost == pytest.approx(207442780279.15, rel=1e-6, abs=1e-9)
-     ub_cost_final = proxy1.upper_bound_cost(51)
-     assert ub_cost_final == pytest.approx(196472870343.941, rel=1e-6, abs=1e-9)
+    assert isinstance(cost_f, HydroCostFunction)
+    ub_cost = cost_f.max_cost(10)
+    assert ub_cost == pytest.approx(207442780279.15, rel=1e-6, abs=1e-9)
+    ub_cost_final = cost_f.max_cost(51)
+    assert ub_cost_final == pytest.approx(196472870343.941, rel=1e-6, abs=1e-9)

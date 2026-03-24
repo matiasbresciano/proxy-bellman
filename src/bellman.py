@@ -3,7 +3,7 @@ import numpy as np
 import typing
 import math
 
-from gain_function import GainFunction
+from cost_function import CostFunction
 from reservoir import Reservoir
 import constants
 
@@ -16,53 +16,53 @@ class Bellman(ABC):
     """This abstract class is a model for Bellman values computation classes
 
     Attributes:
+        _nb_sce (int): number of scenarii
         _reservoir (Reservoir): Reservoir describing the stock
-        _gain_function (GainFunction): gain function to use for computing bellman values
+        _cost_function (CostFunction): gain function to use for computing bellman values
         _bellman_values (np.ndarray): the value associated to each possible stock level for each week
         _penalty (np.ndarray): for each week, the interp1d function to compute the penalty associated to a stock level
         _usage_value (np.ndarray): the usage value associated to each week and each possible stock level
     """
-    _gain_function: GainFunction
+    _nb_sce: int
+    _cost_function: CostFunction
     _reservoir: Reservoir
-    _bellman_values: np.ndarray[tuple[int, int], np.dtype[np.float64]]
-    _penalty: np.ndarray[tuple[int], np.dtype[typing.Any]]
-    _usage_value: np.ndarray[tuple[int, int], np.dtype[np.float64]]
+    _bellman_values: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None
+    _penalty: np.ndarray[tuple[int], np.dtype[typing.Any]] | None
+    _usage_value: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None
 
-    def __init__(self, gain_function: GainFunction, reservoir: Reservoir) -> None:
-        self._gain_function = gain_function
+    def __init__(self, nb_sce: int, cost_function: CostFunction, reservoir: Reservoir) -> None:
+        self._nb_sce = nb_sce
+        self._cost_function = cost_function
         self._reservoir = reservoir
-        self._penalty = np.array([None])
-        self._bellman_values = np.zeros(shape=(1, 1), dtype=np.float64)
-        self._usage_value = np.zeros(shape=(1, 1), dtype=np.float64)
+        self._bellman_values = None
+        self._usage_value = None
 
     @abstractmethod
     def _compute_bellman_values(self) -> None:
-        pass
-
-    @abstractmethod
-    def _compute_penalty(self) -> None:
         pass
 
     def _compute_usage_values(self) -> None:
         self._usage_value = np.zeros(
             shape=(constants.RESULTS_SIZE, math.floor(self._reservoir.capacity/self._reservoir.step)),
             dtype=np.float64)
+        assert isinstance(self._bellman_values, np.ndarray)  # to avoid typing errors
         for w in range(constants.RESULTS_SIZE):
             for c in range(math.ceil(self._reservoir.capacity)):
                 self._usage_value[w, c - 1] = self._bellman_values[w, c] - self._bellman_values[w, c - 1]
 
     def get_bellman_values(self) -> np.ndarray[tuple[int, int], np.dtype[np.float64]]:
-        if self._bellman_values.shape[0] != constants.RESULTS_SIZE:
+        if self._bellman_values is None:
             self._compute_bellman_values()
+        assert isinstance(self._bellman_values, np.ndarray)
         return self._bellman_values
 
-    def get_penalties(self) -> np.ndarray[tuple[int], np.dtype[typing.Any]]:
-        """Returns the array containing all penalty functions np.array(interp1D)"""
-        if self._penalty.shape[0] != constants.RESULTS_SIZE:
-            self._compute_penalty()
-        return self._penalty
+    @abstractmethod
+    def get_penalty(self, week: int, stock: float) -> float:
+        """Returns the computed penalty for given week and stock"""
+        pass
 
     def get_usage_values(self) -> np.ndarray[tuple[int, int], np.dtype[np.float64]]:
-        if self._usage_value.shape[0] != constants.RESULTS_SIZE:
+        if self._usage_value is None:
             self._compute_usage_values()
+        assert isinstance(self._usage_value, np.ndarray)
         return self._usage_value

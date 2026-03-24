@@ -1,191 +1,198 @@
-from hydro.stage_cost_function import ProxyStageCostFunction
 import numpy as np
-from typing import Callable
 from scipy.interpolate import interp1d
-from tqdm import tqdm
 
-STOCK_DISCR = 2
+from hydro.cost_function import HydroCostFunction
+from hydro.reservoir import HydroReservoir
+from bellman import Bellman
+import constants
 
 
-class BellmanValuesProxy:
-    def __init__(self, proxy: ProxyStageCostFunction, pbar: tqdm, TS_selection:list[int]|None=None) -> None:
-        """
-        Initialize BellmanValuesProxy with given Proxy.
-        Sets up cost functions, storage arrays, then computes Bellman and usage values.
-        """
-        self.proxy = proxy
-        self.nb_weeks = proxy.nb_weeks
-        self.scenarios = proxy.scenarios
-        self.TS_selection = TS_selection if TS_selection is not None else self.scenarios
-        self.pbar = pbar
+class HydroBellman(Bellman):
+    """Bellman class for hydro. Inherits from Bellman
 
-        self.stage_cost_functions = self.proxy.stage_cost_functions
+    Computes and provides bellman values and penalties for each week
 
-        self.mean_bv = np.zeros((self.nb_weeks, 100//STOCK_DISCR+1))
+    Attributes:
+        penalty_factor (float): factor to modulate how important it is to respect guidelines
+    """
+    penalty_factor: float
 
-        self.compute_bellman_values()
-    
-    def penalty_final_stock(self) -> Callable:
-        """
-        Returns a penalty function based on deviation from initial reservoir level at final week.
-        The penalty scales with the upper bound cost and relative negative deviation percentage (10%).
-        """
-        penalty = lambda x:abs(x-self.proxy.reservoir.initial_level)/(10*self.proxy.reservoir.initial_level) * 100 * self.proxy.upper_bound_cost(self.nb_weeks-1)
+    def __init__(self, nb_sce: int, penalty_factor: float, cost_function: HydroCostFunction, reservoir: HydroReservoir):
+        super().__init__(nb_sce, cost_function, reservoir)
+        self.penalty_factor = penalty_factor
 
-        return penalty
-
-    def penalty_rule_curves(self, week_idx: int) -> Callable:
+    def get_penalty(self, week_idx: int, stock: float) -> float:
         """
         Returns a piecewise penalty function penalizing deviations outside the weekly lower and upper rule curves.
         Penalties grow linearly beyond ±1% of reservoir capacity from the rule curves.
         """
-        if week_idx == self.nb_weeks - 1:
-            return lambda x: 0
-        
-        ub_cost = self.proxy.upper_bound_cost(week_idx)
-        penalty = interp1d(
-            [
-                self.proxy.reservoir.weekly_lower_rule_curve[week_idx] - 0.01 * self.proxy.reservoir.capacity,
-                self.proxy.reservoir.weekly_lower_rule_curve[week_idx],
-                self.proxy.reservoir.weekly_upper_rule_curve[week_idx],
-                self.proxy.reservoir.weekly_upper_rule_curve[week_idx] + 0.01 * self.proxy.reservoir.capacity,
-            ],
-            [
-                ub_cost,
-                0,
-                0,
-                ub_cost,
-            ],
-            fill_value='extrapolate',
-        )
-        return penalty
+
+        assert isinstance(self._cost_function, HydroCostFunction)
+        assert isinstance(self._reservoir.upper_guide, np.ndarray)
+
+        max_cost = self._cost_function.max_cost(week_idx)
+        lower = self._reservoir.lower_guide[week_idx]
+        upper = self._reservoir.upper_guide[week_idx]
+        cap = self._reservoir.capacity
+        mid = 0.5 * (lower + upper)
+        alpha = self._cost_function.alpha
+        if week_idx == constants.RESULTS_SIZE - 1:
+            res = 10 * max_cost * abs(stock - self._reservoir.final_level) / self._reservoir.capacity
+        else:
+            res = self.penalty_factor * self._cost_function.max_cost(week_idx) * ((stock - mid) / cap) ** alpha
+        return res
 
     def bellman_function(self, week: int) -> interp1d:
         """
         Returns an interpolated Bellman value function for given week over reservoir stock levels.
         """
+        if self._bellman_values is None:
+            self._compute_bellman_values()
+        assert isinstance(self._bellman_values, np.ndarray)
+        stocks = np.linspace(0, self._reservoir.capacity, 100 // self._reservoir.step + 1)
         return interp1d(
-            np.linspace(0, self.proxy.reservoir.capacity, 100//STOCK_DISCR+1),
-            self.mean_bv[week],
+            stocks,
+            self._bellman_values[week],
             kind="linear",
-            fill_value="extrapolate",
+            fill_value="extrapolate"
         )
 
-    def iterate_over_controls_vec(self, controls: np.ndarray, current_stock: float, weekly_inflow: float,
-                                  stage_cost_function: interp1d, future_bellman_function: interp1d,
-                                  penalty_function: interp1d) -> tuple:
-        next_stock = current_stock - controls + weekly_inflow
-        total_value = (stage_cost_function(controls)
-                       + future_bellman_function(next_stock)
-                       + penalty_function(next_stock))
+    def get_bellman_value(self, week: int, stock: float) -> float:
+        if self._bellman_values is None:
+            self._compute_bellman_values()
+        assert isinstance(self._bellman_values, np.ndarray)
+        stock_ratio = np.linspace(0, self._reservoir.capacity, 100 // self._reservoir.step + 1)
+        res = float(np.interp(stock, stock_ratio, self._bellman_values[week]))
+        return res
+
+    def iterate_over_controls_vec(self, controls: np.ndarray, next_stock: np.ndarray,
+                                  week_ind: int, sce_ind: int, exact_ctrls: bool = True)\
+            -> tuple[float, float, float]:
+        """
+        Computes the best value over the different provided controls
+
+        Parameters:
+             controls (np.ndarray): different controls to test
+             next_stock (np.ndarray): stock values corresponding to the controls
+             bellman_fn (interp1d): bellman fonction to interpolate bellman value
+             week_ind (int): considered week
+             sce_ind (int): considered scenario
+             exact_ctrls (bool): controls correspond to the exact points in _cost_function, if false,
+                needs interpolation
+
+        Returns:
+            best value, corresponding next stock, corresponding control
+        """
+        assert isinstance(self._cost_function, HydroCostFunction)
+        cost = self._cost_function.get_exact_costs(week_ind, sce_ind)
+        if not exact_ctrls:
+            cost = np.asarray([self._cost_function.get_cost(week_ind, sce_ind, ctrl) for ctrl in controls])
+        penalty = np.asarray([self.get_penalty(week_ind, stock) for stock in next_stock])
+        bellman_value = np.asarray([self.get_bellman_value(week_ind, stock) for stock in next_stock])
+        total_value = cost + penalty + bellman_value
+        if week_ind == 51:
+            total_value = cost + bellman_value
         j = int(np.argmin(total_value))
         return float(total_value[j]), float(next_stock[j]), float(controls[j])
 
     def iterate_over_stock_levels_vec(
-        self,
-        best_value: float,
-        best_stock: float | None,
-        best_control: float | None,
-        current_stock: float,
-        weekly_inflow: float,
-        max_week_pump: float,
-        max_week_turb: float,
-        stage_cost_function:interp1d,
-        future_bellman_function:interp1d,
-        penalty_function:interp1d,
-        max_control: float,
+            self,
+            best_value: tuple[float, float | None, float | None],
+            current_stock_with_inflow: float,
+            week_ind: int,
+            sce_ind: int,
+            max_control: float
     ) -> tuple[float, float | None, float | None]:
         """
         Enumerates next stock levels on the 0..100% grid,
         computes implied control, filters infeasible controls, evaluates total value,
         and keeps the best.
+
+        Parameters:
+             best_value (np.ndarray): previously computed best value (over controls), corresponding next stock,
+                corresponding control
+             current_stock_with_inflow (float): stock values corresponding to the controls
+             week_ind (int): considered week
+             sce_ind (int): considered scenario
+             max_control: max_control possible
+
+        Returns:
+            best value, corresponding next stock, corresponding control
         """
-        capacity = float(self.proxy.reservoir.capacity)
+        capacity = float(self._reservoir.capacity)
 
-        next_stock_grid = (np.arange(0, 101, STOCK_DISCR, dtype=float) / 100.0) * capacity
+        next_stock_grid = (np.arange(0, 101, self._reservoir.step, dtype=float) / 100.0) * capacity
 
-        controls = current_stock - next_stock_grid + weekly_inflow
+        controls = current_stock_with_inflow - next_stock_grid
+        assert isinstance(self._reservoir, HydroReservoir)
+        max_week_pump = self._reservoir.weekly_max_pump[week_ind]
+        max_week_turb = self._reservoir.weekly_max_turb[week_ind]
         feasible = (
-            (controls >= -max_week_pump * self.proxy.reservoir.efficiency) &
-            (controls <= max_week_turb * self.proxy.turb_efficiency) &
-            (controls <= max_control)
+                (controls >= -max_week_pump * self._reservoir.pump_efficiency) &
+                (controls <= max_week_turb * self._reservoir.turb_efficiency) &
+                (controls <= max_control)
         )
 
         if not np.any(feasible):
-            return best_value, best_stock, best_control
+            return best_value
 
         ns = next_stock_grid[feasible]
-        c = controls[feasible]
+        ctrl = controls[feasible]
 
-        total_value = (
-            stage_cost_function(c)
-            + future_bellman_function(ns)
-            + penalty_function(ns)
-        )
+        penalty = [self.get_penalty(week_ind, stock) for stock in ns]
+        cost = [self._cost_function.get_cost(week_ind, sce_ind, c) for c in ctrl]
+
+        bellman_values = np.asarray([self.get_bellman_value(week_ind, stock) for stock in ns])
+        total_value = cost + bellman_values + penalty
 
         j = int(np.argmin(total_value))
         cand_value = float(total_value[j])
 
-        if cand_value < best_value:
-            best_value = cand_value
-            best_stock = float(ns[j])
-            best_control = float(c[j])
+        if cand_value < best_value[0]:
+            best_value = (cand_value, float(ns[j]),  float(ctrl[j]))
 
-        return best_value, best_stock, best_control
+        return best_value
 
-    def compute_bellman_values(self) -> None:
+    def _compute_bellman_values(self) -> None:
         """
         Computes Bellman values at end of each week by backward induction over weeks and scenarios.
         Applies penalties and selects optimal controls to minimize cost-to-go.
         """
+        self._bellman_values = np.zeros(shape=(constants.RESULTS_SIZE, 100//self._reservoir.step + 1), dtype=np.float64)
+        assert isinstance(self._reservoir, HydroReservoir)
 
-        penalty_final_stock = self.penalty_final_stock()
-        self.mean_bv[self.nb_weeks - 1] = np.array([
-            penalty_final_stock((c / 100) * self.proxy.reservoir.capacity) for c in range(0, 101, STOCK_DISCR)
+        self._bellman_values[constants.RESULTS_SIZE - 1] = np.array([
+            self.get_penalty(constants.RESULTS_SIZE - 1, c/100 * self._reservoir.capacity)
+            for c in range(0, 101, self._reservoir.step)
         ])
 
-        self.pbar.set_postfix_str("Bellman values computing") 
-        for w in reversed(range(self.nb_weeks - 1)):
+        for week_ind in reversed(range(constants.RESULTS_SIZE - 1)):
 
-            penalty_function = self.penalty_rule_curves(w + 1)
-            future_bellman_function = self.bellman_function(w + 1)
+            for c in range(0, 101, self._reservoir.step):
+                current_stock = (c / 100) * self._reservoir.capacity
+                bv_sce = np.zeros(self._nb_sce)
+                for i in range(self._nb_sce):
+                    weekly_inflow = self._reservoir.hourly_inflow[
+                        (week_ind + 1) * constants.RESULTS_INTERVAL_HOURS:
+                        (week_ind + 2) * constants.RESULTS_INTERVAL_HOURS, i
+                                    ].sum(axis=0)
+                    controls = self._cost_function.get_controls(week_ind + 1, i)
+                    next_stock = current_stock + weekly_inflow - controls
 
-            max_week_turb = self.proxy.reservoir.max_weekly_turb[w+1]
-            max_week_pump = self.proxy.reservoir.max_weekly_pump[w+1]
-
-            for c in range(0, 101, STOCK_DISCR):
-                current_stock = (c / 100) * self.proxy.reservoir.capacity
-                bv = np.zeros((len(self.TS_selection)))
-                for i, s in enumerate(self.TS_selection):
-
-                    self.pbar.update(1)
-                    weekly_inflow = self.proxy.reservoir.weekly_inflow[w + 1, s]
-                    cost_function = self.stage_cost_functions[w + 1, s]
-                    controls = cost_function.x
-
-                    best_value, best_stock, best_control = self.iterate_over_controls_vec(
+                    best_value = self.iterate_over_controls_vec(
                         controls=controls,
-                        current_stock=current_stock,
-                        weekly_inflow=weekly_inflow,
-                        stage_cost_function=cost_function,
-                        future_bellman_function=future_bellman_function,
-                        penalty_function=penalty_function
+                        next_stock=next_stock,
+                        week_ind=week_ind + 1,
+                        sce_ind=i
                     )
 
                     final_best_value, _, _ = self.iterate_over_stock_levels_vec(
                         best_value=best_value,
-                        best_stock=best_stock,
-                        best_control=best_control,
-                        current_stock=current_stock,
-                        weekly_inflow=weekly_inflow,
-                        max_week_pump=max_week_pump,
-                        max_week_turb=max_week_turb,
-                        stage_cost_function=cost_function,
-                        future_bellman_function=future_bellman_function,
-                        penalty_function=penalty_function,
+                        current_stock_with_inflow=current_stock + weekly_inflow,
+                        week_ind=week_ind + 1,
+                        sce_ind=i,
                         max_control=controls[-1])
 
-                    bv[i] = final_best_value
+                    bv_sce[i] = final_best_value
 
-                self.mean_bv[w, c // STOCK_DISCR] = np.mean(bv)
-
+                self._bellman_values[week_ind, c // self._reservoir.step] = np.mean(bv_sce)

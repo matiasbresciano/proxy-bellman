@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 from reservoir import Reservoir
-from gain_function import GainFunction
+from cost_function import CostFunction
 from bellman import Bellman
 import constants
 
@@ -16,36 +16,40 @@ class Trajectory(ABC):
 
     Attributes:
         _reservoir (Reservoir): Reservoir describing the stock
-        _gain_function (GainFunction): gain function to use for computing bellman values
+        _cost_function (CostFunction): gain function to use for computing bellman values
         _bellman (np.ndarray): bellman values
         _trajectories (np.ndarray): for each scenario, for each week the computed stock level
         _controls (np.ndarray): for each scenario, for each week, the amount used
     """
     _reservoir: Reservoir
-    _gain_function: GainFunction
+    _cost_function: CostFunction
     _bellman: Bellman
-    _trajectories: np.ndarray[tuple[int, int], np.dtype[np.number]]
-    _controls: np.ndarray[tuple[int, int], np.dtype[np.number]]
+    _trajectories: np.ndarray[tuple[int, int], np.dtype[np.number]]|None
+    _controls: np.ndarray[tuple[int, int], np.dtype[np.number]]|None
+    nb_sce: int
 
-    def __init__(self, reservoir: Reservoir, gain_function: GainFunction, bellman: Bellman) -> None:
+    def __init__(self, nb_sce: int,  reservoir: Reservoir, gain_function: CostFunction, bellman: Bellman) -> None:
         self._reservoir = reservoir
-        self._gain_function = gain_function
+        self._cost_function = gain_function
         self._bellman = bellman
-        self._trajectories = np.zeros(shape=(1, 1), dtype=np.float64)
-        self._controls = np.zeros(shape=(1, 1), dtype=np.float64)
+        self._trajectories = None
+        self._controls = None
+        self._nb_sce = nb_sce
 
     @abstractmethod
     def _compute_trajectories(self) -> None:
         pass
 
     def get_trajectories(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
-        if self._trajectories.shape[0] != constants.RESULTS_SIZE:
+        if self._trajectories is None:
             self._compute_trajectories()
+        assert isinstance(self._trajectories, np.ndarray)
         return self._trajectories
 
     def get_controls(self) -> np.ndarray[tuple[int, int], np.dtype[np.number]]:
-        if self._controls.shape[0] != constants.RESULTS_SIZE:
+        if self._controls is None:
             self._compute_trajectories()
+        assert isinstance(self._controls, np.ndarray)
         return self._controls
 
 
