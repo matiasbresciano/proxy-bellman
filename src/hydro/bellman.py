@@ -62,7 +62,7 @@ class HydroBellman(Bellman):
             self._compute_bellman_values()
         assert isinstance(self._bellman_values, np.ndarray)
         stock_ratio = np.linspace(0, self._reservoir.capacity, 100 // self._reservoir.step + 1)
-        res = np.interp(stock, stock_ratio, self._bellman_values[week])
+        res = float(np.interp(stock, stock_ratio, self._bellman_values[week]))
         return res
 
     def iterate_over_controls_vec(self, controls: np.ndarray, next_stock: np.ndarray,
