@@ -83,7 +83,7 @@ class HydroAntaresProxy(AntaresProxy):
 
         # weights
         for alloc in area.hydro.allocation:
-            load = self._area_loads[alloc.area_id] * alloc.coefficient
+            load = self._area_loads[alloc.area_id].astype(dtype=np.float64) * alloc.coefficient
             self._residual_load = self._residual_load + load
 
         self._proxy = HydroProxy(self._residual_load, reservoir, turb_threshold, alpha, penalty_factor)
