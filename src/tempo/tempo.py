@@ -58,7 +58,7 @@ class GainFunctionTempo:
         Gains are sum of the top 'control' daily net loads in the considered week,
         limited by max_control.
         """
-        week_start = week_index * 7 + 2  #If year begins on monday 1st July
+        week_start = week_index * 7 + 2  # If year begins on monday 1st July
         week_end = week_start + 7
 
         daily_load_week = self.daily_net_load[week_start:week_end, scenario]
