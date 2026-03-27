@@ -152,8 +152,8 @@ class BellmanValuesTempo:
             alpha = self.CVar
             cutoff_index = int((1 - alpha) * self.nb_scenarios)
 
-            for c in range(self.capacity + 1):
-                idx = c - controls  # shape (A,)
+            for stock in range(self.capacity + 1):
+                idx = stock - controls  # shape (A,)
                 future_value = self.mean_bv[w + 1, idx]  # shape (A,)
                 penalty_value = penalty(idx)  # shape (A,)
 
@@ -165,7 +165,7 @@ class BellmanValuesTempo:
 
                 # CVaR tail-mean over scenarios
                 sorted_bv = np.sort(best_per_scenario)
-                self.mean_bv[w, c] = float(np.mean(sorted_bv[cutoff_index:]))
+                self.mean_bv[w, stock] = float(np.mean(sorted_bv[cutoff_index:]))
 
     def compute_usage_values(self) -> np.ndarray:
         """

@@ -3,7 +3,7 @@ import numpy as np
 from utils.read_antares_data import Reservoir,NetLoad
 from tempo.tempo import GainFunctionTempo,BellmanValuesTempo,TrajectoriesTempo
 
-dir_study = "test_data/two_nodes"
+dir_study = "../../test_data/two_nodes"
 area = "area1"
 
 net_load = NetLoad(reservoir=Reservoir(dir_study=dir_study,name_area=area), dir_study=dir_study, name_area=area)
