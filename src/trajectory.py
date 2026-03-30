@@ -28,9 +28,9 @@ class Trajectory(ABC):
     _controls: np.ndarray[tuple[int, int], np.dtype[np.number]]|None
     nb_sce: int
 
-    def __init__(self, nb_sce: int,  reservoir: Reservoir, gain_function: CostFunction, bellman: Bellman) -> None:
+    def __init__(self, nb_sce: int, reservoir: Reservoir, cost_function: CostFunction, bellman: Bellman) -> None:
         self._reservoir = reservoir
-        self._cost_function = gain_function
+        self._cost_function = cost_function
         self._bellman = bellman
         self._trajectories = None
         self._controls = None

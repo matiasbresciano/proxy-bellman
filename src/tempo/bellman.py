@@ -11,8 +11,10 @@ class TempoBellman(Bellman):
     """Bellman class for tempo. Inherits from Bellman
 
     Computes and provides bellman values and penalties for each week
-    """
 
+    Attributes:
+        c_var: percentage of scenario to consider at each week. if <1, most favorable scenario are ignored
+    """
     c_var: float
 
     def __init__(self, nb_sce: int, cost_function: TempoCostFunction, reservoir: TempoReservoir, c_var: float = 1.0):
@@ -20,7 +22,7 @@ class TempoBellman(Bellman):
         self.c_var = c_var
 
     def _compute_bellman_values(self) -> None:
-        self._bellman_values = np.zeros(shape=(constants.RESULTS_SIZE+1, self._reservoir.capacity), dtype=np.float64)
+        self._bellman_values = np.zeros(shape=(constants.RESULTS_SIZE+1, self._reservoir.capacity + 1), dtype=np.float64)
         assert isinstance(self._reservoir, TempoReservoir)
         nb_controls = 7 - len(self._reservoir.excluded_week_days)
         controls = np.arange(nb_controls, dtype=int)
