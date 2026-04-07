@@ -4,7 +4,7 @@ import numpy as np
 from tempo.proxy import TempoAntaresProxy
 from tempo.reservoir import TempoReservoir
 
-dir_study = "../../test_data/two_nodes"
+dir_study = "test_data/two_nodes"
 area = "area1"
 
 proxy = TempoAntaresProxy(dir_study, area, 10)
