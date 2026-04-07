@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 import numpy as np
 
-from src.reservoir import Reservoir
+from reservoir import Reservoir
 import constants
 
 
@@ -15,9 +15,9 @@ class TempoReservoir(Reservoir):
         last_day: last day of the year when a tempo day can be used (included) (31st of marsh for red)
     """
     excluded_week_days: np.ndarray = field(default_factory=
-                                           lambda: np.asarray([6], dtype=np.int16))
+                                           lambda: np.asarray([5, 6], dtype=np.int16))
     first_day: int = 61  # november 1st
-    last_day: int = 211  # marsh 31st
+    last_day: int = 211  # march 31st
     week_day_first_september: int = 0  # January 1st is a monday
 
     def day_of_year_from_september(self, day: int, month: int) -> tuple[int, int]:
@@ -30,10 +30,10 @@ class TempoReservoir(Reservoir):
         """
         months = np.roll(constants.MONTHS, 4)
         day_of_year = months[0: (month-8) % 12].sum() + day
-        day_of_week = day_of_year % 7 + self.week_day_first_september
+        day_of_week = (day_of_year + self.week_day_first_september) % 7
         return day_of_year, day_of_week
 
-    def get_previous_monday(self, day_of_year: int):
+    def get_previous_monday(self, day_of_year: int) -> int:
         """Returns the previous monday
 
         If the given day is a monday, returns the same day

@@ -13,10 +13,13 @@ class TempoTrajectory(Trajectory):
     Computes and provides trajectories and control values for each scenario and each week
     """
     daily_trajectory: None | np.ndarray
+    red_trajectory: None | Trajectory
 
-    def __init__(self, nb_sce: int, reservoir: TempoReservoir, cost_function: TempoCostFunction, bellman: TempoBellman):
+    def __init__(self, nb_sce: int, reservoir: TempoReservoir, cost_function: TempoCostFunction, bellman: TempoBellman,
+                 red_trajectory: Trajectory | None = None):
         super().__init__(nb_sce, reservoir, cost_function, bellman)
         self.daily_trajectory = None
+        self.red_trajectory = red_trajectory
 
     def _compute_trajectories(self) -> None:
         """
@@ -31,7 +34,7 @@ class TempoTrajectory(Trajectory):
         self.daily_trajectory = np.zeros((self._nb_sce, constants.NB_DAYS + 1), dtype=int)
         self.daily_trajectory[:, 0] = self._reservoir.capacity
         self._controls = np.zeros_like(self._trajectories)
-        nb_controls = 7 - len(self._reservoir.excluded_week_days)
+        nb_controls = 7 + 1 - len(self._reservoir.excluded_week_days)
         controls = np.arange(nb_controls, dtype=int)
         active = np.ones(self._nb_sce, dtype=bool)
         for week_ind in range(constants.RESULTS_SIZE):
@@ -54,7 +57,7 @@ class TempoTrajectory(Trajectory):
                 active_prev_stock = self._trajectories[:, week_ind]
 
             # Precompute gains for this week for all active scenarios and all controls: (S_act, A)
-            costs = np.asarray([[self._cost_function.get_cost(week_ind, sce, ctrl)
+            costs = np.asarray([[self._cost_function.get_cost(week_ind, sce, int(ctrl))
                                  for ctrl in controls]
                                 for sce in list_sce])
             if not costs.any():
@@ -71,6 +74,19 @@ class TempoTrajectory(Trajectory):
                                   for sce in next_stocks])
             total_values = - costs + future_value + penalty
             best_controls = controls[np.argmax(total_values, axis=1)].astype(float)  # (S_act,)
+
+            if self.red_trajectory is not None:
+                red_now = self.red_trajectory.get_trajectories()[list_sce, week_ind]       # (S_act,)
+                red_prev = self.red_trajectory.get_trajectories()[list_sce, week_ind - 1]  # (S_act,)
+
+                # Do not allow negative stocks below red stocks
+                bc1 = active_prev_stock - red_now
+                mask1 = (active_prev_stock - best_controls) < red_now
+                best_controls = np.where(mask1, bc1, best_controls)
+
+                # Do not allow negative controls below red controls
+                bc2 = red_prev - red_now
+                best_controls = np.where(best_controls < bc2, bc2, best_controls)
 
             self._trajectories[list_sce, week_ind] = active_prev_stock - best_controls
             self._controls[list_sce, week_ind] = best_controls

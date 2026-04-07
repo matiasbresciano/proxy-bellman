@@ -1,39 +1,45 @@
 import pytest
 import numpy as np
-from utils.read_antares_data import Reservoir,NetLoad
-from tempo.tempo import GainFunctionTempo,BellmanValuesTempo,TrajectoriesTempo
+
+from tempo.proxy import TempoAntaresProxy
+from tempo.reservoir import TempoReservoir
 
 dir_study = "../../test_data/two_nodes"
 area = "area1"
 
-net_load = NetLoad(reservoir=Reservoir(dir_study=dir_study,name_area=area), dir_study=dir_study, name_area=area)
-gain_function = GainFunctionTempo(net_load=net_load)
-bellman_values_red = BellmanValuesTempo(gain_function=gain_function,
-                                    capacity=22,
-                                    start_week=18,
-                                    end_week=38,
-                                    max_control=5)
-trajectories_red = TrajectoriesTempo(bv=bellman_values_red)
+proxy = TempoAntaresProxy(dir_study, area, 10)
+bellman_values_red = proxy.get_bellman_values()[0]
+trajectories_red = proxy.get_trajectories()[0]
+controls_red = proxy.get_controls()[0]
 
-bellman_values_white_and_red = BellmanValuesTempo(gain_function=gain_function,
-                                                  capacity=65,
-                                                  start_week=9,
-                                                  end_week=60,
-                                                  max_control=6)
-trajectories_white_and_red = TrajectoriesTempo(bv=bellman_values_white_and_red,
-                                               stock_trajectories_red=trajectories_red.stock_trajectories)
+bellman_values_white_and_red = proxy.get_bellman_values()[1]
+trajectories_white_and_red = proxy.get_trajectories()[1]
+controls_white_and_red = proxy.get_controls()[1]
 
-def test_gain_function_tempo()->None:
-    assert gain_function.gain_for_week_control_and_scenario(week_index=18,control=5,scenario=0,max_control=5)==pytest.approx(4559276.533)
-    assert gain_function.gain_for_week_control_and_scenario(week_index=28,control=3,scenario=5,max_control=5)==pytest.approx(2493107.2824999997)
-    assert gain_function.gain_for_week_control_and_scenario(week_index=30,control=0,scenario=9,max_control=5)==pytest.approx(0)
-    assert gain_function.gain_for_week_control_and_scenario(week_index=10,control=6,scenario=0,max_control=6)==pytest.approx(4480186.672499999)
+gain_function_red = proxy._proxy._cost_function[0]
+gain_function_white_and_red = proxy._proxy._cost_function[1]
 
-def test_bellman_values_tempo()->None:
-    assert bellman_values_red.mean_bv.shape==(61,23) 
-    assert bellman_values_red.mean_bv[25,10]==pytest.approx(14886250.286077848)
-    assert bellman_values_red.mean_bv[38]==pytest.approx(np.zeros(23))
-    assert bellman_values_red.mean_bv[18]==pytest.approx(np.array([
+red_reservoir = proxy._proxy._reservoir[0]
+
+
+def test_gain_function_tempo() -> None:
+    assert isinstance(red_reservoir, TempoReservoir)
+    # assert red_reservoir.day_of_year_from_september(0, 6)[1] == 6
+    cost = gain_function_red.get_cost(10, 0, 5)
+    assert cost == pytest.approx(-4559276.533)
+    cost = gain_function_red.get_cost(20, 5, 3)
+    assert cost == pytest.approx(-2493107.2824999997)
+    cost = gain_function_red.get_cost(22, 9, 0)
+    assert cost == pytest.approx(0)
+    cost = gain_function_white_and_red.get_cost(2, 0, 6)
+    assert cost == pytest.approx(-4480186.672499999)
+
+
+def test_bellman_values_tempo() -> None:
+    assert bellman_values_red.shape == (53, 23)
+    assert bellman_values_red[17, 10] == pytest.approx(14886250.286077848)
+    assert bellman_values_red[30] == pytest.approx(np.zeros(23))
+    assert bellman_values_red[10] == pytest.approx(np.array([
             0,
             1635463.0805157232,
             3228041.4476605295,
@@ -59,10 +65,11 @@ def test_bellman_values_tempo()->None:
             31052861.257673346]
             ))
 
-def test_optimal_trajectories()->None:
-    assert trajectories_red.stock_trajectories.shape==(10,61)
-    assert trajectories_red.control_trajectories.shape==(10,61)
-    assert trajectories_red.stock_trajectories[0,:18]==pytest.approx(np.repeat(22,18))
+
+def test_optimal_trajectories() -> None:
+    assert trajectories_red.shape == (10, 52)
+    assert controls_red.shape == (10, 52)
+    assert not np.any(trajectories_red[0, :10]-22)
     expected_stock_trajectory = np.array([
             22.0,     
             21.0,  
@@ -86,11 +93,11 @@ def test_optimal_trajectories()->None:
             0,
             0
     ])
-    assert trajectories_red.stock_trajectories[0,18:39]==pytest.approx(expected_stock_trajectory)
-    assert trajectories_red.stock_trajectories[0]==pytest.approx(
-        trajectories_red.stock_trajectory_for_scenario(0)
-    )
-    assert trajectories_red.stock_trajectories[0,39:]==pytest.approx(np.repeat(0,22))
+    assert not np.any(trajectories_red[0, 10:31] - expected_stock_trajectory)
+    # assert trajectories_red[0] ==pytest.approx(
+    #     trajectories_red.stock_trajectory_for_scenario(0)
+    # ) bizarre je sais pas ce que c'est censé tester
+    assert not np.any(trajectories_red[0, 31:] - np.repeat(0, 21))
 
     expected_control_trajectory = np.array([
             0.0,
@@ -115,24 +122,16 @@ def test_optimal_trajectories()->None:
             0,
             0
     ])
-    assert trajectories_red.control_trajectories[0,18:39]==pytest.approx(expected_control_trajectory)
-    assert trajectories_red.control_trajectories[0]==pytest.approx(
-        trajectories_red.control_trajectory_for_scenario(0)
-    )
-    assert trajectories_red.control_trajectories[0,:18]==pytest.approx(np.zeros(18))
-    assert trajectories_red.control_trajectories[0,39:]==pytest.approx(np.zeros(22))
+    assert not np.any(controls_red[0, 10:31] - expected_control_trajectory)
+    # assert controls_red[0] == pytest.approx(
+    #     trajectories_red.control_trajectory_for_scenario(0)
+    # )
+    assert not np.any(controls_red[0, :10])
+    assert not np.any(controls_red[0, 31:])
 
 
-def test_white_and_red_trajectories()->None:
+def test_white_and_red_trajectories() -> None:
     expected_white_trajectory = np.array([
-            43.0     	,
-            43.0     	,
-            43.0     	,
-            43.0     	,
-            43.0     	,
-            43.0     	,
-            43.0     	,
-            43.0     	,
             43.0     	,
             43.0     	,
             43.0     	,
@@ -184,11 +183,9 @@ def test_white_and_red_trajectories()->None:
             0.0      	,
             0.0      	,
             0.0      	,
-            0.0      	,
-            0.0      	
-
+            0.0
     ])
-    assert np.all(trajectories_white_and_red.stock_trajectories>=trajectories_red.stock_trajectories)
-    assert trajectories_white_and_red.stock_trajectory_for_scenario_white(0)==pytest.approx(expected_white_trajectory)
-    assert np.all(
-        trajectories_white_and_red.stock_trajectory_for_scenario_white(0)+trajectories_red.stock_trajectory_for_scenario(0)==trajectories_white_and_red.stock_trajectory_for_scenario(0))
+    trajectories_white = trajectories_white_and_red - trajectories_red
+    assert np.all(trajectories_white_and_red >= trajectories_red)
+    diff_traj = trajectories_white[0] - expected_white_trajectory
+    assert not np.any(diff_traj)

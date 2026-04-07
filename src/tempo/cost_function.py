@@ -20,10 +20,11 @@ class TempoCostFunction(CostFunction):
         limited by max_control.
         """
         assert isinstance(self._reservoir, TempoReservoir)
-        nb_controls = 7 - len(self._reservoir.excluded_week_days)
+        nb_controls = 7 - len(self._reservoir.excluded_week_days) + 1
         self._cost_function = np.zeros(
             shape=(constants.RESULTS_SIZE+1, nb_controls, self._residual_load.shape[1])
         )
+        assert isinstance(self._cost_function, np.ndarray)
 
         first_day = self._reservoir.get_previous_monday(self._reservoir.first_day)
         if first_day > constants.NB_DAYS - 7:  # if first day is in last week of the year
@@ -34,11 +35,19 @@ class TempoCostFunction(CostFunction):
             week = np.delete(week, self._reservoir.excluded_week_days, axis=0)
             week = np.sort(week, axis=0)
             for control in range(nb_controls):
-                self._cost_function[0, control] = - week[nb_controls-control:].sum(axis=0)
+                self._cost_function[0, control] = - week[nb_controls-1-control:].sum(axis=0)
             first_day = first_day_second_week
         last_day = self._reservoir.get_previous_monday(self._reservoir.last_day) + 6  # sunday of the week of last day
         if last_day > constants.NB_DAYS:  # if last day is in first week of next year
-            # last week loops over first week and has already been computed
+            first_day_last_week = self._reservoir.get_previous_monday(self._reservoir.last_day)
+            monday_next_week = (first_day_last_week + 7) % (constants.NB_DAYS+1)
+            week = np.concatenate((self._residual_load[first_day_last_week:],
+                                  self._residual_load[:monday_next_week]),
+                                  axis=0)
+            week = np.delete(week, self._reservoir.excluded_week_days, axis=0)
+            week = np.sort(week, axis=0)
+            for control in range(nb_controls):
+                self._cost_function[constants.RESULTS_SIZE, control] = - week[nb_controls-1-control:].sum(axis=0)
             last_day = self._reservoir.get_previous_monday(self._reservoir.last_day) - 1
         for day in range(first_day, last_day, 7):
             week_ind = (day + 6) % (constants.NB_DAYS+1) // 7
@@ -47,11 +56,11 @@ class TempoCostFunction(CostFunction):
             week = np.sort(week, axis=0)
             for control in range(nb_controls):
                 # negative cost : gain
-                self._cost_function[week_ind, control] = - week[nb_controls-control:].sum(axis=0)
+                self._cost_function[week_ind, control] = - week[nb_controls-1-control:].sum(axis=0)
 
-    def get_cost(self, week_ind: int, sce_ind: int, control: int) -> float:
+    def get_cost(self, week_ind: int, sce_ind: int, control: int | float) -> float:
         if self._cost_function is None:
             self._compute_cost_function()
         assert isinstance(self._cost_function, np.ndarray)
-        return float(self._cost_function[week_ind, control, sce_ind])
+        return float(self._cost_function[week_ind, int(control), sce_ind])
 

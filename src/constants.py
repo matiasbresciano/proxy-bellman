@@ -11,7 +11,7 @@ RESULTS_INTERVAL_DAYS: int = 7  # one week
 RESULTS_INTERVAL_HOURS: int = 7*24  # one week in hours
 MONTHS: np.ndarray = np.asarray([31,  # january
                                  28,    # february
-                                 31,    # marsh
+                                 31,    # march
                                  30,    # april
                                  31,    # may
                                  30,    # june
