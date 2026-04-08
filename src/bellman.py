@@ -27,7 +27,6 @@ class Bellman(ABC):
     _cost_function: CostFunction
     _reservoir: Reservoir
     _bellman_values: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None
-    _penalty: np.ndarray[tuple[int], np.dtype[typing.Any]] | None
     _usage_value: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None
 
     def __init__(self, nb_sce: int, cost_function: CostFunction, reservoir: Reservoir) -> None:
@@ -57,7 +56,7 @@ class Bellman(ABC):
         return self._bellman_values
 
     @abstractmethod
-    def get_penalty(self, week: int, stock: float) -> float:
+    def get_penalty(self, week: int, stock: float|int) -> float:
         """Returns the computed penalty for given week and stock"""
         pass
 

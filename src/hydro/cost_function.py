@@ -1,9 +1,9 @@
+import numpy as np
+from scipy.interpolate import interp1d
+
 from cost_function import CostFunction
 from hydro.reservoir import HydroReservoir
 import constants
-
-import numpy as np
-from scipy.interpolate import interp1d
 
 
 class HydroCostFunction(CostFunction):

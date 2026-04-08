@@ -17,13 +17,13 @@ class HydroTrajectory(Trajectory):
     """
     inflow_adjust_overflow: None | np.ndarray
 
-    def __init__(self, nb_sce: int, reservoir: HydroReservoir, gain_function: HydroCostFunction,
+    def __init__(self, nb_sce: int, reservoir: HydroReservoir, cost_function: HydroCostFunction,
                  bellman: HydroBellman):
         """
         Initialize OptimalTrajectories with a BellmanValuesProxy instance.
         Prepares data and computes optimal trajectories.
         """
-        super().__init__(nb_sce, reservoir, gain_function, bellman)
+        super().__init__(nb_sce, reservoir, cost_function, bellman)
         self.inflow_adjust_overflow = None
 
     def _compute_trajectories(self) -> None:

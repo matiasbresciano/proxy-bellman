@@ -1,4 +1,5 @@
 import numpy as np
+import typing
 
 from proxy import Proxy, AntaresProxy
 from hydro.trajectory import HydroTrajectory
@@ -15,7 +16,7 @@ class HydroProxy(Proxy):
     """
     def __init__(self,
                  residual_load: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-                 reservoir: HydroReservoir,
+                 reservoir: typing.List[HydroReservoir],
                  turb_threshold: int = 25,
                  alpha: int = 2,
                  penalty_factor: float = 1) -> None:
@@ -28,13 +29,13 @@ class HydroProxy(Proxy):
             alpha (int): parameter for the computation of the costs value and the turbine vs pumping ratio
             penalty_factor (float): factor to modulate how important it is to respect guidelines
         """
-        super().__init__(residual_load, reservoir)
+        super().__init__(residual_load, list(reservoir))
         nb_sce = residual_load.shape[1]
-        cost_function = HydroCostFunction(self._residual_load, reservoir, turb_threshold, alpha)
+        cost_function = HydroCostFunction(self._residual_load, reservoir[0], turb_threshold, alpha)
         self._cost_function.append(cost_function)
-        bellman = HydroBellman(nb_sce, penalty_factor, cost_function, reservoir)
+        bellman = HydroBellman(nb_sce, penalty_factor, cost_function, reservoir[0])
         self._bellman.append(bellman)
-        trajectories = HydroTrajectory(nb_sce, reservoir, cost_function, bellman)
+        trajectories = HydroTrajectory(nb_sce, reservoir[0], cost_function, bellman)
         self._trajectory.append(trajectories)
 
 
@@ -86,4 +87,4 @@ class HydroAntaresProxy(AntaresProxy):
             load = self._area_loads[alloc.area_id].astype(dtype=np.float64) * alloc.coefficient
             self._residual_load = self._residual_load + load
 
-        self._proxy = HydroProxy(self._residual_load, reservoir, turb_threshold, alpha, penalty_factor)
+        self._proxy = HydroProxy(self._residual_load, [reservoir], turb_threshold, alpha, penalty_factor)

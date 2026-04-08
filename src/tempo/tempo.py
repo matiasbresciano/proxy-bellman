@@ -58,7 +58,7 @@ class GainFunctionTempo:
         Gains are sum of the top 'control' daily net loads in the considered week,
         limited by max_control.
         """
-        week_start = week_index * 7 + 2  #If year begins on monday 1st July
+        week_start = week_index * 7 + 2  # If year begins on monday 1st July
         week_end = week_start + 7
 
         daily_load_week = self.daily_net_load[week_start:week_end, scenario]
@@ -152,8 +152,8 @@ class BellmanValuesTempo:
             alpha = self.CVar
             cutoff_index = int((1 - alpha) * self.nb_scenarios)
 
-            for c in range(self.capacity + 1):
-                idx = c - controls  # shape (A,)
+            for stock in range(self.capacity + 1):
+                idx = stock - controls  # shape (A,)
                 future_value = self.mean_bv[w + 1, idx]  # shape (A,)
                 penalty_value = penalty(idx)  # shape (A,)
 
@@ -165,7 +165,7 @@ class BellmanValuesTempo:
 
                 # CVaR tail-mean over scenarios
                 sorted_bv = np.sort(best_per_scenario)
-                self.mean_bv[w, c] = float(np.mean(sorted_bv[cutoff_index:]))
+                self.mean_bv[w, stock] = float(np.mean(sorted_bv[cutoff_index:]))
 
     def compute_usage_values(self) -> np.ndarray:
         """

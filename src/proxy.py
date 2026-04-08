@@ -35,7 +35,7 @@ class Proxy(ABC):
 
     def __init__(self,
                  residual_load: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-                 reservoir: Reservoir,
+                 reservoir: typing.List[Reservoir],
                  day_of_first_data: int = 0,
                  week_day_of_first_data: int = 0) -> None:
         """Initialises the proxy
@@ -49,7 +49,7 @@ class Proxy(ABC):
         self._residual_load = residual_load
         self._day_of_first_data = day_of_first_data
         self._week_day_of_first_data = week_day_of_first_data
-        self._reservoir = [reservoir]
+        self._reservoir = reservoir
         self._cost_function = []
         self._bellman = []
         self._trajectory = []
@@ -121,3 +121,49 @@ class AntaresProxy(ABC):
 
     def get_bellman_values(self) -> list[np.ndarray]:
         return self._proxy.get_bellman_values()
+
+    @staticmethod
+    def _int_from_antares_weekday(weekday: ac.WeekDay) -> int:
+        res = 0
+        match weekday:
+            case ac.WeekDay.TUESDAY:
+                res = 1
+            case ac.WeekDay.WEDNESDAY:
+                res = 2
+            case ac.WeekDay.THURSDAY:
+                res = 3
+            case ac.WeekDay.FRIDAY:
+                res = 4
+            case ac.WeekDay.SATURDAY:
+                res = 5
+            case ac.WeekDay.SUNDAY:
+                res = 6
+        return res
+
+    @staticmethod
+    def _int_from_antares_month(month: ac.Month) -> int:
+        res = 0
+        match month:
+            case ac.Month.FEBRUARY:
+                res = 1
+            case ac.Month.MARCH:
+                res = 2
+            case ac.Month.APRIL:
+                res = 3
+            case ac.Month.MAY:
+                res = 4
+            case ac.Month.JUNE:
+                res = 5
+            case ac.Month.JULY:
+                res = 6
+            case ac.Month.AUGUST:
+                res = 7
+            case ac.Month.SEPTEMBER:
+                res = 8
+            case ac.Month.OCTOBER:
+                res = 9
+            case ac.Month.NOVEMBER:
+                res = 10
+            case ac.Month.DECEMBER:
+                res = 11
+        return res
