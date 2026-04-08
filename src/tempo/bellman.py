@@ -38,7 +38,7 @@ class TempoBellman(Bellman):
 
             for stock in range(int(self._reservoir.capacity) + 1):
                 next_stock = stock - controls
-                next_stock = np.where(next_stock < 0, 0, next_stock)
+                next_stock = np.asarray([stc for stc in next_stock if stc >= 0])
                 future_value = self._bellman_values[week_ind + 1, next_stock]  # shape (A,)
                 penalty = np.asarray([self.get_penalty(week_ind, int(stc)) for stc in next_stock])
 
