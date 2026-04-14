@@ -20,7 +20,6 @@ class Bellman(ABC):
         _reservoir (Reservoir): Reservoir describing the stock
         _cost_function (CostFunction): gain function to use for computing bellman values
         _bellman_values (np.ndarray): the value associated to each possible stock level for each week
-        _penalty (np.ndarray): for each week, the interp1d function to compute the penalty associated to a stock level
         _usage_value (np.ndarray): the usage value associated to each week and each possible stock level
     """
     _nb_sce: int

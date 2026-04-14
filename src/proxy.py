@@ -4,6 +4,8 @@ import numpy as np
 import typing
 import antares.craft as ac
 from antares.craft.model.study import Study
+import pandas as pd
+import os
 
 from cost_function import CostFunction
 from reservoir import Reservoir
@@ -100,10 +102,10 @@ class AntaresProxy(ABC):
         self.study = ac.read_study_local(Path(study_path))
         # TODO LRI : ajouter gestion de mc_years, sce_selection
         self._area_loads = dict()
-        self.compute_area_residual_loads()
+        self._compute_area_residual_loads()
         self._residual_load = np.zeros(shape=self._area_loads[area].shape, dtype=np.float64)
 
-    def compute_area_residual_loads(self) -> None:
+    def _compute_area_residual_loads(self) -> None:
         for ar_name, ar_value in self.study.get_areas().items():
             load = ar_value.get_load_matrix().values
             renewables = np.zeros(shape=load.shape, dtype=np.float64)
@@ -167,3 +169,45 @@ class AntaresProxy(ABC):
             case ac.Month.DECEMBER:
                 res = 11
         return res
+
+    def export_controls(self, export_dir: str, filename: str = "controls.csv") -> None:
+        """
+        Export optimal control trajectories
+        for all scenarios and weeks to a CSV file.
+        """
+        controls = self._proxy.get_controls()[0]
+        data = []
+        for sce_ind, sce in enumerate(controls):
+            for week_ind, val in enumerate(sce):
+                u = val
+                data.append({
+                    "area": self.area,
+                    "u": u,
+                    "week": week_ind + 1,
+                    "mcYear": sce_ind + 1
+                })
+
+        df = pd.DataFrame(data)
+        output_path = os.path.join(export_dir, filename)
+        df.to_csv(output_path, index=False)
+
+    def export_trajectories(self, export_dir: str, filename: str = "trajectories.csv") -> None:
+        """
+        Export optimal stock trajectories for all scenarios and weeks
+        to a CSV file.
+        """
+        trajectories = self._proxy.get_trajectories()[0]
+        data = []
+
+        for sce_ind, sce in enumerate(trajectories):
+            for week_ind, val in enumerate(sce):
+                hlevel = val
+                data.append({
+                    "area": self.area,
+                    "hlevel": hlevel,
+                    "week": week_ind + 1,
+                    "mcYear": sce_ind + 1,
+                })
+        df = pd.DataFrame(data)
+        output_path = os.path.join(export_dir, filename)
+        df.to_csv(output_path, index=False)

@@ -36,8 +36,3 @@ class Reservoir:
     def __post_init__(self) -> None:
         if self.upper_guide is None:
             self.upper_guide = self.capacity * np.ones(shape=52, dtype=np.float64)
-
-
-if __name__ == '__main__':
-    r = Reservoir()
-    print(r)

@@ -40,6 +40,7 @@ class HydroTrajectory(Trajectory):
 
         assert isinstance(self._reservoir, HydroReservoir)
         assert isinstance(self._bellman, HydroBellman)
+        assert isinstance(self._cost_function, HydroCostFunction)
 
         for s in range(self._nb_sce):
             current_stock = self._reservoir.initial_level

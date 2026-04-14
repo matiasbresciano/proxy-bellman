@@ -160,6 +160,7 @@ class HydroBellman(Bellman):
         """
         self._bellman_values = np.zeros(shape=(constants.RESULTS_SIZE, 100//self._reservoir.step + 1), dtype=np.float64)
         assert isinstance(self._reservoir, HydroReservoir)
+        assert isinstance(self._cost_function, HydroCostFunction)
 
         self._bellman_values[constants.RESULTS_SIZE - 1] = np.array([
             self.get_penalty(constants.RESULTS_SIZE - 1, c/100 * self._reservoir.capacity)

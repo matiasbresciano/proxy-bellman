@@ -1,5 +1,7 @@
+import os
 import numpy as np
 import typing
+import pandas as pd
 
 from proxy import Proxy, AntaresProxy
 from tempo.trajectory import TempoTrajectory
@@ -71,3 +73,48 @@ class TempoAntaresProxy(AntaresProxy):
                                       reservoir_red.day_of_year_from_september(0, first_month)[0] - 365, axis=0)
 
         self._proxy = TempoProxy(self._residual_load, [reservoir_red, reservoir_white], c_var)
+
+    def export_controls(self, export_dir: str, filename: str = "controls.csv") -> None:
+        """
+        Export optimal control trajectories
+        for all scenarios and weeks to a CSV file.
+        """
+        controls = self._proxy.get_controls()
+        controls_red = controls[0]
+        controls_white = controls[1] - controls[0]
+        data = []
+        for sce_ind in range(controls_red.shape[0]):
+            for week_ind in range(controls_red.shape[1]):
+                data.append({
+                    "area": self.area,
+                    "red_days_control": controls_red[sce_ind, week_ind],
+                    "white_days_control": controls_white[sce_ind, week_ind],
+                    "week": week_ind + 1,
+                    "mcYear": sce_ind + 1
+                })
+
+        df = pd.DataFrame(data)
+        output_path = os.path.join(export_dir, filename)
+        df.to_csv(output_path, index=False)
+
+    def export_trajectories(self, export_dir: str, filename: str = "trajectories.csv") -> None:
+        """
+        Export optimal stock trajectories for all scenarios and weeks
+        to a CSV file.
+        """
+        trajectories = self._proxy.get_trajectories()
+        trajectories_red = trajectories[0]
+        trajectories_white = trajectories[1] - trajectories[0]
+        data = []
+        for sce_ind in range(trajectories_red.shape[0]):
+            for week_ind in range(trajectories_red.shape[1]):
+                data.append({
+                    "area": self.area,
+                    "red_days_remaining": trajectories_red[sce_ind, week_ind],
+                    "white_days_remaining": trajectories_white[sce_ind, week_ind],
+                    "week": week_ind + 1,
+                    "mcYear": sce_ind + 1
+                })
+        df = pd.DataFrame(data)
+        output_path = os.path.join(export_dir, filename)
+        df.to_csv(output_path, index=False)
