@@ -18,7 +18,7 @@ class TempoReservoir(Reservoir):
                                            lambda: np.asarray([5, 6], dtype=np.int16))
     first_day: int = 61  # november 1st
     last_day: int = 211  # march 31st
-    week_day_first_september: int = 0  # January 1st is a monday
+    week_day_first_september: int = field(default=0, init=False)  # september 1st is a monday
 
     def day_of_year_from_september(self, day: int, month: int) -> tuple[int, int]:
         """Returns the day of the year and day of the week associated to a day of a month

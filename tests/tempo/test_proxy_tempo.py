@@ -24,7 +24,6 @@ red_reservoir = proxy._proxy._reservoir[0]
 
 def test_gain_function_tempo() -> None:
     assert isinstance(red_reservoir, TempoReservoir)
-    # assert red_reservoir.day_of_year_from_september(0, 6)[1] == 6
     cost = gain_function_red.get_cost(10, 0, 5)
     assert cost == pytest.approx(-4559276.533)
     cost = gain_function_red.get_cost(20, 5, 3)

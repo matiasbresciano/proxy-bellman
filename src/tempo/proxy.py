@@ -16,9 +16,11 @@ class TempoProxy(Proxy):
 
     Manages computation for tempo trajectories and controls upon a given set of scenario
     """
+    data_first_month = 0
 
     def __init__(self, residual_load: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-                 reservoirs: typing.List[TempoReservoir], c_var: float = 1.) -> None:
+                 reservoirs: typing.List[TempoReservoir], data_first_month, day_first_january, c_var: float = 1.)\
+            -> None:
         """Initialises the proxy
 
         Parameters:
@@ -27,10 +29,43 @@ class TempoProxy(Proxy):
                 tightest restrictions (red)
             c_var (float): keep only the percentage worst case scenarii to calculate bellman values
         """
-        super().__init__(residual_load, list(reservoirs))
-        nb_sce = residual_load.shape[1]
+
+        # computing first marsh day of the week
+        if data_first_month == 1 or data_first_month == 2:
+            day_first_marsh = (day_first_january + 2) % 7
+        else:
+            day_first_marsh = (day_first_january + 3) % 7
+
+        # and then first september of previous year
+        day_first_september = (day_first_marsh + 1) % 7
+
         for res in reservoirs:
-            cost_function = TempoCostFunction(residual_load, res)
+            res.week_day_first_september = day_first_september
+
+        # changing months order so that we start on september while keeping marsh days untouched
+        self.data_first_month = data_first_month
+        months = np.roll(constants.MONTHS, 4)
+        first_sept = months[4 + self.data_first_month:].sum()
+        first_sept = int(first_sept)
+        # we remove last day so week_days are kept upon translation
+        residual_load_364 = residual_load[:364, :]
+        tempo_residual_load = residual_load_364
+        if self.data_first_month <= 2 or self.data_first_month > 8:  # beginning is between september and marsh
+            tempo_residual_load = np.concatenate((residual_load_364[first_sept-1:, :],
+                                                 residual_load_364[:first_sept-1, :]))
+        elif self.data_first_month == 3:
+            residual_load_364 = residual_load[1:, :]
+            tempo_residual_load = np.concatenate((residual_load_364[first_sept-1:, :],
+                                                  residual_load_364[:first_sept-1, :]))
+        elif self.data_first_month != 8:
+            # on met le début à la fin
+            tempo_residual_load = np.concatenate((residual_load_364[first_sept:, :],
+                                                  residual_load_364[:first_sept, :]))
+
+        super().__init__(tempo_residual_load, list(reservoirs))
+        nb_sce = self._residual_load.shape[1]
+        for res in reservoirs:
+            cost_function = TempoCostFunction(self._residual_load, res)
             self._cost_function.append(cost_function)
             bellman = TempoBellman(nb_sce, cost_function, res, c_var)
             self._bellman.append(bellman)
@@ -50,29 +85,25 @@ class TempoAntaresProxy(AntaresProxy):
         first_month = AntaresProxy._int_from_antares_month(
             self.study.get_settings().general_parameters.first_month_in_year
         )
-        weekday_1_sep = (weekday_1_jan + 4) % 7
         reservoir_red = TempoReservoir(capacity=22,
                                        initial_level=22,
                                        excluded_week_days=np.asarray([5, 6]),
                                        first_day=61,
-                                       last_day=211,
-                                       week_day_first_september=weekday_1_sep
+                                       last_day=211
                                        )
         reservoir_white = TempoReservoir(capacity=65,
                                          initial_level=65,
                                          excluded_week_days=np.asarray([6]),
                                          first_day=0,
-                                         last_day=constants.NB_DAYS-1,
-                                         week_day_first_september=weekday_1_sep
+                                         last_day=constants.NB_DAYS-1
                                          )
         self._residual_load = self._area_loads[area_name]
         self._residual_load = self._residual_load.reshape(
             (constants.NB_DAYS + 1, 24, self._residual_load.shape[1])
         ).sum(axis=1)
-        self._residual_load = np.roll(self._residual_load,
-                                      reservoir_red.day_of_year_from_september(0, first_month)[0] - 365, axis=0)
 
-        self._proxy = TempoProxy(self._residual_load, [reservoir_red, reservoir_white], c_var)
+        self._proxy = TempoProxy(self._residual_load, [reservoir_red, reservoir_white],
+                                 first_month, weekday_1_jan, c_var)
 
     def export_controls(self, export_dir: str, filename: str = "controls.csv") -> None:
         """

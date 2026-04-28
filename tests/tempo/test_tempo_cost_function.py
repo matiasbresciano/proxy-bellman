@@ -22,10 +22,18 @@ def test_rand_net_load():
         return gain
 
     residual_load = np.random.rand(constants.NB_DAYS + 1, nb_sce)*1000
-    res = TempoReservoir(week_day_first_september=0)
+    res = TempoReservoir()
     cost = TempoCostFunction(residual_load, res)
     for i in range(constants.RESULTS_SIZE):
-        if res.get_previous_monday(7*i) + 6 < res.first_day or res.get_previous_monday(7*i) > res.last_day:
+        if res.get_previous_monday(7*i) < res.last_day < res.get_previous_monday(7*i) + 7:
+            c = cost.get_cost(i, 0, 3)
+            expected = -gain_for_week_control_and_scenario(residual_load, i, 3, 0, 6)
+            assert c >= expected, "week: " + str(i) + " cost : " + str(c)
+
+            c = cost.get_cost(i, 1, 1)
+            expected = -gain_for_week_control_and_scenario(residual_load, i, 1, 1, 6)
+            assert c >= expected, "week: " + str(i) + " cost : " + str(c)
+        elif res.get_previous_monday(7*i) < res.first_day or res.get_previous_monday(7*i) > res.last_day:
             c = cost.get_cost(i, 0, 1)
             assert c == 0, "week: " + str(i) + " cost : " + str(c)
             c = cost.get_cost(i, 1, 1)
@@ -46,11 +54,12 @@ def test_different_week_day():
     for d in range(7):
         nb_sce = 1
         residual_load = np.random.rand(constants.NB_DAYS + 1, nb_sce)*1000
-        res = TempoReservoir(week_day_first_september=d)
+        res = TempoReservoir()
+        res.week_day_first_september = d
         cost = TempoCostFunction(residual_load, res)
 
         for i in range(constants.RESULTS_SIZE):
-            if res.get_previous_monday(7*i) + 6 < res.first_day or res.get_previous_monday(7*i) > res.last_day:
+            if res.get_previous_monday(7*i+(7-d)%7) < res.first_day or res.get_previous_monday(7*i+(7-d)%7) > res.last_day:
                 c = cost.get_cost(i, 0, 1)
                 assert c == 0, "week: " + str(i) + " cost : " + str(c) + " week_day 1st september : " + str(d)
             else:
@@ -77,7 +86,16 @@ def test_rand_net_load_white():
     res = TempoReservoir(first_day=0, last_day=constants.NB_DAYS, excluded_week_days=np.asarray([6]))
     cost = TempoCostFunction(residual_load, res)
     for i in range(constants.RESULTS_SIZE):
-        if res.get_previous_monday(7*i) + 6 < res.first_day or res.get_previous_monday(7*i) >= res.last_day:
+        if res.get_previous_monday(7*i) < res.last_day < res.get_previous_monday(7*i) + 7:
+            c = cost.get_cost(i, 0, 3)
+            expected = -gain_for_week_control_and_scenario(residual_load, i, 3, 0, 6)
+            assert c <= expected, "week: " + str(i) + " cost : " + str(c)
+
+            c = cost.get_cost(i, 1, 1)
+            expected = -gain_for_week_control_and_scenario(residual_load, i, 1, 1, 6)
+            assert c <= expected, "week: " + str(i) + " cost : " + str(c)
+
+        elif res.get_previous_monday(7*i) + 7 < res.first_day or res.get_previous_monday(7*i) >= res.last_day:
             c = cost.get_cost(i, 0, 1)
             assert c == 0, "week: " + str(i) + " cost : " + str(c)
             c = cost.get_cost(i, 1, 1)
@@ -98,11 +116,12 @@ def test_different_week_day_white():
     for d in range(7):
         nb_sce = 1
         residual_load = np.random.rand(constants.NB_DAYS + 1, nb_sce)*1000
-        res = TempoReservoir(week_day_first_september=d, first_day=0, last_day=constants.NB_DAYS)
+        res = TempoReservoir(first_day=0, last_day=constants.NB_DAYS)
+        res.week_day_first_september = d
         cost = TempoCostFunction(residual_load, res)
 
         for i in range(constants.RESULTS_SIZE):
-            if res.get_previous_monday(7*i) + 6 < res.first_day or res.get_previous_monday(7*i) > res.last_day:
+            if res.get_previous_monday(7*i+(7-d)%7) < res.first_day or res.get_previous_monday(7*i+(7-d)%7) > res.last_day:
                 c = cost.get_cost(i, 0, 1)
                 assert c == 0, "week: " + str(i) + " cost : " + str(c) + " week_day 1st september : " + str(d)
             else:
