@@ -8,7 +8,7 @@ from tempo.reservoir import TempoReservoir
 import constants
 
 
-def test_bellman_values():
+def test_trajectories():
     nb_sce = 2
     np.random.seed(0)
     residual_load = np.random.rand(constants.NB_DAYS + 1, nb_sce)*1000
@@ -18,10 +18,11 @@ def test_bellman_values():
     trajectory = TempoTrajectory(nb_sce, res, cost, bellman)
     traj = trajectory.get_trajectories()
     for i in range(constants.RESULTS_SIZE):
-        if res.get_previous_monday(7*i) + 6 < res.first_day:
+        current_monday_idx = 7 * i + (7 - res.week_day_first_september) % 7
+        if current_monday_idx < res.first_day:
             assert not np.any(traj[:, i] - 22)
-        # elif res.get_previous_monday(7*i) > res.last_day:
-        #     assert not np.any(traj[:, i])
+        elif current_monday_idx > res.last_day:
+            assert not np.any(traj[:, i])
         else:
             assert 0 <= traj[1, i] <= 22
 

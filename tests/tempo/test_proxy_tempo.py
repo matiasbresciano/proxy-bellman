@@ -22,9 +22,14 @@ gain_function_white_and_red = proxy._proxy._cost_function[1]
 red_reservoir = proxy._proxy._reservoir[0]
 
 
+def test_first_september_weekday() -> None:
+    assert isinstance(red_reservoir, TempoReservoir)
+    assert red_reservoir.week_day_first_september == 0
+
+
 def test_gain_function_tempo() -> None:
     assert isinstance(red_reservoir, TempoReservoir)
-    cost = gain_function_red.get_cost(10, 0, 5)
+    cost = gain_function_red.get_cost(9, 0, 5)
     assert cost == pytest.approx(-4559276.533)
     cost = gain_function_red.get_cost(20, 5, 3)
     assert cost == pytest.approx(-2493107.2824999997)

@@ -15,7 +15,10 @@ def test_bellman_values():
     bellman = TempoBellman(nb_sce, cost, res)
     b = bellman.get_bellman_values()
     for i in range(constants.RESULTS_SIZE):
-        if res.get_previous_monday(7*i) + 6 < res.first_day - 7 or res.get_previous_monday(7*i) > res.last_day - 7:
-            assert not np.any(b[i]), "week : " + str(i)
+        current_monday_idx = 7 * i + (7 - res.week_day_first_september) % 7
+        if current_monday_idx < res.first_day or current_monday_idx > res.last_day:
+            # on regarde les données de la semaine précédente à chaque fois parce que les valeurs de bellman
+            # sont basées sur les couts de la semaine suivante
+            assert not np.any(b[i-1]), "week : " + str(i)
         else:
-            assert b[i, 1] > 0, "week : " + str(i)
+            assert b[i-1, 1] > 0, "week : " + str(i)
