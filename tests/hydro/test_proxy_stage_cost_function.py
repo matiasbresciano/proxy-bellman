@@ -2,24 +2,21 @@ import pytest
 
 from hydro.cost_function import HydroCostFunction
 from hydro.proxy import HydroAntaresProxy
-from tqdm import tqdm
 import numpy as np
 
 from hydro.reservoir import HydroReservoir
 
-# TODO LRI : à refaire une fois que j'aurais antares wrapper
 
 dir_study = "test_data/two_nodes"
-area1="area1"
-pbar = tqdm(total=0, disable=True)
+area1 = "area1"
 proxy1 = HydroAntaresProxy(dir_study, area1, 10, turb_threshold=10, alpha=2)
 
-area="area"
-proxy2 = HydroAntaresProxy(dir_study, area, 10, turb_threshold=10, alpha=2)
+area = "area"
+proxy2 = HydroAntaresProxy(dir_study, area, 10, [0, 3, 7], turb_threshold=10, alpha=2)
 
 def test_net_load_shape()->None:
     assert proxy1._residual_load.shape == (8760, 10)
-    assert proxy2._residual_load.shape == (8760, 10)
+    assert proxy2._residual_load.shape == (8760, 3)
 
 def test_net_load_values_1()->None:
     expected1 = np.array([22298.5   ,

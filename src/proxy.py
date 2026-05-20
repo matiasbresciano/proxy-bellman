@@ -87,11 +87,15 @@ class AntaresProxy(ABC):
     Attributes:
         study_path (str): path to the antares study
         area (str): name of the area to consider
+        nb_sce (int): number of MC years
+        sce_selection (list[int] | None): list of MC years to take into account (ignores nb_sce if present)
         _proxy (Proxy): computation unit
     """
     study_path: str
     area: str
     study: Study
+    nb_sce: int
+    sce_selection: list[int] | None
     _proxy: Proxy
     _area_loads: dict[str, np.ndarray]
     _residual_load: np.ndarray[tuple[int, int], np.dtype[np.float64]]
@@ -100,20 +104,41 @@ class AntaresProxy(ABC):
         self.study_path = study_path
         self.area = area
         self.study = ac.read_study_local(Path(study_path))
-        # TODO LRI : ajouter gestion de mc_years, sce_selection
+        self.nb_sce = mc_years
+        self.sce_selection = sce_selection
+        if sce_selection:
+            self.nb_sce = len(sce_selection)
         self._area_loads = dict()
         self._compute_area_residual_loads()
         self._residual_load = np.zeros(shape=self._area_loads[area].shape, dtype=np.float64)
 
     def _compute_area_residual_loads(self) -> None:
         for ar_name, ar_value in self.study.get_areas().items():
-            load = ar_value.get_load_matrix().values
+            load = self._add_mc_years(ar_value.get_load_matrix().values)
             renewables = np.zeros(shape=load.shape, dtype=np.float64)
             for ren in ar_value.get_renewables().values():
-                renewables += ren.get_timeseries().values * ren.properties.nominal_capacity
-            ror = ar_value.hydro.get_ror_series().values[:load.shape[0], :load.shape[1]]
-            misc = ar_value.get_misc_gen_matrix().values.sum(axis=1)
-            self._area_loads[ar_name] = load - ror - misc[:, np.newaxis] - renewables
+                renewables += self._add_mc_years(ren.get_timeseries().values * ren.properties.nominal_capacity)
+            solar = self._add_mc_years(ar_value.get_solar_matrix().values)
+            wind = self._add_mc_years(ar_value.get_wind_matrix().values)
+            ror = self._add_mc_years(ar_value.hydro.get_ror_series().values[:load.shape[0], :])
+            misc = self._add_mc_years(ar_value.get_misc_gen_matrix().values.sum(axis=1)[:, np.newaxis])
+            self._area_loads[ar_name] = load - ror - misc - renewables - solar - wind
+
+    def _add_mc_years(self, array: np.ndarray) -> np.ndarray:
+        """
+        Loop the array if it does not contain enough time series, troncates it if it contains too many
+        Selects the right time series if sce_selection is present
+        """
+        nb_sce = self.nb_sce
+        if self.sce_selection:
+            nb_sce = np.max(self.sce_selection)
+        while array.shape[1] < nb_sce:
+            array = np.concatenate((array, array), axis=1)
+        if array.shape[1] > nb_sce:
+            array = array[:, :10]
+        if self.sce_selection:
+            array = array[:, self.sce_selection]
+        return array
 
     def get_trajectories(self) -> list[np.ndarray]:
         return self._proxy.get_trajectories()
@@ -123,6 +148,11 @@ class AntaresProxy(ABC):
 
     def get_bellman_values(self) -> list[np.ndarray]:
         return self._proxy.get_bellman_values()
+
+    def save_residual_loads(self):
+        sb_dir = os.path.join(self.study_path, "user")
+        os.makedirs(sb_dir, exist_ok=True)
+        np.savetxt(os.path.join(sb_dir, "residual_loads.txt"), self._residual_load)
 
     @staticmethod
     def _int_from_antares_weekday(weekday: ac.WeekDay) -> int:
