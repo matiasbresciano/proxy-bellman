@@ -1,4 +1,5 @@
 import pytest
+import os
 
 from hydro.cost_function import HydroCostFunction
 from hydro.proxy import HydroAntaresProxy
@@ -13,6 +14,9 @@ proxy1 = HydroAntaresProxy(dir_study, area1, 10, turb_threshold=10, alpha=2)
 
 area = "area"
 proxy2 = HydroAntaresProxy(dir_study, area, 10, [0, 3, 7], turb_threshold=10, alpha=2)
+
+
+loads_filepath = os.path.join(dir_study, "user", "residual_loads.txt")
 
 def test_net_load_shape()->None:
     assert proxy1._residual_load.shape == (8760, 10)
@@ -17600,3 +17604,7 @@ def test_upper_bound_cost()->None:
     assert ub_cost == pytest.approx(207442780279.15, rel=1e-6, abs=1e-9)
     ub_cost_final = cost_f.max_cost(51)
     assert ub_cost_final == pytest.approx(196472870343.941, rel=1e-6, abs=1e-9)
+
+
+
+os.remove(loads_filepath)
