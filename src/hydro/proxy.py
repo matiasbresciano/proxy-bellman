@@ -50,6 +50,15 @@ class HydroAntaresProxy(AntaresProxy):
                  turb_threshold: int = 25,
                  alpha: int = 2,
                  penalty_factor: float = 1):
+        """Initialises the proxy using an antares study
+
+        Parameters:
+            residual_load: residual_load of the different scenarios provided (hourly)
+            reservoir: the reservoir used for the simulation
+            turb_threshold (int): number of values on which the cost function is computed (default is 25)
+            alpha (int): parameter for the computation of the costs value and the turbine vs pumping ratio
+            penalty_factor (float): factor to modulate how important it is to respect guidelines
+        """
         super().__init__(study_path, area_name, mc_years, sce_selection)
         area = self.study.get_areas()[self.area]
         capacity = area.hydro.properties.reservoir_capacity
@@ -57,7 +66,7 @@ class HydroAntaresProxy(AntaresProxy):
         upper_guide = area.hydro.get_reservoir()[2][7::7].values * capacity
         initial_level = (area.hydro.get_reservoir()[0][0] + area.hydro.get_reservoir()[2][0]) / 2 * capacity
         final_level = initial_level
-        daily_inflow = area.hydro.get_mod_series()[:constants.NB_DAYS]
+        daily_inflow = self._add_mc_years(area.hydro.get_mod_series()[:constants.NB_DAYS])
         hourly_inflow = np.repeat(daily_inflow/constants.NB_HOURS_IN_DAY, constants.NB_HOURS_IN_DAY, axis=0)
         max_turb = area.hydro.get_maxpower()[0][:constants.NB_DAYS].values
         max_pump = area.hydro.get_maxpower()[2][:constants.NB_DAYS].values

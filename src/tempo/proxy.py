@@ -125,6 +125,8 @@ class TempoAntaresProxy(AntaresProxy):
                 })
 
         df = pd.DataFrame(data)
+        if not os.path.exists(export_dir):
+            os.makedirs(export_dir)
         output_path = os.path.join(export_dir, filename)
         df.to_csv(output_path, index=False)
 
@@ -147,5 +149,7 @@ class TempoAntaresProxy(AntaresProxy):
                     "mcYear": sce_ind + 1
                 })
         df = pd.DataFrame(data)
+        if not os.path.exists(export_dir):
+            os.makedirs(export_dir)
         output_path = os.path.join(export_dir, filename)
         df.to_csv(output_path, index=False)

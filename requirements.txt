@@ -1,6 +1,10 @@
-numpy==1.26.4
+numpy~=2.4.3
 matplotlib
-scipy
+scipy~=1.17.0
 tqdm
-pandas
+pandas~=2.3.3
 antares_craft
+typer~=0.25.1
+typing_extensions~=4.15.0
+pytest~=9.0.2
+setuptools~=68.2.0

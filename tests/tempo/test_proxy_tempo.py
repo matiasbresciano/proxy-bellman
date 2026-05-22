@@ -4,10 +4,12 @@ import numpy as np
 from tempo.proxy import TempoAntaresProxy
 from tempo.reservoir import TempoReservoir
 
-dir_study = "test_data/two_nodes"
+dir_study = "../../test_data/two_nodes"
 area = "area1"
 
-proxy = TempoAntaresProxy(dir_study, area, 10)
+mc_years = 20
+
+proxy = TempoAntaresProxy(dir_study, area, mc_years)
 bellman_values_red = proxy.get_bellman_values()[0]
 trajectories_red = proxy.get_trajectories()[0]
 controls_red = proxy.get_controls()[0]
@@ -24,12 +26,12 @@ red_reservoir = proxy._proxy._reservoir[0]
 
 def test_first_september_weekday() -> None:
     assert isinstance(red_reservoir, TempoReservoir)
-    assert red_reservoir.week_day_first_september == 0
+    assert red_reservoir.week_day_first_september == 4
 
 
 def test_gain_function_tempo() -> None:
     assert isinstance(red_reservoir, TempoReservoir)
-    cost = gain_function_red.get_cost(9, 0, 5)
+    cost = gain_function_red.get_cost(9, 10, 5)
     assert cost == pytest.approx(-4559276.533)
     cost = gain_function_red.get_cost(19, 5, 3)
     assert cost == pytest.approx(-2493107.2824999997)
@@ -72,8 +74,8 @@ def test_bellman_values_tempo() -> None:
 
 
 def test_optimal_trajectories() -> None:
-    assert trajectories_red.shape == (10, 52)
-    assert controls_red.shape == (10, 52)
+    assert trajectories_red.shape == (mc_years, 52)
+    assert controls_red.shape == (mc_years, 52)
     assert not np.any(trajectories_red[0, :10]-22)
     expected_stock_trajectory = np.array([
             21.0,  

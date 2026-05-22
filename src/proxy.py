@@ -135,10 +135,10 @@ class AntaresProxy(ABC):
         while array.shape[1] < nb_sce:
             array = np.concatenate((array, array), axis=1)
         if array.shape[1] > nb_sce:
-            array = array[:, :10]
+            array = array[:, :nb_sce]
         if self.sce_selection:
             array = array[:, self.sce_selection]
-        return array
+        return np.asarray(array, dtype=np.float64)
 
     def get_trajectories(self) -> list[np.ndarray]:
         return self._proxy.get_trajectories()
@@ -218,6 +218,8 @@ class AntaresProxy(ABC):
                 })
 
         df = pd.DataFrame(data)
+        if not os.path.exists(export_dir):
+            os.makedirs(export_dir)
         output_path = os.path.join(export_dir, filename)
         df.to_csv(output_path, index=False)
 
@@ -239,5 +241,7 @@ class AntaresProxy(ABC):
                     "mcYear": sce_ind + 1,
                 })
         df = pd.DataFrame(data)
+        if not os.path.exists(export_dir):
+            os.makedirs(export_dir)
         output_path = os.path.join(export_dir, filename)
         df.to_csv(output_path, index=False)
