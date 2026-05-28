@@ -31,8 +31,6 @@ class TempoTrajectory(Trajectory):
         assert isinstance(self._reservoir, TempoReservoir)
         self._trajectories = np.zeros((self._nb_sce, constants.RESULTS_SIZE), dtype=int)
         self._trajectories[:, 0] = self._reservoir.capacity
-        self.daily_trajectory = np.zeros((self._nb_sce, constants.NB_DAYS + 1), dtype=int)
-        self.daily_trajectory[:, 0] = self._reservoir.capacity
         self._controls = np.zeros_like(self._trajectories)
         nb_controls = 7 + 1 - len(self._reservoir.excluded_week_days)
         controls = np.arange(nb_controls, dtype=int)

@@ -45,22 +45,28 @@ class TempoProxy(Proxy):
         # changing months order so that we start on september while keeping marsh days untouched
         self.data_first_month = data_first_month
         months = np.roll(constants.MONTHS, 4)
-        first_sept = months[4 + self.data_first_month:].sum()
+        self.roll_idx_month = 4 + self.data_first_month
+        first_sept = months[self.roll_idx_month:].sum()
         first_sept = int(first_sept)
         # we remove last day so week_days are kept upon translation
         residual_load_364 = residual_load[:364, :]
         tempo_residual_load = residual_load_364
+
+        self.roll_idx_day = 0
         if self.data_first_month <= 2 or self.data_first_month > 8:  # beginning is between september and marsh
             tempo_residual_load = np.concatenate((residual_load_364[first_sept-1:, :],
                                                  residual_load_364[:first_sept-1, :]))
+            self.roll_idx_day = first_sept-1
         elif self.data_first_month == 3:
             residual_load_364 = residual_load[1:, :]
             tempo_residual_load = np.concatenate((residual_load_364[first_sept-1:, :],
                                                   residual_load_364[:first_sept-1, :]))
+            self.roll_idx_day = first_sept-1
         elif self.data_first_month != 8:
             # on met le début à la fin
             tempo_residual_load = np.concatenate((residual_load_364[first_sept:, :],
                                                   residual_load_364[:first_sept, :]))
+            self.roll_idx_day = first_sept
 
         super().__init__(tempo_residual_load, list(reservoirs))
         nb_sce = self._residual_load.shape[1]
@@ -74,6 +80,102 @@ class TempoProxy(Proxy):
                 prev_traj = self._trajectory[-1]
             trajectories = TempoTrajectory(nb_sce, res, cost_function, bellman, prev_traj)
             self._trajectory.append(trajectories)
+
+    def _roll_back_day(self, array: np.ndarray) -> np.ndarray:
+        return np.concatenate((array[:, -self.roll_idx_day:], array[:, :-self.roll_idx_day]), axis=1)
+
+    def _roll_back_week(self, array: np.ndarray) -> np.ndarray:
+        # idx from 1st january
+        first_monday_september = constants.MONTHS[:8].sum()
+        res = self._reservoir[0]
+        assert isinstance(res, TempoReservoir)
+        if res.week_day_first_september != 0:
+            first_monday_september += 7 - res.week_day_first_september
+        first_day_res = constants.MONTHS[:self.data_first_month].sum()
+        nb_weeks = (first_monday_september - first_day_res) // 7
+        if nb_weeks < 0:
+            nb_weeks += 1
+        return np.concatenate((array[:, -nb_weeks:], array[:, :-nb_weeks]), axis=1)
+
+    def get_trajectories(self) -> typing.List[np.ndarray]:
+        res: list[np.ndarray] = []
+        for t in self._trajectory:
+            res.append(self._roll_back_week(t.get_trajectories()))
+        return res
+
+    def get_daily_controls(self) -> np.ndarray:
+        """
+        return daily control trajectories (red and white) for all scenarios and weeks to CSV.
+        The daily net loads are sorted and matched to the controls.
+        """
+        red_controls = self._trajectory[0].get_controls()
+        white_controls = self._trajectory[1].get_controls() - red_controls
+        nb_scenarios = red_controls.shape[0]
+        daily_trajectory = np.asarray([["bleu "] * (constants.NB_DAYS + 1)] * nb_scenarios)
+        net_load = self._residual_load
+        res = self._reservoir[0]
+        assert isinstance(res, TempoReservoir)
+
+        first_monday_september = 0
+        if res.week_day_first_september != 0:
+            first_monday_september += 7 - res.week_day_first_september
+
+        for s in range(nb_scenarios):
+            control_r = red_controls[s]
+            control_w = white_controls[s]
+
+            for week in range(constants.RESULTS_SIZE):
+                week_start = week * 7 + first_monday_september
+                week_end = week_start + 7
+                week_days = net_load[week_start: week_end, s]
+                week_days_r = week_days[:5]
+                week_days_w = week_days[:6]
+
+                sorted_days_r = np.argsort(week_days_r)[::-1]
+                sorted_days_w = np.argsort(week_days_w)[::-1]
+
+                r = int(control_r[week]) if control_r[week] is not None else None
+                w = int(control_w[week]) if control_w[week] is not None else None
+
+                used_days = set()
+
+                for d in sorted_days_r:
+                    if r is not None and r > 0:
+                        used_days.add(d)
+                        r -= 1
+                        day = week_start + d
+                        if day >= constants.NB_DAYS:
+                            day -= constants.NB_DAYS
+                        daily_trajectory[s][day] = "rouge"
+
+                for d in sorted_days_w:
+                    if w is not None and w > 0 and d not in used_days:
+                        used_days.add(d)
+                        w -= 1
+                        day = week_start + d
+                        if day >= constants.NB_DAYS:
+                            day -= constants.NB_DAYS
+                        daily_trajectory[s][day] = "blanc"
+        daily_trajectory = self._roll_back_day(np.asarray(daily_trajectory))
+        return daily_trajectory
+
+    def get_controls(self) -> typing.List[np.ndarray]:
+        res: list[np.ndarray] = []
+        for t in self._trajectory:
+            res.append(self._roll_back_week(t.get_controls()))
+        return res
+
+    def get_usage_values(self) -> typing.List[np.ndarray]:
+        res: list[np.ndarray] = []
+        for b in self._bellman:
+            res.append(self._roll_back_week(b.get_usage_values()))
+        return res
+
+    def get_bellman_values(self) -> typing.List[np.ndarray]:
+        res: list[np.ndarray] = []
+        for b in self._bellman:
+            res.append(self._roll_back_week(b.get_bellman_values()))
+        return res
 
 
 class TempoAntaresProxy(AntaresProxy):
@@ -151,5 +253,16 @@ class TempoAntaresProxy(AntaresProxy):
         df = pd.DataFrame(data)
         if not os.path.exists(export_dir):
             os.makedirs(export_dir)
+        output_path = os.path.join(export_dir, filename)
+        df.to_csv(output_path, index=False)
+
+    def export_daily_controls(self, sce, export_dir: str, filename: str = ""):
+        assert isinstance(self._proxy, TempoProxy)
+        controls = self._proxy.get_daily_controls()
+        df = pd.DataFrame(controls[sce])
+        if not os.path.exists(export_dir):
+            os.makedirs(export_dir)
+        if filename == "":
+            filename = f"daily_controls_{sce}.csv"
         output_path = os.path.join(export_dir, filename)
         df.to_csv(output_path, index=False)

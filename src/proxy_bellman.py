@@ -31,6 +31,9 @@ def tempo(
         proxy = TempoAntaresProxy(dir_study, area, mc_years, ts_selection, cvar)
         proxy.save_residual_loads()
         dir_output_area = os.path.join(dir_output, area)
+        nb_sce = mc_years
+        if ts_selection:
+            nb_sce = len(ts_selection)
         for action in actions:
             match action:
                 case "export_trajectories":
@@ -38,8 +41,8 @@ def tempo(
                 case "export_daily_controls":
                     proxy.export_controls(dir_output_area)
                 case "export_calendar":
-                    #TODO appeler la fonction quand elle existera
-                    pass
+                    for s in range(nb_sce):
+                        proxy.export_daily_controls(0, dir_output_area)
                 case _:
                     print(f"Unknown action: {action}")
 

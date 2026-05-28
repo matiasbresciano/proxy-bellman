@@ -4,7 +4,7 @@ import numpy as np
 from tempo.proxy import TempoAntaresProxy
 from tempo.reservoir import TempoReservoir
 
-dir_study = "../../test_data/two_nodes"
+dir_study = "test_data/two_nodes"
 area = "area1"
 
 mc_years = 20
@@ -196,3 +196,25 @@ def test_white_and_red_trajectories() -> None:
     assert np.all(trajectories_white_and_red >= trajectories_red)
     diff_traj = trajectories_white[0] - expected_white_trajectory
     assert not np.any(diff_traj)
+
+
+def test_proxy_trajectories():
+    proxy_trajectory_red = proxy.get_trajectories()[0]
+    assert proxy_trajectory_red.shape == (mc_years, 52)
+    assert not np.any(proxy_trajectory_red[0, 9:19]-22)
+    expected_stock_trajectory = np.array([
+            21.0,
+            17.0,
+            14.0,
+            14.0,
+            14.0,
+            11.0,
+            9.0 ,
+            5.0 ,
+            5.0 ,
+            2.0 ,
+            1.0 ,
+            1.0 ,
+            1.0
+    ])
+    assert not np.any(proxy_trajectory_red[0, 19:32] - expected_stock_trajectory)
