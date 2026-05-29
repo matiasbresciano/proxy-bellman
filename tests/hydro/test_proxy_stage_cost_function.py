@@ -17603,8 +17603,5 @@ def test_upper_bound_cost()->None:
     ub_cost = cost_f.max_cost(10)
     assert ub_cost == pytest.approx(207442780279.15, rel=1e-6, abs=1e-9)
     ub_cost_final = cost_f.max_cost(51)
-    assert ub_cost_final == pytest.approx(196472870343.941, rel=1e-6, abs=1e-9)
-
-
-
-os.remove(loads_filepath)
+    assert ub_cost_final == pytest.approx(196472870343.941, rel=1e-6, abs=1e-9
+                                          
