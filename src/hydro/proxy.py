@@ -101,56 +101,17 @@ class HydroAntaresProxy(AntaresProxy):
 
         self._proxy = HydroProxy(self._residual_load, [self._reservoir], turb_threshold, alpha, penalty_factor)
 
-    def apply_to_study(self):
+    def apply_to_study(self) -> None:
         nb_sce = self._residual_load.shape[1]
         traj = self._proxy._trajectory[0]
         assert isinstance(traj, HydroTrajectory)
         study_modifier = StudyModifier(nb_sce, self._reservoir, traj, self.study_path, self.area)
         study_modifier.apply_all()
 
-    def undo_study(self):
+    def undo_study(self) -> None:
         nb_sce = self._residual_load.shape[1]
         traj = self._proxy._trajectory[0]
         assert isinstance(traj, HydroTrajectory)
         study_modifier = StudyModifier(nb_sce, self._reservoir, traj, self.study_path, self.area)
         study_modifier.undo_all()
 
-        def export_controls(self, filename: str = "controls.csv") -> None:
-            """
-            Export optimal control trajectories
-            for all scenarios and weeks to a CSV file.
-            """
-            data = []
-            for s in self.scenarios:
-                for w in range(self.nb_weeks):
-                    u = self.trajectories.optimal_controls[s, w]
-                    data.append({
-                        "area": self.proxy.name_area,
-                        "u": u,
-                        "week": w + 1,
-                        "mcYear": s + 1
-                    })
-
-            df = pd.DataFrame(data)
-            output_path = os.path.join(self.export_dir, filename)
-            df.to_csv(output_path, index=False)
-
-        def export_trajectories(self, filename: str = "trajectories.csv") -> None:
-            """
-            Export optimal stock trajectories for all scenarios and weeks
-            to a CSV file.
-            """
-            data = []
-
-            for s in self.scenarios:
-                for w in range(self.nb_weeks):
-                    hlevel = self.trajectories.trajectories[s, w]
-                    data.append({
-                        "area": self.proxy.name_area,
-                        "hlevel": hlevel,
-                        "week": w + 1,
-                        "mcYear": s + 1,
-                    })
-            df = pd.DataFrame(data)
-            output_path = os.path.join(self.export_dir, filename)
-            df.to_csv(output_path, index=False)

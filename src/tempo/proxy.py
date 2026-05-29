@@ -19,7 +19,8 @@ class TempoProxy(Proxy):
     data_first_month = 0
 
     def __init__(self, residual_load: np.ndarray[tuple[int, int], np.dtype[np.float64]],
-                 reservoirs: typing.List[TempoReservoir], data_first_month, day_first_january, c_var: float = 1.)\
+                 reservoirs: typing.List[TempoReservoir],
+                 data_first_month: int, day_first_january: int, c_var: float = 1.)\
             -> None:
         """Initialises the proxy
 
@@ -256,7 +257,7 @@ class TempoAntaresProxy(AntaresProxy):
         output_path = os.path.join(export_dir, filename)
         df.to_csv(output_path, index=False)
 
-    def export_daily_controls(self, sce, export_dir: str, filename: str = ""):
+    def export_daily_controls(self, sce: int, export_dir: str, filename: str = "") -> None:
         assert isinstance(self._proxy, TempoProxy)
         controls = self._proxy.get_daily_controls()
         df = pd.DataFrame(controls[sce])

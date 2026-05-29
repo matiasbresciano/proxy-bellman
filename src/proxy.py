@@ -149,7 +149,7 @@ class AntaresProxy(ABC):
     def get_bellman_values(self) -> list[np.ndarray]:
         return self._proxy.get_bellman_values()
 
-    def save_residual_loads(self):
+    def save_residual_loads(self) -> None:
         sb_dir = os.path.join(self.study_path, "user")
         os.makedirs(sb_dir, exist_ok=True)
         np.savetxt(os.path.join(sb_dir, "residual_loads.txt"), self._residual_load)

@@ -18,9 +18,9 @@ def tempo(
         areas: Annotated[list[str], typer.Argument(help="List of study areas (space-separated).")],
         mc_years: Annotated[int, typer.Option(help="Number of Monte-Carlo years to simulate.")] = 200,
         ts_selection: Annotated[list[int] | None, typer.Option(help="List of TS to consider when calculating Bellman values. Default is all TS.")] = None,
-        dir_output: Annotated[str | None, typer.Option(help="Directory used for outputs.")] = ".",
+        dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
         cvar: Annotated[float, typer.Option(help="CVaR parameter for trajectory generation.")] = 1.0,
-        actions: Annotated[list[str] | None, typer.Option(help="Actions to perform. Use --actions once for each action")] = ["None"]
+        actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action")] = ["None"]
 ) -> None:
     """
     Launch Tempo trajectories generation.
@@ -53,11 +53,11 @@ def hydro(
         areas: Annotated[list[str], typer.Argument(help="List of study areas (space-separated).")],
         mc_years: Annotated[int, typer.Option(help="Number of Monte-Carlo years to simulate.")] = 200,
         ts_selection: Annotated[list[int] | None, typer.Option(help="List of TS to consider when calculating Bellman values. Default is all TS.")] = None,
-        dir_output: Annotated[str | None, typer.Option(help="Directory used for outputs.")] = ".",
+        dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
         nb_turb: Annotated[int, typer.Option(help="Number of values on which to compute the cost function.")] = 25,
         alpha: Annotated[int, typer.Option(help="parameter for the computation of the costs value and the turbine vs pumping ratio")] = 2,
         penalty_factor: Annotated[float, typer.Option(help="factor to modulate how important it is to respect guidelines")] = 1,
-        actions: Annotated[list[str] | None, typer.Option(help="Actions to perform. Use --actions once for each action")] = ["None"]
+        actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action")] = ["None"]
 ) -> None:
     """
     Launch the generation of storage trajectories for one or multiple areas.

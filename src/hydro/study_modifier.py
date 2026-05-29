@@ -25,7 +25,7 @@ class StudyModifier:
         self.study = ac.read_study_local(Path(study_path))
         self.area_name = name_area
         self.area = self.study.get_areas()[self.area_name]
-        self.storage = None
+        self.storage: STStorage | None = None
 
     def apply_all(self) -> None:
         """
@@ -180,6 +180,7 @@ class StudyModifier:
 
                 # Adjust inflows to respect st storage constraints (overflow and negative
                 # stock leading to unfeasibilites)
+                assert isinstance(self.trajectories.inflow_adjust_overflow, np.ndarray)
                 balance[hour_start:hour_start + 168, s] -= self.trajectories.inflow_adjust_overflow[w, s, :]
 
                 # Adjust inflows to respect pmax constraints (avoid numerical rounding errors
