@@ -66,7 +66,7 @@ class HydroAntaresProxy(AntaresProxy):
         upper_guide = area.hydro.get_reservoir()[2][7::7].values * capacity
         initial_level = (area.hydro.get_reservoir()[0][0] + area.hydro.get_reservoir()[2][0]) / 2 * capacity
         final_level = initial_level
-        daily_inflow = self._add_mc_years(area.hydro.get_mod_series()[:constants.NB_DAYS])
+        daily_inflow = self._add_mc_years(area.hydro.get_mod_series()[:constants.NB_DAYS].values)
         hourly_inflow = np.repeat(daily_inflow/constants.NB_HOURS_IN_DAY, constants.NB_HOURS_IN_DAY, axis=0)
         max_turb = area.hydro.get_maxpower()[0][:constants.NB_DAYS].values
         max_pump = area.hydro.get_maxpower()[2][:constants.NB_DAYS].values

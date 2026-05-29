@@ -76,7 +76,7 @@ def test_bellman_values_tempo() -> None:
 def test_optimal_trajectories() -> None:
     assert trajectories_red.shape == (mc_years, 52)
     assert controls_red.shape == (mc_years, 52)
-    assert not np.any(trajectories_red[0, :10]-22)
+    assert not np.any(trajectories_red[0, 9:19]-22)
     expected_stock_trajectory = np.array([
             21.0,  
             17.0,   
@@ -100,11 +100,11 @@ def test_optimal_trajectories() -> None:
             0,
             0
     ])
-    assert not np.any(trajectories_red[0, 10:31] - expected_stock_trajectory)
+    assert not np.any(trajectories_red[0, 19:40] - expected_stock_trajectory)
     # assert trajectories_red[0] ==pytest.approx(
     #     trajectories_red.stock_trajectory_for_scenario(0)
     # ) bizarre je sais pas ce que c'est censé tester
-    assert not np.any(trajectories_red[0, 31:] - np.repeat(0, 21))
+    assert not np.any(trajectories_red[0, 40:])
 
     expected_control_trajectory = np.array([
             1.0,
@@ -129,16 +129,25 @@ def test_optimal_trajectories() -> None:
             0,
             0
     ])
-    assert not np.any(controls_red[0, 10:31] - expected_control_trajectory)
+    assert not np.any(controls_red[0, 19:40] - expected_control_trajectory)
     # assert controls_red[0] == pytest.approx(
     #     trajectories_red.control_trajectory_for_scenario(0)
     # )
-    assert not np.any(controls_red[0, :10])
-    assert not np.any(controls_red[0, 31:])
+    assert not np.any(controls_red[0, :19])
+    assert not np.any(controls_red[0, 40:])
 
 
 def test_white_and_red_trajectories() -> None:
     expected_white_trajectory = np.array([
+            0.0      	,
+            0.0      	,
+            0.0      	,
+            0.0      	,
+            0.0      	,
+            0.0      	,
+            0.0      	,
+            0.0      	,
+            0.0         ,
             43.0     	,
             43.0     	,
             43.0     	,
@@ -181,15 +190,6 @@ def test_white_and_red_trajectories() -> None:
             0.0      	,
             0.0      	,
             0.0      	,
-            0.0      	,
-            0.0      	,
-            0.0      	,
-            0.0      	,
-            0.0      	,
-            0.0      	,
-            0.0      	,
-            0.0      	,
-            0.0,
             0.
     ])
     trajectories_white = trajectories_white_and_red - trajectories_red

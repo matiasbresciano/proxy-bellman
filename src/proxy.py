@@ -134,10 +134,10 @@ class AntaresProxy(ABC):
             nb_sce = np.max(self.sce_selection)
         while array.shape[1] < nb_sce:
             array = np.concatenate((array, array), axis=1)
-        if array.shape[1] > nb_sce:
-            array = array[:, :nb_sce]
         if self.sce_selection:
             array = array[:, self.sce_selection]
+        if array.shape[1] > nb_sce:
+            array = array[:, :nb_sce]
         return np.asarray(array, dtype=np.float64)
 
     def get_trajectories(self) -> list[np.ndarray]:
