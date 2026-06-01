@@ -17,7 +17,7 @@ def tempo(
         dir_study: Annotated[str, typer.Argument(help="Antares study directory.")],
         areas: Annotated[list[str], typer.Argument(help="List of study areas (space-separated).")],
         mc_years: Annotated[int, typer.Option(help="Number of Monte-Carlo years to simulate.")] = 200,
-        ts_selection: Annotated[list[int] | None, typer.Option(help="List of TS to consider when calculating Bellman values. Default is all TS.")] = None,
+        ts_selection: Annotated[str | None, typer.Option(help="List of TS to consider when calculating Bellman values, separated by coma, no space. Default is all TS.")] = None,
         dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
         cvar: Annotated[float, typer.Option(help="CVaR parameter for trajectory generation.")] = 1.0,
         actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action")] = ["None"]
@@ -26,6 +26,9 @@ def tempo(
     Launch Tempo trajectories generation.
     Possible actions are: export_trajectories, export_daily_controls, export_calendar
     """
+    if ts_selection:
+        ts_selection = [int(a) for a in ts_selection.split(",")]
+
     for area in areas:
         print(f"Computing area {area}")
         proxy = TempoAntaresProxy(dir_study, area, mc_years, ts_selection, cvar)
@@ -52,7 +55,7 @@ def hydro(
         dir_study: Annotated[str, typer.Argument(help="Antares study directory.")],
         areas: Annotated[list[str], typer.Argument(help="List of study areas (space-separated).")],
         mc_years: Annotated[int, typer.Option(help="Number of Monte-Carlo years to simulate.")] = 200,
-        ts_selection: Annotated[list[int] | None, typer.Option(help="List of TS to consider when calculating Bellman values. Default is all TS.")] = None,
+        ts_selection: Annotated[str | None, typer.Option(help="List of TS to consider when calculating Bellman values, separated by coma, no space. Default is all TS.")] = None,
         dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
         nb_turb: Annotated[int, typer.Option(help="Number of values on which to compute the cost function.")] = 25,
         alpha: Annotated[int, typer.Option(help="parameter for the computation of the costs value and the turbine vs pumping ratio")] = 2,
@@ -63,7 +66,8 @@ def hydro(
     Launch the generation of storage trajectories for one or multiple areas.
     Possible actions are: export_trajectories, export_controls, modify_antares_data, undo_modifications
     """
-    t0 = time.time()
+    if ts_selection:
+        ts_selection = [int(a) for a in ts_selection.split(",")]
     for area in areas:
         print(f"Computing area {area}")
         proxy = HydroAntaresProxy(dir_study, area, mc_years, ts_selection, nb_turb, alpha, penalty_factor)
@@ -82,9 +86,6 @@ def hydro(
                 case _:
                     print(f"Unknown action: {action}")
 
-    t1 = time.time()
-
-    # print(f"Done in {t1-t0} seconds.")
 
 
 if __name__ == '__main__':

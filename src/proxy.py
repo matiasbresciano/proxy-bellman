@@ -131,7 +131,7 @@ class AntaresProxy(ABC):
         """
         nb_sce = self.nb_sce
         if self.sce_selection:
-            nb_sce = np.max(self.sce_selection)
+            nb_sce = np.max(self.sce_selection) + 1
         while array.shape[1] < nb_sce:
             array = np.concatenate((array, array), axis=1)
         if self.sce_selection:
