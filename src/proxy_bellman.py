@@ -27,21 +27,23 @@ def tempo(
     Possible actions are: export_trajectories, export_daily_controls, export_calendar
     """
     if ts_selection:
-        ts_selection = [int(a) for a in ts_selection.split(",")]
+        ts_selection_list = [int(a) for a in ts_selection.split(",")]
+    else:
+        ts_selection_list = None
 
     for area in areas:
         print(f"Computing area {area}")
-        proxy = TempoAntaresProxy(dir_study, area, mc_years, ts_selection, cvar)
+        proxy = TempoAntaresProxy(dir_study, area, mc_years, ts_selection_list, cvar)
         proxy.save_residual_loads()
         dir_output_area = os.path.join(dir_output, area)
         nb_sce = mc_years
-        if ts_selection:
-            nb_sce = len(ts_selection)
+        if ts_selection_list:
+            nb_sce = len(ts_selection_list)
         for action in actions:
             match action:
                 case "export_trajectories":
                     proxy.export_trajectories(dir_output_area)
-                case "export_daily_controls":
+                case "export_controls":
                     proxy.export_controls(dir_output_area)
                 case "export_calendar":
                     for s in range(nb_sce):
@@ -67,10 +69,12 @@ def hydro(
     Possible actions are: export_trajectories, export_controls, modify_antares_data, undo_modifications
     """
     if ts_selection:
-        ts_selection = [int(a) for a in ts_selection.split(",")]
+        ts_selection_list = [int(a) for a in ts_selection.split(",")]
+    else:
+        ts_selection_list = None
     for area in areas:
         print(f"Computing area {area}")
-        proxy = HydroAntaresProxy(dir_study, area, mc_years, ts_selection, nb_turb, alpha, penalty_factor)
+        proxy = HydroAntaresProxy(dir_study, area, mc_years, ts_selection_list, nb_turb, alpha, penalty_factor)
         proxy.save_residual_loads()
         dir_output_area = os.path.join(dir_output, "area")
         for action in actions:
