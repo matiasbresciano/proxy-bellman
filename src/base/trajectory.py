@@ -1,14 +1,14 @@
-from abc import ABC, abstractmethod
-import numpy as np
-
-from reservoir import Reservoir
-from cost_function import CostFunction
-from bellman import Bellman
-import constants
-
 """
 Base for the trajectories computation classes
 """
+
+from abc import ABC, abstractmethod
+import numpy as np
+
+from base.reservoir import Reservoir
+from base.cost_function import CostFunction
+from base.bellman import Bellman
+import constants
 
 
 class Trajectory(ABC):
@@ -20,21 +20,15 @@ class Trajectory(ABC):
         _bellman (np.ndarray): bellman values
         _trajectories (np.ndarray): for each scenario, for each week the computed stock level
         _controls (np.ndarray): for each scenario, for each week, the amount used
+        _list_sce (np.ndarray): list of scenarii to consider
     """
-    _reservoir: Reservoir
-    _cost_function: CostFunction
-    _bellman: Bellman
-    _trajectories: np.ndarray[tuple[int, int], np.dtype[np.number]]|None
-    _controls: np.ndarray[tuple[int, int], np.dtype[np.number]]|None
-    nb_sce: int
-
-    def __init__(self, nb_sce: int, reservoir: Reservoir, cost_function: CostFunction, bellman: Bellman) -> None:
-        self._reservoir = reservoir
-        self._cost_function = cost_function
-        self._bellman = bellman
-        self._trajectories = None
-        self._controls = None
-        self._nb_sce = nb_sce
+    def __init__(self, list_sce: np.ndarray, reservoir: Reservoir, cost_function: CostFunction, bellman: Bellman) -> None:
+        self._reservoir: Reservoir = reservoir
+        self._cost_function: CostFunction = cost_function
+        self._bellman: Bellman = bellman
+        self._trajectories: np.ndarray[tuple[int, int], np.dtype[np.number]] | None = None
+        self._controls: np.ndarray[tuple[int, int], np.dtype[np.number]] | None = None
+        self._list_sce: np.ndarray = list_sce
 
     @abstractmethod
     def _compute_trajectories(self) -> None:

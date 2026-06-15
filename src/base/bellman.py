@@ -1,39 +1,34 @@
+"""
+Base for the Bellman values computation classes
+"""
+
 from abc import ABC, abstractmethod
 import numpy as np
 import typing
 import math
 
-from cost_function import CostFunction
-from reservoir import Reservoir
+from base.cost_function import CostFunction
+from base.reservoir import Reservoir
 import constants
-
-"""
-Base for the Bellman values computation classes
-"""
 
 
 class Bellman(ABC):
-    """This abstract class is a model for Bellman values computation classes
+    """This abstract class is a model for Bellman values computation classes.
 
     Attributes:
-        _nb_sce (int): number of scenarii
+        _list_sce (np.ndarray): indexes of the scenarii to consider
         _reservoir (Reservoir): Reservoir describing the stock
         _cost_function (CostFunction): gain function to use for computing bellman values
         _bellman_values (np.ndarray): the value associated to each possible stock level for each week
         _usage_value (np.ndarray): the usage value associated to each week and each possible stock level
     """
-    _nb_sce: int
-    _cost_function: CostFunction
-    _reservoir: Reservoir
-    _bellman_values: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None
-    _usage_value: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None
 
-    def __init__(self, nb_sce: int, cost_function: CostFunction, reservoir: Reservoir) -> None:
-        self._nb_sce = nb_sce
-        self._cost_function = cost_function
-        self._reservoir = reservoir
-        self._bellman_values = None
-        self._usage_value = None
+    def __init__(self, list_sce: np.ndarray, cost_function: CostFunction, reservoir: Reservoir) -> None:
+        self._list_sce: np.ndarray = list_sce
+        self._cost_function: CostFunction = cost_function
+        self._reservoir: Reservoir = reservoir
+        self._bellman_values: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None = None
+        self._usage_value: np.ndarray[tuple[int, int], np.dtype[np.float64]] | None = None
 
     @abstractmethod
     def _compute_bellman_values(self) -> None:
@@ -49,6 +44,7 @@ class Bellman(ABC):
                 self._usage_value[w, c - 1] = self._bellman_values[w, c] - self._bellman_values[w, c - 1]
 
     def get_bellman_values(self) -> np.ndarray[tuple[int, int], np.dtype[np.float64]]:
+        """Returns all bellman values. Array is indexed as [week_index, level]."""
         if self._bellman_values is None:
             self._compute_bellman_values()
         assert isinstance(self._bellman_values, np.ndarray)
@@ -60,6 +56,7 @@ class Bellman(ABC):
         pass
 
     def get_usage_values(self) -> np.ndarray[tuple[int, int], np.dtype[np.float64]]:
+        """Returns all usage values. Array is indexed as [week_index, level_index]."""
         if self._usage_value is None:
             self._compute_usage_values()
         assert isinstance(self._usage_value, np.ndarray)

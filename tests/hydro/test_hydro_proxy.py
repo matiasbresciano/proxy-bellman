@@ -20,6 +20,7 @@ def test_zero_net_load():
                                hourly_inflow=inflow
                                )
     net_load = np.zeros(shape=(constants.NB_HOURS, nb_sce), dtype=np.float64)
-    proxy = HydroProxy(net_load, [reservoir])
+    mc_years = list_sce = np.arange(nb_sce)
+    proxy = HydroProxy(net_load, [reservoir], mc_years)
     ctrls = proxy.get_controls()
     print(ctrls)

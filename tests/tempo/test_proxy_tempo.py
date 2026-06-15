@@ -7,7 +7,7 @@ from tempo.reservoir import TempoReservoir
 dir_study = "test_data/two_nodes"
 area = "area1"
 
-mc_years = 20
+mc_years = np.arange(20)
 
 proxy = TempoAntaresProxy(dir_study, area, mc_years)
 bellman_values_red = proxy.get_bellman_values()[0]
@@ -74,8 +74,8 @@ def test_bellman_values_tempo() -> None:
 
 
 def test_optimal_trajectories() -> None:
-    assert trajectories_red.shape == (mc_years, 52)
-    assert controls_red.shape == (mc_years, 52)
+    assert trajectories_red.shape == (len(mc_years), 52)
+    assert controls_red.shape == (len(mc_years), 52)
     assert not np.any(trajectories_red[0, 9:19]-22)
     expected_stock_trajectory = np.array([
             21.0,  
@@ -200,7 +200,7 @@ def test_white_and_red_trajectories() -> None:
 
 def test_proxy_trajectories():
     proxy_trajectory_red = proxy.get_trajectories()[0]
-    assert proxy_trajectory_red.shape == (mc_years, 52)
+    assert proxy_trajectory_red.shape == (len(mc_years), 52)
     assert not np.any(proxy_trajectory_red[0, 9:19]-22)
     expected_stock_trajectory = np.array([
             21.0,

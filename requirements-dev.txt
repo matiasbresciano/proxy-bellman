@@ -2,3 +2,5 @@ mypy
 pytest
 pytest-cov
 plotly
+sphinx
+sphinx-rtd-theme

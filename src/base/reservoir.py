@@ -1,10 +1,10 @@
-from dataclasses import dataclass, field
-import numpy as np
-import constants
-
 """
 Base modelisation of the stock on witch a trajectory must be computed
 """
+
+from dataclasses import dataclass, field
+import numpy as np
+import constants
 
 
 @dataclass

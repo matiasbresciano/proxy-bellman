@@ -3,23 +3,21 @@ import numpy as np
 from tempo.bellman import TempoBellman
 from tempo.reservoir import TempoReservoir
 from tempo.cost_function import TempoCostFunction
-from trajectory import Trajectory
+from base.trajectory import Trajectory
 import constants
 
 
 class TempoTrajectory(Trajectory):
-    """Trajectory class for hydro. Inherits from Trajectory
+    """Trajectory class for hydro. Inherits from Trajectory.
 
-    Computes and provides trajectories and control values for each scenario and each week
+    Computes and provides trajectories and control values for each scenario and each week.
     """
-    daily_trajectory: None | np.ndarray
-    red_trajectory: None | Trajectory
 
-    def __init__(self, nb_sce: int, reservoir: TempoReservoir, cost_function: TempoCostFunction, bellman: TempoBellman,
+    def __init__(self, list_sce: np.ndarray, reservoir: TempoReservoir, cost_function: TempoCostFunction, bellman: TempoBellman,
                  red_trajectory: Trajectory | None = None):
-        super().__init__(nb_sce, reservoir, cost_function, bellman)
-        self.daily_trajectory = None
-        self.red_trajectory = red_trajectory
+        super().__init__(list_sce, reservoir, cost_function, bellman)
+        self.daily_trajectory: None | np.ndarray = None
+        self.red_trajectory: None | Trajectory = red_trajectory
 
     def _compute_trajectories(self) -> None:
         """
@@ -29,12 +27,13 @@ class TempoTrajectory(Trajectory):
         Vectorized over scenarios and controls (loop only over weeks).
         """
         assert isinstance(self._reservoir, TempoReservoir)
-        self._trajectories = np.zeros((self._nb_sce, constants.RESULTS_SIZE), dtype=int)
+        self._trajectories = np.zeros((len(self._list_sce), constants.RESULTS_SIZE), dtype=int)
         self._trajectories[:, 0] = self._reservoir.capacity
         self._controls = np.zeros_like(self._trajectories)
         nb_controls = 7 + 1 - len(self._reservoir.excluded_week_days)
         controls = np.arange(nb_controls, dtype=int)
-        active = np.ones(self._nb_sce, dtype=bool)
+        active = np.zeros(max(self._list_sce) + 1, dtype=bool)
+        active[self._list_sce] = True
         for week_ind in range(constants.RESULTS_SIZE):
             # If week>0 and previous stock == 0 => set rest to 0 and stop updating this scenario
             if week_ind >= 1:

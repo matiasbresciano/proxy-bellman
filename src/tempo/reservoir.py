@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 import numpy as np
 
-from reservoir import Reservoir
+from base.reservoir import Reservoir
 import constants
 
 
@@ -10,9 +10,10 @@ class TempoReservoir(Reservoir):
     """Reservoir class for tempo. Inherits from Reservoir
 
     Attributes:
-        excluded_week_days: days of the week when a tempo day cannot be used
-        first_day: first day of the year when a tempo day can be used (included) (1st of november for red)
-        last_day: last day of the year when a tempo day can be used (included) (31st of marsh for red)
+        excluded_week_days: Days of the week when a tempo day cannot be used
+        first_day: First day of the year when a tempo day can be used (included) (1st of november for red)
+        last_day: Last day of the year when a tempo day can be used (included) (31st of marsh for red)
+        week_day_first_september: weekday of the first september (0 for monday, 6 for sunday)
     """
     excluded_week_days: np.ndarray = field(default_factory=
                                            lambda: np.asarray([5, 6], dtype=np.int16))

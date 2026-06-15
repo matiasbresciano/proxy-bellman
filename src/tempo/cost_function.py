@@ -1,6 +1,6 @@
 import numpy as np
 
-from cost_function import CostFunction
+from base.cost_function import CostFunction
 from tempo.reservoir import TempoReservoir
 import constants
 
@@ -16,7 +16,7 @@ class TempoCostFunction(CostFunction):
     def _compute_cost_function(self) -> None:
         """
         Compute gain for each week index, control level, and scenario.
-        Gains are sum of the top 'control' daily net loads in the considered week,
+        Gains are the sum of the top 'control' daily net loads in the considered week,
         limited by max_control.
         """
         assert isinstance(self._reservoir, TempoReservoir)
@@ -59,8 +59,9 @@ class TempoCostFunction(CostFunction):
             for control in range(nb_controls):
                 self._cost_function[week_ind, control] = - week[nb_controls - 1 - control:].sum(axis=0)
 
-
     def get_cost(self, week_ind: int, sce_ind: int, control: int | float) -> float:
+        """Returns the cost associated to a given week, scenario and control value.
+        """
         if self._cost_function is None:
             self._compute_cost_function()
         assert isinstance(self._cost_function, np.ndarray)

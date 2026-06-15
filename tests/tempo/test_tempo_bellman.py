@@ -9,10 +9,11 @@ import constants
 
 def test_bellman_values():
     nb_sce = 2
+    scenarii = np.arange(nb_sce)
     residual_load = np.random.rand(constants.NB_DAYS + 1, nb_sce)*1000
     res = TempoReservoir(capacity=22)
     cost = TempoCostFunction(residual_load, res)
-    bellman = TempoBellman(nb_sce, cost, res)
+    bellman = TempoBellman(scenarii, cost, res)
     b = bellman.get_bellman_values()
     for i in range(constants.RESULTS_SIZE):
         current_monday_idx = 7 * i + (7 - res.week_day_first_september) % 7

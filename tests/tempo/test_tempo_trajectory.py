@@ -10,12 +10,14 @@ import constants
 
 def test_trajectories():
     nb_sce = 2
+    scenarii = np.arange(nb_sce)
+    mc_years = scenarii
     np.random.seed(0)
     residual_load = np.random.rand(constants.NB_DAYS + 1, nb_sce)*1000
     res = TempoReservoir(capacity=22)
     cost = TempoCostFunction(residual_load, res)
-    bellman = TempoBellman(nb_sce, cost, res)
-    trajectory = TempoTrajectory(nb_sce, res, cost, bellman)
+    bellman = TempoBellman(scenarii, cost, res)
+    trajectory = TempoTrajectory(mc_years, res, cost, bellman)
     traj = trajectory.get_trajectories()
     for i in range(constants.RESULTS_SIZE):
         current_monday_idx = 7 * i + (7 - res.week_day_first_september) % 7

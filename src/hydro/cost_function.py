@@ -1,32 +1,30 @@
 import numpy as np
 from scipy.interpolate import interp1d
 
-from cost_function import CostFunction
+from base.cost_function import CostFunction
 from hydro.reservoir import HydroReservoir
 import constants
 
 
 class HydroCostFunction(CostFunction):
-    """Cost function class for hydro. Inherits from CostFunction
+    """Cost function class for hydro. Inherits from CostFunction.
 
-    Computes and provides cost values and maximum_cost over a week (for penalty values)
+    Computes and provides cost values and maximum_cost over a week (for penalty values).
 
     Attributes:
-        turb_threshold (int): number of values on which the cost function is computed (default is 25)
-        alpha (int): parameter for the computation of the costs value and the turbine vs pumping ratio
-        __max_costs (np.array): maximum cost for each week to use as penalty
+        turb_threshold (int): number of values on which the cost function is computed (default is 25).
+        alpha (int): parameter for the computation of the costs value and the turbine vs pumping ratio.
+        __max_costs (np.ndarray): maximum cost for each week to use as penalty.
+        __exact_costs (np.ndarray): costs computed for stock values chosen for discretisation. These are the costs
+            used for interpolation.
     """
-    turb_threshold: int
-    alpha: int
-    __max_costs: np.ndarray[tuple[int, int], np.dtype[np.number]] | None
-    __exact_costs: np.ndarray[tuple[int, int, int], np.dtype[np.number]] | None
-
     def __init__(self, residual_load: np.ndarray, reservoir: HydroReservoir, turb_threshold: int = 25,
                  alpha: int = 2):
         super().__init__(residual_load, reservoir)
-        self.turb_threshold = turb_threshold
-        self.alpha = alpha
-        self.__max_costs = None
+        self.turb_threshold: int = turb_threshold
+        self.alpha: int = alpha
+        self.__max_costs: np.ndarray[tuple[int, int], np.dtype[np.number]] | None = None
+        self.__exact_costs: np.ndarray[tuple[int, int, int], np.dtype[np.number]] | None = None
 
     def _compute_cost_function(self) -> None:
         """
@@ -86,7 +84,6 @@ class HydroCostFunction(CostFunction):
             max_hourly_pump=max_hourly_pump,
             null_pump=null_pump
         )
-
 
         idx = np.argsort(weekly_control)
         weekly_control = weekly_control[idx]
@@ -201,12 +198,17 @@ class HydroCostFunction(CostFunction):
         return self.__max_costs[week].max()
 
     def get_exact_costs(self, week: int, sce: int) -> np.ndarray:
+        """Returns the computed cost corresponding to the control values chosen for the
+         discretisation of a given week and scenario.
+
+         These values are the one used for the interpolation."""
         if self.__exact_costs is None:
             self._compute_cost_function()
         assert isinstance(self.__exact_costs, np.ndarray)
         return self.__exact_costs[week, sce]
 
     def get_controls(self, week_ind: int, sce_ind: int) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+        """Returns the controls values chosen for the discretisation of a given week and scenario."""
         if self._controls is None:
             self._compute_cost_function()
         assert isinstance(self._controls, np.ndarray)

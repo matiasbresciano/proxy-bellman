@@ -3,28 +3,27 @@ import numpy as np
 from hydro.bellman import HydroBellman
 from hydro.reservoir import HydroReservoir
 from hydro.cost_function import HydroCostFunction
-from trajectory import Trajectory
+from base.trajectory import Trajectory
 import constants
 
 
 class HydroTrajectory(Trajectory):
-    """Trajectory class for hydro. Inherits from Trajectory
+    """Trajectory class for hydro. Inherits from Trajectory.
 
-    Computes and provides trajectories and control values for each scenario and each week
+    Computes and provides trajectories and control values for each scenario and each week.
 
     Attributes:
-        inflow_adjust_overflow (float): factor to modulate how important it is to respect guidelines
+        inflow_adjust_overflow (float): factor to modulate how important it is to respect guidelines.
     """
-    inflow_adjust_overflow: None | np.ndarray
 
-    def __init__(self, nb_sce: int, reservoir: HydroReservoir, cost_function: HydroCostFunction,
+    def __init__(self, list_sce: np.ndarray, reservoir: HydroReservoir, cost_function: HydroCostFunction,
                  bellman: HydroBellman):
         """
         Initialize OptimalTrajectories with a BellmanValuesProxy instance.
         Prepares data and computes optimal trajectories.
         """
-        super().__init__(nb_sce, reservoir, cost_function, bellman)
-        self.inflow_adjust_overflow = None
+        super().__init__(list_sce, reservoir, cost_function, bellman)
+        self.inflow_adjust_overflow: None | np.ndarray = None
 
     def _compute_trajectories(self) -> None:
         """
@@ -32,17 +31,18 @@ class HydroTrajectory(Trajectory):
         for all scenarios and weeks using Bellman values, penalties and inflows.
         Adjusts hourly inflows to avoid overflow or negative stock with external method.
         """
-        self._trajectories = np.zeros((self._nb_sce, constants.RESULTS_SIZE))
+        self._trajectories = np.zeros((len(self._list_sce), constants.RESULTS_SIZE))
         self._controls = np.zeros_like(self._trajectories)
         self.optimal_turb = np.zeros_like(self._trajectories)
         self.optimal_pump = np.zeros_like(self._trajectories)
-        self.inflow_adjust_overflow = np.zeros((constants.RESULTS_SIZE, self._nb_sce, constants.RESULTS_INTERVAL_HOURS))
+        self.inflow_adjust_overflow = np.zeros((constants.RESULTS_SIZE, len(self._list_sce), constants.RESULTS_INTERVAL_HOURS))
 
         assert isinstance(self._reservoir, HydroReservoir)
         assert isinstance(self._bellman, HydroBellman)
         assert isinstance(self._cost_function, HydroCostFunction)
 
-        for s in range(self._nb_sce):
+        for i, s in enumerate(self._list_sce):
+            s = int(s)
             current_stock = self._reservoir.initial_level
             
             for w in range(constants.RESULTS_SIZE):
@@ -80,8 +80,8 @@ class HydroTrajectory(Trajectory):
                     sce_ind=s,
                     max_control=controls[-1])
 
-                self._trajectories[s, w] = final_best_stock
-                self._controls[s, w] = final_best_control
+                self._trajectories[i, w] = final_best_stock
+                self._controls[i, w] = final_best_control
                 assert isinstance(final_best_stock, float)
                 current_stock = final_best_stock
 

@@ -3,22 +3,21 @@ from scipy.interpolate import interp1d
 
 from tempo.cost_function import TempoCostFunction
 from tempo.reservoir import TempoReservoir
-from bellman import Bellman
+from base.bellman import Bellman
 import constants
 
 
 class TempoBellman(Bellman):
-    """Bellman class for tempo. Inherits from Bellman
+    """Bellman class for tempo. Inherits from Bellman.
 
-    Computes and provides bellman values and penalties for each week
+    Computes and provides bellman values and penalties for each week.
 
     Attributes:
-        c_var: percentage of scenario to consider at each week. if <1, most favorable scenario are ignored
+        c_var: percentage of scenario to consider at each week. if <1, most favorable scenario are ignored.
     """
-    c_var: float
 
-    def __init__(self, nb_sce: int, cost_function: TempoCostFunction, reservoir: TempoReservoir, c_var: float = 1.0):
-        super().__init__(nb_sce, cost_function, reservoir)
+    def __init__(self, list_sce: np.ndarray, cost_function: TempoCostFunction, reservoir: TempoReservoir, c_var: float = 1.0):
+        super().__init__(list_sce, cost_function, reservoir)
         self.c_var = c_var
 
     def _compute_bellman_values(self) -> None:
@@ -30,11 +29,11 @@ class TempoBellman(Bellman):
         for week_ind in reversed(range(constants.RESULTS_SIZE)):
             costs = np.asarray([[self._cost_function.get_cost(week_ind+1, sce, int(ctrl))
                                  for ctrl in controls]
-                                for sce in range(self._nb_sce)])
+                                for sce in self._list_sce])
             if not costs.any():
                 continue
 
-            cutoff_index = int((1 - self.c_var) * self._nb_sce)
+            cutoff_index = int((1 - self.c_var) * len(self._list_sce))
 
             for stock in range(int(self._reservoir.capacity) + 1):
                 next_stock = stock - controls
@@ -54,6 +53,8 @@ class TempoBellman(Bellman):
                 self._bellman_values[week_ind, stock] = float(np.mean(sorted_bv[cutoff_index:]))
 
     def get_penalty(self, week: int, stock: int|float) -> float:
+        """Returns the penalty associated to a certain stock value for a given week.
+        """
         assert isinstance(self._reservoir.upper_guide, np.ndarray)
         penalty = interp1d([
                 self._reservoir.lower_guide[week] - 1,

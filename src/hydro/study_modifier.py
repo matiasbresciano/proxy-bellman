@@ -13,6 +13,18 @@ import constants
 
 
 class StudyModifier:
+    """This class manages the modifications to apply a set of trajectories to a study
+
+    Attributes:
+        reservoir (HydroReservoir): Reservoir describing the stock.
+        trajectories (HydroTrajectory): Object computing the trajectories.
+        nb_scenarios (int): Number of scenarii considered.
+        study_path (str): Path to the considered antares study.
+        study (Study): The study to modify.
+        area_name (str): Name of the considered area.
+        area (Area): Antares object representing the considered area.
+        storage (STStorage): Antares object representing the short term storage we use for applying our modifications.
+    """
     def __init__(self, nb_sce: int, res: HydroReservoir, trajectories: HydroTrajectory,
                  study_path: str, name_area: str):
         """

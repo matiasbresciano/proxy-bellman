@@ -3,22 +3,20 @@ from scipy.interpolate import interp1d
 
 from hydro.cost_function import HydroCostFunction
 from hydro.reservoir import HydroReservoir
-from bellman import Bellman
+from base.bellman import Bellman
 import constants
 
 
 class HydroBellman(Bellman):
-    """Bellman class for hydro. Inherits from Bellman
+    """Bellman class for hydro. Inherits from Bellman.
 
-    Computes and provides bellman values and penalties for each week
+    Computes and provides bellman values and penalties for each week.
 
     Attributes:
-        penalty_factor (float): factor to modulate how important it is to respect guidelines
+        penalty_factor (float): factor to modulate how important it is to respect guidelines.
     """
-    penalty_factor: float
-
-    def __init__(self, nb_sce: int, penalty_factor: float, cost_function: HydroCostFunction, reservoir: HydroReservoir):
-        super().__init__(nb_sce, cost_function, reservoir)
+    def __init__(self, list_sce: np.ndarray, penalty_factor: float, cost_function: HydroCostFunction, reservoir: HydroReservoir):
+        super().__init__(list_sce, cost_function, reservoir)
         self.penalty_factor = penalty_factor
 
     def get_penalty(self, week_idx: int, stock: float) -> float:
@@ -58,6 +56,7 @@ class HydroBellman(Bellman):
         )
 
     def get_bellman_value(self, week: int, stock: float) -> float:
+        """Returns the bellman value associated to a week and stock"""
         if self._bellman_values is None:
             self._compute_bellman_values()
         assert isinstance(self._bellman_values, np.ndarray)
@@ -74,14 +73,13 @@ class HydroBellman(Bellman):
         Parameters:
              controls (np.ndarray): different controls to test
              next_stock (np.ndarray): stock values corresponding to the controls
-             bellman_fn (interp1d): bellman fonction to interpolate bellman value
              week_ind (int): considered week
              sce_ind (int): considered scenario
              exact_ctrls (bool): controls correspond to the exact points in _cost_function, if false,
                 needs interpolation
 
         Returns:
-            best value, corresponding next stock, corresponding control
+            (best value, corresponding next stock, corresponding control)
         """
         assert isinstance(self._cost_function, HydroCostFunction)
         cost = self._cost_function.get_exact_costs(week_ind, sce_ind)
@@ -155,7 +153,7 @@ class HydroBellman(Bellman):
 
     def _compute_bellman_values(self) -> None:
         """
-        Computes Bellman values at end of each week by backward induction over weeks and scenarios.
+        Computes Bellman values at the end of each week by backward induction over weeks and scenarios.
         Applies penalties and selects optimal controls to minimize cost-to-go.
         """
         self._bellman_values = np.zeros(shape=(constants.RESULTS_SIZE, 100//self._reservoir.step + 1), dtype=np.float64)
@@ -171,27 +169,27 @@ class HydroBellman(Bellman):
 
             for c in range(0, 101, self._reservoir.step):
                 current_stock = (c / 100) * self._reservoir.capacity
-                bv_sce = np.zeros(self._nb_sce)
-                for i in range(self._nb_sce):
+                bv_sce = np.zeros(len(self._list_sce))
+                for i, sce_ind in enumerate(self._list_sce):
                     weekly_inflow = self._reservoir.hourly_inflow[
                         (week_ind + 1) * constants.RESULTS_INTERVAL_HOURS:
-                        (week_ind + 2) * constants.RESULTS_INTERVAL_HOURS, i
+                        (week_ind + 2) * constants.RESULTS_INTERVAL_HOURS, sce_ind
                                     ].sum(axis=0)
-                    controls = self._cost_function.get_controls(week_ind + 1, i)
+                    controls = self._cost_function.get_controls(week_ind + 1, sce_ind)
                     next_stock = current_stock + weekly_inflow - controls
 
                     best_value = self.iterate_over_controls_vec(
                         controls=controls,
                         next_stock=next_stock,
                         week_ind=week_ind + 1,
-                        sce_ind=i
+                        sce_ind=sce_ind
                     )
 
                     final_best_value, _, _ = self.iterate_over_stock_levels_vec(
                         best_value=best_value,
                         current_stock_with_inflow=current_stock + weekly_inflow,
                         week_ind=week_ind + 1,
-                        sce_ind=i,
+                        sce_ind=sce_ind,
                         max_control=controls[-1])
 
                     bv_sce[i] = final_best_value

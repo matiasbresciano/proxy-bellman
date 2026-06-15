@@ -3,7 +3,7 @@ import numpy as np
 import typing
 import pandas as pd
 
-from proxy import Proxy, AntaresProxy
+from base.proxy import Proxy, AntaresProxy
 from tempo.trajectory import TempoTrajectory
 from tempo.bellman import TempoBellman
 from tempo.cost_function import TempoCostFunction
@@ -20,16 +20,30 @@ class TempoProxy(Proxy):
 
     def __init__(self, residual_load: np.ndarray[tuple[int, int], np.dtype[np.float64]],
                  reservoirs: typing.List[TempoReservoir],
-                 data_first_month: int, day_first_january: int, c_var: float = 1.)\
+                 data_first_month: int, day_first_january: int,
+                 mc_years: np.ndarray | None = None,
+                 ts_selection: np.ndarray | None = None,
+                 leap_year: bool = False, c_var: float = 1.)\
             -> None:
         """Initialises the proxy
 
         Parameters:
-            residual_load: residual_load of the different scenarios provided (hourly)
-            reservoirs: the reservoirs used for the simulation, first one must correspond to the
-                tightest restrictions (red)
-            c_var (float): keep only the percentage worst case scenarii to calculate bellman values
+            residual_load: Residual_load of the different scenarios provided (hourly).
+            reservoirs: The reservoirs used for the simulation, first one must correspond to the
+                tightest restrictions (red).
+            data_first_month (int): First month of the data in int (0 for january, 11 for december).
+            day_first_january (int): Day of the week for the first of january included in the data in int (0 for monday,
+                6 for sunday)
+            mc_years (np.ndarray(int)): List of years for which to compute trajectories.
+            ts_selection (np.ndarray(int)): List of years to take into account to compute bellman values.
+            leap_year (bool): Is the considered year a leap year?
+            c_var (float): Keeps only the percentage worst case scenarii to calculate bellman values.
         """
+
+        if leap_year:
+            constants.MONTHS[1] = 29
+        else:
+            constants.MONTHS[1] = 28
 
         # computing first marsh day of the week
         if data_first_month == 1 or data_first_month == 2:
@@ -69,23 +83,25 @@ class TempoProxy(Proxy):
                                                   residual_load_364[:first_sept, :]))
             self.roll_idx_day = first_sept
 
-        super().__init__(tempo_residual_load, list(reservoirs))
+        super().__init__(tempo_residual_load, list(reservoirs), mc_years, ts_selection)
         nb_sce = self._residual_load.shape[1]
         for res in reservoirs:
             cost_function = TempoCostFunction(self._residual_load, res)
             self._cost_function.append(cost_function)
-            bellman = TempoBellman(nb_sce, cost_function, res, c_var)
+            bellman = TempoBellman(self.ts_selection, cost_function, res, c_var)
             self._bellman.append(bellman)
             prev_traj = None
             if len(self._trajectory):
                 prev_traj = self._trajectory[-1]
-            trajectories = TempoTrajectory(nb_sce, res, cost_function, bellman, prev_traj)
+            trajectories = TempoTrajectory(self.mc_years, res, cost_function, bellman, prev_traj)
             self._trajectory.append(trajectories)
 
     def _roll_back_day(self, array: np.ndarray) -> np.ndarray:
+        """Puts a daily array back in the order of input data (first begining month)."""
         return np.concatenate((array[:, -self.roll_idx_day:], array[:, :-self.roll_idx_day]), axis=1)
 
     def _roll_back_week(self, array: np.ndarray) -> np.ndarray:
+        """Puts a weekly array back in the order of input data (first begining month)."""
         # idx from 1st january
         first_monday_september = constants.MONTHS[:8].sum()
         res = self._reservoir[0]
@@ -99,6 +115,7 @@ class TempoProxy(Proxy):
         return np.concatenate((array[:, -nb_weeks:], array[:, :-nb_weeks]), axis=1)
 
     def get_trajectories(self) -> typing.List[np.ndarray]:
+        """Returns the computed trajectories."""
         res: list[np.ndarray] = []
         for t in self._trajectory:
             res.append(self._roll_back_week(t.get_trajectories()))
@@ -106,14 +123,14 @@ class TempoProxy(Proxy):
 
     def get_daily_controls(self) -> np.ndarray:
         """
-        return daily control trajectories (red and white) for all scenarios and weeks to CSV.
+        Returns daily control trajectories (red and white) for all scenarios and weeks.
         The daily net loads are sorted and matched to the controls.
         """
         red_controls = self._trajectory[0].get_controls()
         white_controls = self._trajectory[1].get_controls() - red_controls
         nb_scenarios = red_controls.shape[0]
         daily_trajectory = np.asarray([["bleu "] * (constants.NB_DAYS + 1)] * nb_scenarios)
-        net_load = self._residual_load
+        net_load = self._residual_load[:, self.ts_selection]
         res = self._reservoir[0]
         assert isinstance(res, TempoReservoir)
 
@@ -161,18 +178,21 @@ class TempoProxy(Proxy):
         return daily_trajectory
 
     def get_controls(self) -> typing.List[np.ndarray]:
+        """Returns the computed controls."""
         res: list[np.ndarray] = []
         for t in self._trajectory:
             res.append(self._roll_back_week(t.get_controls()))
         return res
 
     def get_usage_values(self) -> typing.List[np.ndarray]:
+        """Returns the computed usage values."""
         res: list[np.ndarray] = []
         for b in self._bellman:
             res.append(self._roll_back_week(b.get_usage_values()))
         return res
 
     def get_bellman_values(self) -> typing.List[np.ndarray]:
+        """Returns the computed bellman values."""
         res: list[np.ndarray] = []
         for b in self._bellman:
             res.append(self._roll_back_week(b.get_bellman_values()))
@@ -180,7 +200,9 @@ class TempoProxy(Proxy):
 
 
 class TempoAntaresProxy(AntaresProxy):
-    def __init__(self, study_path: str, area_name: str, mc_years: int, sce_selection: list[int] | None = None, c_var: float = 1.):
+    """This class manages the computation of Bellman values and trajectory regarding a tempo reservoir
+    using the scenarii of a given antares study."""
+    def __init__(self, study_path: str, area_name: str, mc_years: np.ndarray, sce_selection: np.ndarray | None = None, c_var: float = 1.):
         super().__init__(study_path, area_name, mc_years, sce_selection)
         weekday_1_jan = AntaresProxy._int_from_antares_weekday(
             self.study.get_settings().general_parameters.january_first
@@ -206,7 +228,9 @@ class TempoAntaresProxy(AntaresProxy):
         ).sum(axis=1)
 
         self._proxy = TempoProxy(self._residual_load, [reservoir_red, reservoir_white],
-                                 first_month, weekday_1_jan, c_var)
+                                 first_month, weekday_1_jan,
+                                 mc_years, sce_selection,
+                                 self.study.get_settings().general_parameters.leap_year, c_var)
 
     def export_controls(self, export_dir: str, filename: str = "controls.csv") -> None:
         """
@@ -258,6 +282,10 @@ class TempoAntaresProxy(AntaresProxy):
         df.to_csv(output_path, index=False)
 
     def export_daily_controls(self, sce: int, export_dir: str, filename: str = "") -> None:
+        """
+        Export optimal daily control trajectories
+        for all scenarios and weeks to a CSV file.
+        """
         assert isinstance(self._proxy, TempoProxy)
         controls = self._proxy.get_daily_controls()
         df = pd.DataFrame(controls[sce])
