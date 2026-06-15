@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tempo package &mdash; ProxyBellman 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="hydro package" href="hydro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ProxyBellman
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adding_use_cases.html">Adding use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">base package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html">hydro package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">tempo package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tempo.bellman">tempo.bellman module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tempo.bellman.TempoBellman"><code class="docutils literal notranslate"><span class="pre">TempoBellman</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tempo.cost_function">tempo.cost_function module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tempo.cost_function.TempoCostFunction"><code class="docutils literal notranslate"><span class="pre">TempoCostFunction</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tempo.proxy">tempo.proxy module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tempo.proxy.TempoAntaresProxy"><code class="docutils literal notranslate"><span class="pre">TempoAntaresProxy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tempo.proxy.TempoProxy"><code class="docutils literal notranslate"><span class="pre">TempoProxy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tempo.reservoir">tempo.reservoir module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tempo.reservoir.TempoReservoir"><code class="docutils literal notranslate"><span class="pre">TempoReservoir</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tempo.trajectory">tempo.trajectory module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tempo.trajectory.TempoTrajectory"><code class="docutils literal notranslate"><span class="pre">TempoTrajectory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tempo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ProxyBellman</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">tempo package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tempo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tempo-package">
+<h1>tempo package<a class="headerlink" href="#tempo-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tempo.bellman">
+<span id="tempo-bellman-module"></span><h2>tempo.bellman module<a class="headerlink" href="#module-tempo.bellman" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tempo.bellman.TempoBellman">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tempo.bellman.</span></span><span class="sig-name descname"><span class="pre">TempoBellman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tempo.cost_function.TempoCostFunction" title="tempo.cost_function.TempoCostFunction"><span class="pre">TempoCostFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tempo.reservoir.TempoReservoir" title="tempo.reservoir.TempoReservoir"><span class="pre">TempoReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tempo.bellman.TempoBellman" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.bellman.Bellman" title="base.bellman.Bellman"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bellman</span></code></a></p>
+<p>Bellman class for tempo. Inherits from Bellman.</p>
+<p>Computes and provides bellman values and penalties for each week.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tempo.bellman.TempoBellman.c_var">
+<span class="sig-name descname"><span class="pre">c_var</span></span><a class="headerlink" href="#tempo.bellman.TempoBellman.c_var" title="Link to this definition"></a></dt>
+<dd><p>percentage of scenario to consider at each week. if &lt;1, most favorable scenario are ignored.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.bellman.TempoBellman.get_penalty">
+<span class="sig-name descname"><span class="pre">get_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#tempo.bellman.TempoBellman.get_penalty" title="Link to this definition"></a></dt>
+<dd><p>Returns the penalty associated to a certain stock value for a given week.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tempo.cost_function">
+<span id="tempo-cost-function-module"></span><h2>tempo.cost_function module<a class="headerlink" href="#module-tempo.cost_function" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tempo.cost_function.TempoCostFunction">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tempo.cost_function.</span></span><span class="sig-name descname"><span class="pre">TempoCostFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residual_load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tempo.reservoir.TempoReservoir" title="tempo.reservoir.TempoReservoir"><span class="pre">TempoReservoir</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tempo.cost_function.TempoCostFunction" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.cost_function.CostFunction" title="base.cost_function.CostFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a></p>
+<p>Cost function class for tempo. Inherits from CostFunction</p>
+<p>Computes and provides cost values and maximum_cost over a week (for penalty values)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.cost_function.TempoCostFunction.get_cost">
+<span class="sig-name descname"><span class="pre">get_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#tempo.cost_function.TempoCostFunction.get_cost" title="Link to this definition"></a></dt>
+<dd><p>Returns the cost associated to a given week, scenario and control value.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tempo.proxy">
+<span id="tempo-proxy-module"></span><h2>tempo.proxy module<a class="headerlink" href="#module-tempo.proxy" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tempo.proxy.TempoAntaresProxy">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tempo.proxy.</span></span><span class="sig-name descname"><span class="pre">TempoAntaresProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">study_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tempo.proxy.TempoAntaresProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.proxy.AntaresProxy" title="base.proxy.AntaresProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">AntaresProxy</span></code></a></p>
+<p>This class manages the computation of Bellman values and trajectory regarding a tempo reservoir
+using the scenarii of a given antares study.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.proxy.TempoAntaresProxy.export_controls">
+<span class="sig-name descname"><span class="pre">export_controls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">export_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'controls.csv'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tempo.proxy.TempoAntaresProxy.export_controls" title="Link to this definition"></a></dt>
+<dd><p>Export optimal control trajectories
+for all scenarios and weeks to a CSV file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.proxy.TempoAntaresProxy.export_daily_controls">
+<span class="sig-name descname"><span class="pre">export_daily_controls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tempo.proxy.TempoAntaresProxy.export_daily_controls" title="Link to this definition"></a></dt>
+<dd><p>Export optimal daily control trajectories
+for all scenarios and weeks to a CSV file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.proxy.TempoAntaresProxy.export_trajectories">
+<span class="sig-name descname"><span class="pre">export_trajectories</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">export_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'trajectories.csv'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tempo.proxy.TempoAntaresProxy.export_trajectories" title="Link to this definition"></a></dt>
+<dd><p>Export optimal stock trajectories for all scenarios and weeks
+to a CSV file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tempo.proxy.TempoProxy">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tempo.proxy.</span></span><span class="sig-name descname"><span class="pre">TempoProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residual_load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoirs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#tempo.reservoir.TempoReservoir" title="tempo.reservoir.TempoReservoir"><span class="pre">TempoReservoir</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_first_month</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">day_first_january</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leap_year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_var</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tempo.proxy.TempoProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.proxy.Proxy" title="base.proxy.Proxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proxy</span></code></a></p>
+<p>Proxy class for tempo. Inherits from Tempo</p>
+<p>Manages computation for tempo trajectories and controls upon a given set of scenario</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tempo.proxy.TempoProxy.data_first_month">
+<span class="sig-name descname"><span class="pre">data_first_month</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#tempo.proxy.TempoProxy.data_first_month" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.proxy.TempoProxy.get_bellman_values">
+<span class="sig-name descname"><span class="pre">get_bellman_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tempo.proxy.TempoProxy.get_bellman_values" title="Link to this definition"></a></dt>
+<dd><p>Returns the computed bellman values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.proxy.TempoProxy.get_controls">
+<span class="sig-name descname"><span class="pre">get_controls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tempo.proxy.TempoProxy.get_controls" title="Link to this definition"></a></dt>
+<dd><p>Returns the computed controls.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.proxy.TempoProxy.get_daily_controls">
+<span class="sig-name descname"><span class="pre">get_daily_controls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#tempo.proxy.TempoProxy.get_daily_controls" title="Link to this definition"></a></dt>
+<dd><p>Returns daily control trajectories (red and white) for all scenarios and weeks.
+The daily net loads are sorted and matched to the controls.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.proxy.TempoProxy.get_trajectories">
+<span class="sig-name descname"><span class="pre">get_trajectories</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tempo.proxy.TempoProxy.get_trajectories" title="Link to this definition"></a></dt>
+<dd><p>Returns the computed trajectories.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.proxy.TempoProxy.get_usage_values">
+<span class="sig-name descname"><span class="pre">get_usage_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tempo.proxy.TempoProxy.get_usage_values" title="Link to this definition"></a></dt>
+<dd><p>Returns the computed usage values.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tempo.reservoir">
+<span id="tempo-reservoir-module"></span><h2>tempo.reservoir module<a class="headerlink" href="#module-tempo.reservoir" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tempo.reservoir.TempoReservoir">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tempo.reservoir.</span></span><span class="sig-name descname"><span class="pre">TempoReservoir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_guide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_guide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hourly_inflow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_week_days</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">61</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">211</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tempo.reservoir.TempoReservoir" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.reservoir.Reservoir" title="base.reservoir.Reservoir"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reservoir</span></code></a></p>
+<p>Reservoir class for tempo. Inherits from Reservoir</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tempo.reservoir.TempoReservoir.excluded_week_days">
+<span class="sig-name descname"><span class="pre">excluded_week_days</span></span><a class="headerlink" href="#tempo.reservoir.TempoReservoir.excluded_week_days" title="Link to this definition"></a></dt>
+<dd><p>Days of the week when a tempo day cannot be used</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tempo.reservoir.TempoReservoir.first_day">
+<span class="sig-name descname"><span class="pre">first_day</span></span><a class="headerlink" href="#tempo.reservoir.TempoReservoir.first_day" title="Link to this definition"></a></dt>
+<dd><p>First day of the year when a tempo day can be used (included) (1st of november for red)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tempo.reservoir.TempoReservoir.last_day">
+<span class="sig-name descname"><span class="pre">last_day</span></span><a class="headerlink" href="#tempo.reservoir.TempoReservoir.last_day" title="Link to this definition"></a></dt>
+<dd><p>Last day of the year when a tempo day can be used (included) (31st of marsh for red)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tempo.reservoir.TempoReservoir.week_day_first_september">
+<span class="sig-name descname"><span class="pre">week_day_first_september</span></span><a class="headerlink" href="#tempo.reservoir.TempoReservoir.week_day_first_september" title="Link to this definition"></a></dt>
+<dd><p>weekday of the first september (0 for monday, 6 for sunday)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.reservoir.TempoReservoir.day_of_year_from_september">
+<span class="sig-name descname"><span class="pre">day_of_year_from_september</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">day</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">month</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#tempo.reservoir.TempoReservoir.day_of_year_from_september" title="Link to this definition"></a></dt>
+<dd><p>Returns the day of the year and day of the week associated to a day of a month</p>
+<p>1st September is 0, 31st August is 364
+:param day: day of the month, from 0 to month size - 1
+:type day: int
+:param month: month with 0 for january, 11 for december
+:type month: int</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tempo.reservoir.TempoReservoir.get_previous_monday">
+<span class="sig-name descname"><span class="pre">get_previous_monday</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">day_of_year</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#tempo.reservoir.TempoReservoir.get_previous_monday" title="Link to this definition"></a></dt>
+<dd><p>Returns the previous monday</p>
+<p>If the given day is a monday, returns the same day
+:param day_of_year: day of the year, 1st September is 0, 31st August is 364
+:type day_of_year: int</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tempo.trajectory">
+<span id="tempo-trajectory-module"></span><h2>tempo.trajectory module<a class="headerlink" href="#module-tempo.trajectory" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tempo.trajectory.TempoTrajectory">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tempo.trajectory.</span></span><span class="sig-name descname"><span class="pre">TempoTrajectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tempo.reservoir.TempoReservoir" title="tempo.reservoir.TempoReservoir"><span class="pre">TempoReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tempo.cost_function.TempoCostFunction" title="tempo.cost_function.TempoCostFunction"><span class="pre">TempoCostFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bellman</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#tempo.bellman.TempoBellman" title="tempo.bellman.TempoBellman"><span class="pre">TempoBellman</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">red_trajectory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="base.html#base.trajectory.Trajectory" title="base.trajectory.Trajectory"><span class="pre">Trajectory</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tempo.trajectory.TempoTrajectory" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.trajectory.Trajectory" title="base.trajectory.Trajectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trajectory</span></code></a></p>
+<p>Trajectory class for hydro. Inherits from Trajectory.</p>
+<p>Computes and provides trajectories and control values for each scenario and each week.</p>
+</dd></dl>
+
+</section>
+<section id="module-tempo">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tempo" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hydro.html" class="btn btn-neutral float-left" title="hydro package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Matias Bresciano, Lydie Richaume.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

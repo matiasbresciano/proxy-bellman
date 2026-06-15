@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src &mdash; ProxyBellman 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="base package" href="base.html" />
+    <link rel="prev" title="Adding use cases" href="adding_use_cases.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ProxyBellman
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adding_use_cases.html">Adding use cases</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="base.html">base package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html">hydro package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html">tempo package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ProxyBellman</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">src</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="src">
+<h1>src<a class="headerlink" href="#src" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="base.html">base package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="base.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#module-base.bellman">base.bellman module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="base.html#base.bellman.Bellman"><code class="docutils literal notranslate"><span class="pre">Bellman</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman._list_sce"><code class="docutils literal notranslate"><span class="pre">Bellman._list_sce</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman._reservoir"><code class="docutils literal notranslate"><span class="pre">Bellman._reservoir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman._cost_function"><code class="docutils literal notranslate"><span class="pre">Bellman._cost_function</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman._bellman_values"><code class="docutils literal notranslate"><span class="pre">Bellman._bellman_values</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman._usage_value"><code class="docutils literal notranslate"><span class="pre">Bellman._usage_value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.get_bellman_values"><code class="docutils literal notranslate"><span class="pre">Bellman.get_bellman_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.get_penalty"><code class="docutils literal notranslate"><span class="pre">Bellman.get_penalty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.get_usage_values"><code class="docutils literal notranslate"><span class="pre">Bellman.get_usage_values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#module-base.cost_function">base.cost_function module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="base.html#base.cost_function.CostFunction"><code class="docutils literal notranslate"><span class="pre">CostFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction._residual_load"><code class="docutils literal notranslate"><span class="pre">CostFunction._residual_load</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction._reservoir"><code class="docutils literal notranslate"><span class="pre">CostFunction._reservoir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction._cost_function"><code class="docutils literal notranslate"><span class="pre">CostFunction._cost_function</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction._controls"><code class="docutils literal notranslate"><span class="pre">CostFunction._controls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction.get_cost"><code class="docutils literal notranslate"><span class="pre">CostFunction.get_cost()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#module-base.proxy">base.proxy module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="base.html#base.proxy.AntaresProxy"><code class="docutils literal notranslate"><span class="pre">AntaresProxy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.study_path"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.study_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.study"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.study</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.area"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.area</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.mc_years"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.mc_years</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.sce_selection"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.sce_selection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy._area_loads"><code class="docutils literal notranslate"><span class="pre">AntaresProxy._area_loads</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy._residual_load"><code class="docutils literal notranslate"><span class="pre">AntaresProxy._residual_load</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy._proxy"><code class="docutils literal notranslate"><span class="pre">AntaresProxy._proxy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.export_controls"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.export_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.export_trajectories"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.export_trajectories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.get_bellman_values"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.get_bellman_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.get_controls"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.get_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.get_trajectories"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.get_trajectories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.AntaresProxy.save_residual_loads"><code class="docutils literal notranslate"><span class="pre">AntaresProxy.save_residual_loads()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="base.html#base.proxy.Proxy"><code class="docutils literal notranslate"><span class="pre">Proxy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy._residual_load"><code class="docutils literal notranslate"><span class="pre">Proxy._residual_load</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy._day_of_first_data"><code class="docutils literal notranslate"><span class="pre">Proxy._day_of_first_data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy._week_day_of_first_data"><code class="docutils literal notranslate"><span class="pre">Proxy._week_day_of_first_data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy.mc_years"><code class="docutils literal notranslate"><span class="pre">Proxy.mc_years</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy.ts_selection"><code class="docutils literal notranslate"><span class="pre">Proxy.ts_selection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy._reservoir"><code class="docutils literal notranslate"><span class="pre">Proxy._reservoir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy._cost_function"><code class="docutils literal notranslate"><span class="pre">Proxy._cost_function</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy._bellman"><code class="docutils literal notranslate"><span class="pre">Proxy._bellman</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy._trajectory"><code class="docutils literal notranslate"><span class="pre">Proxy._trajectory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy.get_bellman_values"><code class="docutils literal notranslate"><span class="pre">Proxy.get_bellman_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy.get_controls"><code class="docutils literal notranslate"><span class="pre">Proxy.get_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy.get_trajectories"><code class="docutils literal notranslate"><span class="pre">Proxy.get_trajectories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.proxy.Proxy.get_usage_values"><code class="docutils literal notranslate"><span class="pre">Proxy.get_usage_values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#module-base.reservoir">base.reservoir module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="base.html#base.reservoir.Reservoir"><code class="docutils literal notranslate"><span class="pre">Reservoir</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.reservoir.Reservoir.capacity"><code class="docutils literal notranslate"><span class="pre">Reservoir.capacity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.reservoir.Reservoir.lower_guide"><code class="docutils literal notranslate"><span class="pre">Reservoir.lower_guide</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.reservoir.Reservoir.upper_guide"><code class="docutils literal notranslate"><span class="pre">Reservoir.upper_guide</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.reservoir.Reservoir.initial_level"><code class="docutils literal notranslate"><span class="pre">Reservoir.initial_level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.reservoir.Reservoir.final_level"><code class="docutils literal notranslate"><span class="pre">Reservoir.final_level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.reservoir.Reservoir.hourly_inflow"><code class="docutils literal notranslate"><span class="pre">Reservoir.hourly_inflow</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.reservoir.Reservoir.step"><code class="docutils literal notranslate"><span class="pre">Reservoir.step</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#module-base.trajectory">base.trajectory module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="base.html#base.trajectory.Trajectory"><code class="docutils literal notranslate"><span class="pre">Trajectory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.trajectory.Trajectory._reservoir"><code class="docutils literal notranslate"><span class="pre">Trajectory._reservoir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.trajectory.Trajectory._cost_function"><code class="docutils literal notranslate"><span class="pre">Trajectory._cost_function</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.trajectory.Trajectory._bellman"><code class="docutils literal notranslate"><span class="pre">Trajectory._bellman</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.trajectory.Trajectory._trajectories"><code class="docutils literal notranslate"><span class="pre">Trajectory._trajectories</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.trajectory.Trajectory._controls"><code class="docutils literal notranslate"><span class="pre">Trajectory._controls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.trajectory.Trajectory._list_sce"><code class="docutils literal notranslate"><span class="pre">Trajectory._list_sce</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.trajectory.Trajectory.get_controls"><code class="docutils literal notranslate"><span class="pre">Trajectory.get_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.trajectory.Trajectory.get_trajectories"><code class="docutils literal notranslate"><span class="pre">Trajectory.get_trajectories()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#module-base">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">constants module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#constants.MONTHS"><code class="docutils literal notranslate"><span class="pre">MONTHS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#constants.NB_DAYS"><code class="docutils literal notranslate"><span class="pre">NB_DAYS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#constants.NB_HOURS"><code class="docutils literal notranslate"><span class="pre">NB_HOURS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#constants.NB_HOURS_IN_DAY"><code class="docutils literal notranslate"><span class="pre">NB_HOURS_IN_DAY</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#constants.RESULTS_INTERVAL_DAYS"><code class="docutils literal notranslate"><span class="pre">RESULTS_INTERVAL_DAYS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#constants.RESULTS_INTERVAL_HOURS"><code class="docutils literal notranslate"><span class="pre">RESULTS_INTERVAL_HOURS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html#constants.RESULTS_SIZE"><code class="docutils literal notranslate"><span class="pre">RESULTS_SIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hydro.html">hydro package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro.bellman">hydro.bellman module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman"><code class="docutils literal notranslate"><span class="pre">HydroBellman</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.penalty_factor"><code class="docutils literal notranslate"><span class="pre">HydroBellman.penalty_factor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.bellman_function"><code class="docutils literal notranslate"><span class="pre">HydroBellman.bellman_function()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.get_bellman_value"><code class="docutils literal notranslate"><span class="pre">HydroBellman.get_bellman_value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.get_penalty"><code class="docutils literal notranslate"><span class="pre">HydroBellman.get_penalty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.iterate_over_controls_vec"><code class="docutils literal notranslate"><span class="pre">HydroBellman.iterate_over_controls_vec()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.iterate_over_stock_levels_vec"><code class="docutils literal notranslate"><span class="pre">HydroBellman.iterate_over_stock_levels_vec()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro.cost_function">hydro.cost_function module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.turb_threshold"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.turb_threshold</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.alpha"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.alpha</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.__max_costs"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.__max_costs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.__exact_costs"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.__exact_costs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.get_controls"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.get_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.get_cost"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.get_cost()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.get_exact_costs"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.get_exact_costs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.max_cost"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.max_cost()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro.proxy">hydro.proxy module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.proxy.HydroAntaresProxy"><code class="docutils literal notranslate"><span class="pre">HydroAntaresProxy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.proxy.HydroAntaresProxy.apply_to_study"><code class="docutils literal notranslate"><span class="pre">HydroAntaresProxy.apply_to_study()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.proxy.HydroAntaresProxy.undo_study"><code class="docutils literal notranslate"><span class="pre">HydroAntaresProxy.undo_study()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.proxy.HydroProxy"><code class="docutils literal notranslate"><span class="pre">HydroProxy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro.reservoir">hydro.reservoir module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.reservoir.HydroReservoir"><code class="docutils literal notranslate"><span class="pre">HydroReservoir</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.reservoir.HydroReservoir.weekly_max_turb"><code class="docutils literal notranslate"><span class="pre">HydroReservoir.weekly_max_turb</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.reservoir.HydroReservoir.weekly_max_pump"><code class="docutils literal notranslate"><span class="pre">HydroReservoir.weekly_max_pump</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.reservoir.HydroReservoir.hourly_max_turb"><code class="docutils literal notranslate"><span class="pre">HydroReservoir.hourly_max_turb</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.reservoir.HydroReservoir.hourly_max_pump"><code class="docutils literal notranslate"><span class="pre">HydroReservoir.hourly_max_pump</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.reservoir.HydroReservoir.turb_efficiency"><code class="docutils literal notranslate"><span class="pre">HydroReservoir.turb_efficiency</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.reservoir.HydroReservoir.pump_efficiency"><code class="docutils literal notranslate"><span class="pre">HydroReservoir.pump_efficiency</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro.study_modifier">hydro.study_modifier module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier"><code class="docutils literal notranslate"><span class="pre">StudyModifier</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.reservoir"><code class="docutils literal notranslate"><span class="pre">StudyModifier.reservoir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.trajectories"><code class="docutils literal notranslate"><span class="pre">StudyModifier.trajectories</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.nb_scenarios"><code class="docutils literal notranslate"><span class="pre">StudyModifier.nb_scenarios</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.study_path"><code class="docutils literal notranslate"><span class="pre">StudyModifier.study_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.study"><code class="docutils literal notranslate"><span class="pre">StudyModifier.study</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.area_name"><code class="docutils literal notranslate"><span class="pre">StudyModifier.area_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.area"><code class="docutils literal notranslate"><span class="pre">StudyModifier.area</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.storage"><code class="docutils literal notranslate"><span class="pre">StudyModifier.storage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.adjust_inflow_pmax_withdrawal_constraint"><code class="docutils literal notranslate"><span class="pre">StudyModifier.adjust_inflow_pmax_withdrawal_constraint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.adjust_inflows_pmax_injection_constraint"><code class="docutils literal notranslate"><span class="pre">StudyModifier.adjust_inflows_pmax_injection_constraint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.adjust_to_spillage_constraint"><code class="docutils literal notranslate"><span class="pre">StudyModifier.adjust_to_spillage_constraint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.apply_all"><code class="docutils literal notranslate"><span class="pre">StudyModifier.apply_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.clean_scenariobuilder"><code class="docutils literal notranslate"><span class="pre">StudyModifier.clean_scenariobuilder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.create_inflows_sts"><code class="docutils literal notranslate"><span class="pre">StudyModifier.create_inflows_sts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.create_pmax_file"><code class="docutils literal notranslate"><span class="pre">StudyModifier.create_pmax_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.create_st_cluster"><code class="docutils literal notranslate"><span class="pre">StudyModifier.create_st_cluster()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.modify_scenario_builder"><code class="docutils literal notranslate"><span class="pre">StudyModifier.modify_scenario_builder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.overwrite_pmax"><code class="docutils literal notranslate"><span class="pre">StudyModifier.overwrite_pmax()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.remove_st_cluster_section"><code class="docutils literal notranslate"><span class="pre">StudyModifier.remove_st_cluster_section()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.restore_miscgen_load_and_solar"><code class="docutils literal notranslate"><span class="pre">StudyModifier.restore_miscgen_load_and_solar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.restore_pmax"><code class="docutils literal notranslate"><span class="pre">StudyModifier.restore_pmax()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.study_modifier.StudyModifier.undo_all"><code class="docutils literal notranslate"><span class="pre">StudyModifier.undo_all()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro.trajectory">hydro.trajectory module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.trajectory.HydroTrajectory"><code class="docutils literal notranslate"><span class="pre">HydroTrajectory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.trajectory.HydroTrajectory.inflow_adjust_overflow"><code class="docutils literal notranslate"><span class="pre">HydroTrajectory.inflow_adjust_overflow</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.trajectory.HydroTrajectory.adjust_hourly_inflow_overflow"><code class="docutils literal notranslate"><span class="pre">HydroTrajectory.adjust_hourly_inflow_overflow()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tempo.html">tempo package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html#module-tempo.bellman">tempo.bellman module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tempo.html#tempo.bellman.TempoBellman"><code class="docutils literal notranslate"><span class="pre">TempoBellman</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.bellman.TempoBellman.c_var"><code class="docutils literal notranslate"><span class="pre">TempoBellman.c_var</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.bellman.TempoBellman.get_penalty"><code class="docutils literal notranslate"><span class="pre">TempoBellman.get_penalty()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html#module-tempo.cost_function">tempo.cost_function module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tempo.html#tempo.cost_function.TempoCostFunction"><code class="docutils literal notranslate"><span class="pre">TempoCostFunction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.cost_function.TempoCostFunction.get_cost"><code class="docutils literal notranslate"><span class="pre">TempoCostFunction.get_cost()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html#module-tempo.proxy">tempo.proxy module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tempo.html#tempo.proxy.TempoAntaresProxy"><code class="docutils literal notranslate"><span class="pre">TempoAntaresProxy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoAntaresProxy.export_controls"><code class="docutils literal notranslate"><span class="pre">TempoAntaresProxy.export_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoAntaresProxy.export_daily_controls"><code class="docutils literal notranslate"><span class="pre">TempoAntaresProxy.export_daily_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoAntaresProxy.export_trajectories"><code class="docutils literal notranslate"><span class="pre">TempoAntaresProxy.export_trajectories()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tempo.html#tempo.proxy.TempoProxy"><code class="docutils literal notranslate"><span class="pre">TempoProxy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoProxy.data_first_month"><code class="docutils literal notranslate"><span class="pre">TempoProxy.data_first_month</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoProxy.get_bellman_values"><code class="docutils literal notranslate"><span class="pre">TempoProxy.get_bellman_values()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoProxy.get_controls"><code class="docutils literal notranslate"><span class="pre">TempoProxy.get_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoProxy.get_daily_controls"><code class="docutils literal notranslate"><span class="pre">TempoProxy.get_daily_controls()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoProxy.get_trajectories"><code class="docutils literal notranslate"><span class="pre">TempoProxy.get_trajectories()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.proxy.TempoProxy.get_usage_values"><code class="docutils literal notranslate"><span class="pre">TempoProxy.get_usage_values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html#module-tempo.reservoir">tempo.reservoir module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tempo.html#tempo.reservoir.TempoReservoir"><code class="docutils literal notranslate"><span class="pre">TempoReservoir</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.reservoir.TempoReservoir.excluded_week_days"><code class="docutils literal notranslate"><span class="pre">TempoReservoir.excluded_week_days</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.reservoir.TempoReservoir.first_day"><code class="docutils literal notranslate"><span class="pre">TempoReservoir.first_day</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.reservoir.TempoReservoir.last_day"><code class="docutils literal notranslate"><span class="pre">TempoReservoir.last_day</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.reservoir.TempoReservoir.week_day_first_september"><code class="docutils literal notranslate"><span class="pre">TempoReservoir.week_day_first_september</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.reservoir.TempoReservoir.day_of_year_from_september"><code class="docutils literal notranslate"><span class="pre">TempoReservoir.day_of_year_from_september()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.reservoir.TempoReservoir.get_previous_monday"><code class="docutils literal notranslate"><span class="pre">TempoReservoir.get_previous_monday()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html#module-tempo.trajectory">tempo.trajectory module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tempo.html#tempo.trajectory.TempoTrajectory"><code class="docutils literal notranslate"><span class="pre">TempoTrajectory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html#module-tempo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="adding_use_cases.html" class="btn btn-neutral float-left" title="Adding use cases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="base.html" class="btn btn-neutral float-right" title="base package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Matias Bresciano, Lydie Richaume.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

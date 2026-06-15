@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hydro package &mdash; ProxyBellman 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tempo package" href="tempo.html" />
+    <link rel="prev" title="constants module" href="constants.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            ProxyBellman
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adding_use_cases.html">Adding use cases</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">base package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constants.html">constants module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">hydro package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydro.bellman">hydro.bellman module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydro.bellman.HydroBellman"><code class="docutils literal notranslate"><span class="pre">HydroBellman</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydro.cost_function">hydro.cost_function module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydro.cost_function.HydroCostFunction"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydro.proxy">hydro.proxy module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydro.proxy.HydroAntaresProxy"><code class="docutils literal notranslate"><span class="pre">HydroAntaresProxy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hydro.proxy.HydroProxy"><code class="docutils literal notranslate"><span class="pre">HydroProxy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydro.reservoir">hydro.reservoir module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydro.reservoir.HydroReservoir"><code class="docutils literal notranslate"><span class="pre">HydroReservoir</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydro.study_modifier">hydro.study_modifier module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydro.study_modifier.StudyModifier"><code class="docutils literal notranslate"><span class="pre">StudyModifier</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydro.trajectory">hydro.trajectory module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydro.trajectory.HydroTrajectory"><code class="docutils literal notranslate"><span class="pre">HydroTrajectory</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-hydro">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html">tempo package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ProxyBellman</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">hydro package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/hydro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="hydro-package">
+<h1>hydro package<a class="headerlink" href="#hydro-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-hydro.bellman">
+<span id="hydro-bellman-module"></span><h2>hydro.bellman module<a class="headerlink" href="#module-hydro.bellman" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.bellman.HydroBellman">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.bellman.</span></span><span class="sig-name descname"><span class="pre">HydroBellman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.cost_function.HydroCostFunction" title="hydro.cost_function.HydroCostFunction"><span class="pre">HydroCostFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.bellman.HydroBellman" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.bellman.Bellman" title="base.bellman.Bellman"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bellman</span></code></a></p>
+<p>Bellman class for hydro. Inherits from Bellman.</p>
+<p>Computes and provides bellman values and penalties for each week.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.penalty_factor">
+<span class="sig-name descname"><span class="pre">penalty_factor</span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.penalty_factor" title="Link to this definition"></a></dt>
+<dd><p>factor to modulate how important it is to respect guidelines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.bellman_function">
+<span class="sig-name descname"><span class="pre">bellman_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">interp1d</span></span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.bellman_function" title="Link to this definition"></a></dt>
+<dd><p>Returns an interpolated Bellman value function for given week over reservoir stock levels.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.get_bellman_value">
+<span class="sig-name descname"><span class="pre">get_bellman_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.get_bellman_value" title="Link to this definition"></a></dt>
+<dd><p>Returns the bellman value associated to a week and stock</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.get_penalty">
+<span class="sig-name descname"><span class="pre">get_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.get_penalty" title="Link to this definition"></a></dt>
+<dd><p>Returns a piecewise penalty function penalizing deviations outside the weekly lower and upper rule curves.
+Penalties grow linearly beyond ±1% of reservoir capacity from the rule curves.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.iterate_over_controls_vec">
+<span class="sig-name descname"><span class="pre">iterate_over_controls_vec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">controls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">week_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact_ctrls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.iterate_over_controls_vec" title="Link to this definition"></a></dt>
+<dd><p>Computes the best value over the different provided controls</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>controls</strong> (<em>np.ndarray</em>) – different controls to test</p></li>
+<li><p><strong>next_stock</strong> (<em>np.ndarray</em>) – stock values corresponding to the controls</p></li>
+<li><p><strong>week_ind</strong> (<em>int</em>) – considered week</p></li>
+<li><p><strong>sce_ind</strong> (<em>int</em>) – considered scenario</p></li>
+<li><p><strong>exact_ctrls</strong> (<em>bool</em>) – controls correspond to the exact points in _cost_function, if false,
+needs interpolation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(best value, corresponding next stock, corresponding control)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.iterate_over_stock_levels_vec">
+<span class="sig-name descname"><span class="pre">iterate_over_stock_levels_vec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">best_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_stock_with_inflow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">week_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.iterate_over_stock_levels_vec" title="Link to this definition"></a></dt>
+<dd><p>Enumerates next stock levels on the 0..100% grid,
+computes implied control, filters infeasible controls, evaluates total value,
+and keeps the best.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>best_value</strong> (<em>np.ndarray</em>) – previously computed best value (over controls), corresponding next stock,
+corresponding control</p></li>
+<li><p><strong>current_stock_with_inflow</strong> (<em>float</em>) – stock values corresponding to the controls</p></li>
+<li><p><strong>week_ind</strong> (<em>int</em>) – considered week</p></li>
+<li><p><strong>sce_ind</strong> (<em>int</em>) – considered scenario</p></li>
+<li><p><strong>max_control</strong> – max_control possible</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>best value, corresponding next stock, corresponding control</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-hydro.cost_function">
+<span id="hydro-cost-function-module"></span><h2>hydro.cost_function module<a class="headerlink" href="#module-hydro.cost_function" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.cost_function.</span></span><span class="sig-name descname"><span class="pre">HydroCostFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residual_load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">turb_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.cost_function.CostFunction" title="base.cost_function.CostFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a></p>
+<p>Cost function class for hydro. Inherits from CostFunction.</p>
+<p>Computes and provides cost values and maximum_cost over a week (for penalty values).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.turb_threshold">
+<span class="sig-name descname"><span class="pre">turb_threshold</span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.turb_threshold" title="Link to this definition"></a></dt>
+<dd><p>number of values on which the cost function is computed (default is 25).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.alpha">
+<span class="sig-name descname"><span class="pre">alpha</span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.alpha" title="Link to this definition"></a></dt>
+<dd><p>parameter for the computation of the costs value and the turbine vs pumping ratio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.__max_costs">
+<span class="sig-name descname"><span class="pre">__max_costs</span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.__max_costs" title="Link to this definition"></a></dt>
+<dd><p>maximum cost for each week to use as penalty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.__exact_costs">
+<span class="sig-name descname"><span class="pre">__exact_costs</span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.__exact_costs" title="Link to this definition"></a></dt>
+<dd><p>costs computed for stock values chosen for discretisation. These are the costs
+used for interpolation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.get_controls">
+<span class="sig-name descname"><span class="pre">get_controls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.get_controls" title="Link to this definition"></a></dt>
+<dd><p>Returns the controls values chosen for the discretisation of a given week and scenario.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.get_cost">
+<span class="sig-name descname"><span class="pre">get_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.get_cost" title="Link to this definition"></a></dt>
+<dd><p>Returns the cost value associated to a week, scenario and control.</p>
+<p>Returns the cost value associated to a week, scenario and control. If needed, launches the
+cost function computation first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cost value corresponding to the parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.get_exact_costs">
+<span class="sig-name descname"><span class="pre">get_exact_costs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.get_exact_costs" title="Link to this definition"></a></dt>
+<dd><p>Returns the computed cost corresponding to the control values chosen for the
+discretisation of a given week and scenario.</p>
+<p>These values are the one used for the interpolation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.max_cost">
+<span class="sig-name descname"><span class="pre">max_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.max_cost" title="Link to this definition"></a></dt>
+<dd><p>Compute a conservative maximum cost for a given week.</p>
+<p>For each scenario at the given week, this inspects the interpolated
+cost function c_w^s(u) at the two extreme control values available
+in its grid (controls[0] and controls[-1]), and returns the minimum over
+both extremes and all scenarios:</p>
+<blockquote>
+<div><p>min_cost = min_s  min( c_w^s(u_min), c_w^s(u_max) )</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>week</strong> (<em>int</em>) – Week index.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>minimum cost of the stage cost for the given week across scenarios.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-hydro.proxy">
+<span id="hydro-proxy-module"></span><h2>hydro.proxy module<a class="headerlink" href="#module-hydro.proxy" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.proxy.HydroAntaresProxy">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.proxy.</span></span><span class="sig-name descname"><span class="pre">HydroAntaresProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">study_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turb_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.proxy.HydroAntaresProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.proxy.AntaresProxy" title="base.proxy.AntaresProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">AntaresProxy</span></code></a></p>
+<p>This class manages the computation of Bellman values and trajectory regarding a hydro reservoir
+using the scenarii of a given antares study.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.proxy.HydroAntaresProxy.apply_to_study">
+<span class="sig-name descname"><span class="pre">apply_to_study</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.proxy.HydroAntaresProxy.apply_to_study" title="Link to this definition"></a></dt>
+<dd><p>This method applies the computed trajectories to the study.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.proxy.HydroAntaresProxy.undo_study">
+<span class="sig-name descname"><span class="pre">undo_study</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.proxy.HydroAntaresProxy.undo_study" title="Link to this definition"></a></dt>
+<dd><p>Removes the modification done by apply_to_study.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.proxy.HydroProxy">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.proxy.</span></span><span class="sig-name descname"><span class="pre">HydroProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residual_load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turb_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.proxy.HydroProxy" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.proxy.Proxy" title="base.proxy.Proxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">Proxy</span></code></a></p>
+<p>Proxy class for hydro.</p>
+<p>Manages computation for hydro trajectories and controls upon a given set of scenarii.</p>
+</dd></dl>
+
+</section>
+<section id="module-hydro.reservoir">
+<span id="hydro-reservoir-module"></span><h2>hydro.reservoir module<a class="headerlink" href="#module-hydro.reservoir" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.reservoir.HydroReservoir">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.reservoir.</span></span><span class="sig-name descname"><span class="pre">HydroReservoir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_guide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_guide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hourly_inflow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekly_max_turb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weekly_max_pump</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hourly_max_turb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hourly_max_pump</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turb_efficiency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pump_efficiency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.reservoir.HydroReservoir" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.reservoir.Reservoir" title="base.reservoir.Reservoir"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reservoir</span></code></a></p>
+<p>Reservoir class for hydro. Inherits from Reservoir</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.reservoir.HydroReservoir.weekly_max_turb">
+<span class="sig-name descname"><span class="pre">weekly_max_turb</span></span><a class="headerlink" href="#hydro.reservoir.HydroReservoir.weekly_max_turb" title="Link to this definition"></a></dt>
+<dd><p>Maximum amount of energy that can be produced for each week.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.reservoir.HydroReservoir.weekly_max_pump">
+<span class="sig-name descname"><span class="pre">weekly_max_pump</span></span><a class="headerlink" href="#hydro.reservoir.HydroReservoir.weekly_max_pump" title="Link to this definition"></a></dt>
+<dd><p>Maximum amount of energy that can be used to pump water for each week.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.reservoir.HydroReservoir.hourly_max_turb">
+<span class="sig-name descname"><span class="pre">hourly_max_turb</span></span><a class="headerlink" href="#hydro.reservoir.HydroReservoir.hourly_max_turb" title="Link to this definition"></a></dt>
+<dd><p>Maximum amount of energy that can be produced for each hour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.reservoir.HydroReservoir.hourly_max_pump">
+<span class="sig-name descname"><span class="pre">hourly_max_pump</span></span><a class="headerlink" href="#hydro.reservoir.HydroReservoir.hourly_max_pump" title="Link to this definition"></a></dt>
+<dd><p>Maximum amount of energy that can be used to pump water for each hour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.reservoir.HydroReservoir.turb_efficiency">
+<span class="sig-name descname"><span class="pre">turb_efficiency</span></span><a class="headerlink" href="#hydro.reservoir.HydroReservoir.turb_efficiency" title="Link to this definition"></a></dt>
+<dd><p>Coefficient for turbine efficiency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.reservoir.HydroReservoir.pump_efficiency">
+<span class="sig-name descname"><span class="pre">pump_efficiency</span></span><a class="headerlink" href="#hydro.reservoir.HydroReservoir.pump_efficiency" title="Link to this definition"></a></dt>
+<dd><p>Coefficient for pumping efficience.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-hydro.study_modifier">
+<span id="hydro-study-modifier-module"></span><h2>hydro.study_modifier module<a class="headerlink" href="#module-hydro.study_modifier" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.study_modifier.</span></span><span class="sig-name descname"><span class="pre">StudyModifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">trajectories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.trajectory.HydroTrajectory" title="hydro.trajectory.HydroTrajectory"><span class="pre">HydroTrajectory</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">study_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.study_modifier.StudyModifier" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class manages the modifications to apply a set of trajectories to a study</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.reservoir">
+<span class="sig-name descname"><span class="pre">reservoir</span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.reservoir" title="Link to this definition"></a></dt>
+<dd><p>Reservoir describing the stock.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir">HydroReservoir</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.trajectories">
+<span class="sig-name descname"><span class="pre">trajectories</span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.trajectories" title="Link to this definition"></a></dt>
+<dd><p>Object computing the trajectories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#hydro.trajectory.HydroTrajectory" title="hydro.trajectory.HydroTrajectory">HydroTrajectory</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.nb_scenarios">
+<span class="sig-name descname"><span class="pre">nb_scenarios</span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.nb_scenarios" title="Link to this definition"></a></dt>
+<dd><p>Number of scenarii considered.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.study_path">
+<span class="sig-name descname"><span class="pre">study_path</span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.study_path" title="Link to this definition"></a></dt>
+<dd><p>Path to the considered antares study.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.study">
+<span class="sig-name descname"><span class="pre">study</span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.study" title="Link to this definition"></a></dt>
+<dd><p>The study to modify.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Study</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.area_name">
+<span class="sig-name descname"><span class="pre">area_name</span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.area_name" title="Link to this definition"></a></dt>
+<dd><p>Name of the considered area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.area">
+<span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.area" title="Link to this definition"></a></dt>
+<dd><p>Antares object representing the considered area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Area</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.storage">
+<span class="sig-name descname"><span class="pre">storage</span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.storage" title="Link to this definition"></a></dt>
+<dd><p>Antares object representing the short term storage we use for applying our modifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>STStorage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.adjust_inflow_pmax_withdrawal_constraint">
+<span class="sig-name descname"><span class="pre">adjust_inflow_pmax_withdrawal_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">balance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.adjust_inflow_pmax_withdrawal_constraint" title="Link to this definition"></a></dt>
+<dd><p>Adjust the hourly balance at the end of the week to not exceed
+the maximum weekly turbine capacity (avoid numerical rounding errors leading to infeasibilities).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.adjust_inflows_pmax_injection_constraint">
+<span class="sig-name descname"><span class="pre">adjust_inflows_pmax_injection_constraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">balance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.adjust_inflows_pmax_injection_constraint" title="Link to this definition"></a></dt>
+<dd><p>Adjust the hourly balance at the end of the week to not exceed
+the maximum weekly pumping capacity (avoid numerical rounding errors leading to infeasibilities).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.adjust_to_spillage_constraint">
+<span class="sig-name descname"><span class="pre">adjust_to_spillage_constraint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.adjust_to_spillage_constraint" title="Link to this definition"></a></dt>
+<dd><p>Complies with spillage constraint. Negative net load is transfered to solar producion and
+max(turbining capacity,pumping capacity) is added to net load and misc-gen (fatal production).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.apply_all">
+<span class="sig-name descname"><span class="pre">apply_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.apply_all" title="Link to this definition"></a></dt>
+<dd><p>Execute all the steps to modify the Antares study.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.clean_scenariobuilder">
+<span class="sig-name descname"><span class="pre">clean_scenariobuilder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.clean_scenariobuilder" title="Link to this definition"></a></dt>
+<dd><p>Clean the scenariobuilder.dat file by removing lines associated with
+the ST proxy for the area (both ‘sts’ and ‘s’ entries).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.create_inflows_sts">
+<span class="sig-name descname"><span class="pre">create_inflows_sts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.create_inflows_sts" title="Link to this definition"></a></dt>
+<dd><p>Generate inflows.txt for the ST proxy by calculating the adjusted hourly balance
+according to constraints for each scenario and week.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.create_pmax_file">
+<span class="sig-name descname"><span class="pre">create_pmax_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.create_pmax_file" title="Link to this definition"></a></dt>
+<dd><p>Generate PMAX-injection.txt and PMAX-withdrawal.txt files for the area,
+based on maximum hourly pumping and turbine capacities,
+concatenated with 24 additional values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.create_st_cluster">
+<span class="sig-name descname"><span class="pre">create_st_cluster</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.create_st_cluster" title="Link to this definition"></a></dt>
+<dd><p>Append a section to the list.ini file defining an ST storage cluster,
+including its capacities and efficiencies.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.modify_scenario_builder">
+<span class="sig-name descname"><span class="pre">modify_scenario_builder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.modify_scenario_builder" title="Link to this definition"></a></dt>
+<dd><p>Create a text file in user/tmp/scenariobuilder_lines listing
+the lines needed to assign ST clusters and to MC scenarios.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.overwrite_pmax">
+<span class="sig-name descname"><span class="pre">overwrite_pmax</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.overwrite_pmax" title="Link to this definition"></a></dt>
+<dd><p>Replace the pmax file (maxpower_{area}.txt) with a file where all values are zero,
+backing up the original file first.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.remove_st_cluster_section">
+<span class="sig-name descname"><span class="pre">remove_st_cluster_section</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.remove_st_cluster_section" title="Link to this definition"></a></dt>
+<dd><p>Remove the ST proxy section from the storage cluster list.ini file
+for the area.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.restore_miscgen_load_and_solar">
+<span class="sig-name descname"><span class="pre">restore_miscgen_load_and_solar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.restore_miscgen_load_and_solar" title="Link to this definition"></a></dt>
+<dd><p>Restore study inputs to their pre-modification state:
+- Restore miscgen-{area}.txt from miscgen-{area}_old.txt if it exists.
+- Restore load_{area}.txt    from load_{area}_old.txt    if it exists.
+- Restore solar_{area}.txt   from solar_{area}_old.txt   if it exists; otherwise remove solar_{area}.txt
+(this file may have been created when negative load was transferred to solar per scenario).
+Missing backups are ignored; existing current files are overwritten or removed as needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.restore_pmax">
+<span class="sig-name descname"><span class="pre">restore_pmax</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.restore_pmax" title="Link to this definition"></a></dt>
+<dd><p>Restore the pmax file (maxpower_area.txt) by replacing the current version
+with the backup (_old.txt) if it exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.study_modifier.StudyModifier.undo_all">
+<span class="sig-name descname"><span class="pre">undo_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#hydro.study_modifier.StudyModifier.undo_all" title="Link to this definition"></a></dt>
+<dd><p>Perform the full restoration of the Antares study for the original area.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-hydro.trajectory">
+<span id="hydro-trajectory-module"></span><h2>hydro.trajectory module<a class="headerlink" href="#module-hydro.trajectory" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hydro.trajectory.HydroTrajectory">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.trajectory.</span></span><span class="sig-name descname"><span class="pre">HydroTrajectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.cost_function.HydroCostFunction" title="hydro.cost_function.HydroCostFunction"><span class="pre">HydroCostFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bellman</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.bellman.HydroBellman" title="hydro.bellman.HydroBellman"><span class="pre">HydroBellman</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.trajectory.HydroTrajectory" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#base.trajectory.Trajectory" title="base.trajectory.Trajectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trajectory</span></code></a></p>
+<p>Trajectory class for hydro. Inherits from Trajectory.</p>
+<p>Computes and provides trajectories and control values for each scenario and each week.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.trajectory.HydroTrajectory.inflow_adjust_overflow">
+<span class="sig-name descname"><span class="pre">inflow_adjust_overflow</span></span><a class="headerlink" href="#hydro.trajectory.HydroTrajectory.inflow_adjust_overflow" title="Link to this definition"></a></dt>
+<dd><p>factor to modulate how important it is to respect guidelines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.trajectory.HydroTrajectory.adjust_hourly_inflow_overflow">
+<span class="sig-name descname"><span class="pre">adjust_hourly_inflow_overflow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inflow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#hydro.trajectory.HydroTrajectory.adjust_hourly_inflow_overflow" title="Link to this definition"></a></dt>
+<dd><p>Adjust hourly inflow to mitigate overflow or negative stock by detecting violations and recording adjustments.
+Returns the maximum feasible control (turbining) for the week after adjustments and taking in account potential overflow or negative stock during the week.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-hydro">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hydro" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="constants.html" class="btn btn-neutral float-left" title="constants module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tempo.html" class="btn btn-neutral float-right" title="tempo package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Matias Bresciano, Lydie Richaume.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
