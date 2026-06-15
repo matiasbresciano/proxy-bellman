@@ -57,11 +57,11 @@ class Proxy(ABC):
         if mc_years is not None:
             self.mc_years: np.ndarray = mc_years
         else:
-            self.mc_years: np.ndarray = np.arange(residual_load.shape[1])
+            self.mc_years = np.arange(residual_load.shape[1])
         if ts_selection is not None:
             self.ts_selection: np.ndarray = ts_selection
         else:
-            self.ts_selection: np.ndarray = mc_years
+            self.ts_selection = self.mc_years
         self._cost_function: typing.List[CostFunction] = []
         self._bellman: typing.List[Bellman] = []
         self._trajectory: typing.List[Trajectory] = []

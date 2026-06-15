@@ -21,7 +21,7 @@ app = typer.Typer()
 def tempo(
         dir_study: Annotated[str, typer.Argument(help="Antares study directory.")],
         areas: Annotated[list[str], typer.Argument(help="List of study areas (space-separated).")],
-        mc_years: Annotated[str, typer.Option(help="Number of Monte-Carlo years to simulate.")] = 200,
+        mc_years: Annotated[str, typer.Option(help="Number of Monte-Carlo years to simulate.")] = "200",
         ts_selection: Annotated[str | None, typer.Option(help="List of TS to consider when calculating Bellman values, separated by coma, no space. Default is all TS.")] = None,
         dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
         cvar: Annotated[float, typer.Option(help="CVaR parameter for trajectory generation.")] = 1.0,
@@ -34,14 +34,13 @@ def tempo(
     ts_selection_list = parse_years(ts_selection)
     mc_years_list = parse_years(mc_years)
 
+    assert mc_years_list is not None
+
     for area in areas:
         print(f"Computing area {area}")
         proxy = TempoAntaresProxy(dir_study, area, mc_years_list, ts_selection_list, cvar)
         proxy.save_residual_loads()
         dir_output_area = os.path.join(dir_output, area)
-        nb_sce = mc_years
-        if ts_selection_list:
-            nb_sce = len(ts_selection_list)
         for action in actions:
             match action:
                 case "export_trajectories":
@@ -49,7 +48,7 @@ def tempo(
                 case "export_controls":
                     proxy.export_controls(dir_output_area)
                 case "export_calendar":
-                    for s in range(nb_sce):
+                    for s in mc_years_list:
                         proxy.export_daily_controls(0, dir_output_area)
                 case _:
                     print(f"Unknown action: {action}")
@@ -59,7 +58,7 @@ def tempo(
 def hydro(
         dir_study: Annotated[str, typer.Argument(help="Antares study directory.")],
         areas: Annotated[list[str], typer.Argument(help="List of study areas (space-separated).")],
-        mc_years: Annotated[str, typer.Option(help="Number of Monte-Carlo years to simulate.")] = 200,
+        mc_years: Annotated[str, typer.Option(help="Number of Monte-Carlo years to simulate.")] = "200",
         ts_selection: Annotated[str | None, typer.Option(help="List of TS to consider when calculating Bellman values, separated by coma, no space. Default is all TS.")] = None,
         dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
         nb_turb: Annotated[int, typer.Option(help="Number of values on which to compute the cost function.")] = 25,
@@ -74,6 +73,7 @@ def hydro(
     ts_selection_list = parse_years(ts_selection)
     mc_years_list = parse_years(mc_years)
 
+    assert mc_years_list is not None
 
     for area in areas:
         print(f"Computing area {area}")
@@ -105,7 +105,7 @@ def parse_years(years: str | None) -> np.ndarray | None:
             1], f"In range mode, first value of must be strictly inferior to second value."
         res = np.arange(borns[0], borns[1])
     elif years.find(",") != -1:
-        res = [int(a) for a in years.split(",")]
+        res = np.asarray([int(a) for a in years.split(",")])
     else:
         res = np.arange(int(years))
     return res
