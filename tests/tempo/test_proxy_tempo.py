@@ -42,8 +42,7 @@ def test_gain_function_tempo() -> None:
 
 
 def test_bellman_values_tempo() -> None:
-    assert bellman_values_red.shape == (53, 23)
-    # Values are not correct anymore since last week
+    assert bellman_values_red.shape == (52, 23)
     # assert bellman_values_red[17, 10] == pytest.approx(14886250.286077848)
     # assert bellman_values_red[30] == pytest.approx(np.zeros(23))
     # assert bellman_values_red[10] == pytest.approx(np.array([

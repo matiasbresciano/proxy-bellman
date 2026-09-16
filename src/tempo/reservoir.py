@@ -15,6 +15,7 @@ class TempoReservoir(Reservoir):
         last_day: Last day of the year when a tempo day can be used (included) (31st of marsh for red)
         week_day_first_september: weekday of the first september (0 for monday, 6 for sunday)
     """
+
     excluded_week_days: np.ndarray = field(default_factory=
                                            lambda: np.asarray([5, 6], dtype=np.int16))
     first_day: int = 61  # november 1st
@@ -43,4 +44,11 @@ class TempoReservoir(Reservoir):
         """
         day_of_week = (day_of_year + self.week_day_first_september) % 7
         return (day_of_year - day_of_week) % (constants.NB_DAYS + 1)
+
+    def feasibility(self, controls: np.ndarray, week_ind: int, max_control: int | float) -> np.ndarray:
+        return (
+                (controls >= 0) &
+                (controls <= 7 - len(self.excluded_week_days)) &
+                (controls <= max_control)
+        )
 

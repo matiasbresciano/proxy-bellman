@@ -25,7 +25,7 @@ def tempo(
         ts_selection: Annotated[str | None, typer.Option(help="List of TS to consider when calculating Bellman values, separated by coma, no space. Default is all TS.")] = None,
         dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
         cvar: Annotated[float, typer.Option(help="CVaR parameter for trajectory generation.")] = 1.0,
-        actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action")] = ["None"]
+        actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action from [export_trajectories, export_controls, ...]")] = ["None"]
 ) -> None:
     """
     Launch Tempo trajectories generation.

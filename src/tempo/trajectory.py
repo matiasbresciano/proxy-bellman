@@ -69,8 +69,8 @@ class TempoTrajectory(Trajectory):
             penalty = np.asarray([[self._bellman.get_penalty(week_ind, stc)
                                    for stc in sce]
                                   for sce in next_stocks])
-            total_values = - costs + future_value + penalty
-            best_controls = controls[np.argmax(total_values, axis=1)].astype(float)  # (S_act,)
+            total_values = costs + future_value + penalty
+            best_controls = controls[np.argmin(total_values, axis=1)].astype(float)  # (S_act,)
 
             if self.red_trajectory is not None:
                 red_now = self.red_trajectory.get_trajectories()[list_sce, week_ind]       # (S_act,)

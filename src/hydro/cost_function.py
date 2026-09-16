@@ -206,10 +206,3 @@ class HydroCostFunction(CostFunction):
             self._compute_cost_function()
         assert isinstance(self.__exact_costs, np.ndarray)
         return self.__exact_costs[week, sce]
-
-    def get_controls(self, week_ind: int, sce_ind: int) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
-        """Returns the controls values chosen for the discretisation of a given week and scenario."""
-        if self._controls is None:
-            self._compute_cost_function()
-        assert isinstance(self._controls, np.ndarray)
-        return self._controls[week_ind, sce_ind]

@@ -29,7 +29,7 @@ class CostFunction(ABC):
                               np.ndarray[tuple[int, int, int], np.dtype[np.float64]] |
                               None
                               ) = None
-        self._controls: np.ndarray[tuple[int, int, int], np.dtype[np.float64]] | None = None
+        self._controls: np.ndarray[tuple[int, int, int], np.dtype[np.float64|np.int32]] | None = None
 
     @abstractmethod
     def _compute_cost_function(self) -> None:
@@ -40,3 +40,10 @@ class CostFunction(ABC):
     def get_cost(self, week_ind: int, sce_ind: int, control: float | int) -> float:
         """get the cost value linked to a week, a control and a scenario"""
         pass
+
+    def get_controls(self, week_ind: int, sce_ind: int) -> np.ndarray[tuple[int], np.dtype[np.float64]]:
+        """Returns the controls values chosen for the discretisation of a given week and scenario."""
+        if self._controls is None:
+            self._compute_cost_function()
+        assert isinstance(self._controls, np.ndarray)
+        return self._controls[week_ind, sce_ind]

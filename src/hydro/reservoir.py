@@ -17,6 +17,7 @@ class HydroReservoir(Reservoir):
         turb_efficiency (float): Coefficient for turbine efficiency.
         pump_efficiency (float): Coefficient for pumping efficience.
     """
+
     weekly_max_turb: np.ndarray = field(default_factory=
                                         lambda: np.ones(shape=constants.RESULTS_SIZE, dtype=np.float64))
     weekly_max_pump: np.ndarray = field(default_factory=
@@ -27,4 +28,18 @@ class HydroReservoir(Reservoir):
                                         lambda: np.ones(shape=constants.NB_HOURS, dtype=np.float64)/(7*24))
     turb_efficiency: float = 1
     pump_efficiency: float = 1
-    
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self.possible_control_values = np.arange(0,101, step=self.step) * self.capacity/100
+
+    def feasibility(self, controls: np.ndarray, week_ind: int, max_control: int|float) -> np.ndarray:
+        max_week_pump = self.weekly_max_pump[week_ind]
+        max_week_turb = self.weekly_max_turb[week_ind]
+        feasible = (
+                (controls >= -max_week_pump * self.pump_efficiency) &
+                (controls <= max_week_turb * self.turb_efficiency) &
+                (controls <= max_control)
+        )
+
+        return feasible

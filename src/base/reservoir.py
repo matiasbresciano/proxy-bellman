@@ -1,14 +1,14 @@
 """
 Base modelisation of the stock on witch a trajectory must be computed
 """
-
+from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 import numpy as np
 import constants
 
 
 @dataclass
-class Reservoir:
+class Reservoir(ABC):
     """This class is the base modelisation of the stock on witch a trajectory must be computed
 
     This class contains the details of the stock, such as its capacity, its potential inflows, and how and
@@ -24,6 +24,7 @@ class Reservoir:
         step (int): discretisation step
     """
     capacity: int | float = 100
+    possible_control_values: np.ndarray|None = None
     lower_guide: np.ndarray = field(default_factory=
                                     lambda: np.zeros(shape=constants.RESULTS_SIZE, dtype=np.float64))
     upper_guide: np.ndarray | None = None
@@ -36,3 +37,9 @@ class Reservoir:
     def __post_init__(self) -> None:
         if self.upper_guide is None:
             self.upper_guide = self.capacity * np.ones(shape=52, dtype=np.float64)
+        if self.possible_control_values is None:
+            self.possible_control_values = np.arange(self.capacity + 1, step=self.step)
+
+    @abstractmethod
+    def feasibility(self, controls: np.ndarray, week_ind: int, max_control: int|float) -> np.ndarray:
+        pass

@@ -22,7 +22,11 @@ class TempoCostFunction(CostFunction):
         assert isinstance(self._reservoir, TempoReservoir)
         nb_controls = 7 - len(self._reservoir.excluded_week_days) + 1
         self._cost_function = np.zeros(
-            shape=(constants.RESULTS_SIZE+1, nb_controls, self._residual_load.shape[1])
+            shape=(constants.RESULTS_SIZE + 1, nb_controls, self._residual_load.shape[1])
+        )
+        self._controls = np.zeros(
+            shape=(constants.RESULTS_SIZE + 1, self._residual_load.shape[1], nb_controls),
+            dtype=np.uint8
         )
         assert isinstance(self._cost_function, np.ndarray)
 
@@ -42,9 +46,11 @@ class TempoCostFunction(CostFunction):
             week = self._residual_load[day:day+7]
             week = np.delete(week, self._reservoir.excluded_week_days, axis=0)
             week = np.sort(week, axis=0)
-            for control in range(nb_controls):
+            controls = list(range(nb_controls))
+            for control in controls:
                 # negative cost : gain
                 self._cost_function[week_ind, control] = - week[nb_controls-1-control:].sum(axis=0)
+            self._controls[week_ind, :] = controls
             day += 7
 
         if day + 6 >= self._reservoir.last_day:  # if sunday of last week is out of the period
@@ -56,7 +62,9 @@ class TempoCostFunction(CostFunction):
             week = np.delete(week, self._reservoir.excluded_week_days, axis=0)
             week = np.sort(week, axis=0)
             week_ind = day // 7
-            for control in range(nb_controls):
+            controls = list(range(nb_controls))
+            self._controls[week_ind, :] = controls
+            for control in controls:
                 self._cost_function[week_ind, control] = - week[nb_controls - 1 - control:].sum(axis=0)
 
     def get_cost(self, week_ind: int, sce_ind: int, control: int | float) -> float:
