@@ -1,5 +1,5 @@
 import os
-import time
+import datetime
 
 import typer
 from typing_extensions import Annotated
@@ -40,7 +40,9 @@ def tempo(
         print(f"Computing area {area}")
         proxy = TempoAntaresProxy(dir_study, area, mc_years_list, ts_selection_list, cvar)
         proxy.save_residual_loads()
-        dir_output_area = os.path.join(dir_output, area)
+        dir_output_area = os.path.join(dir_output + datetime.datetime.now().strftime("_%Y-%m-%d-%H-%M-%S")
+, area)
+        print(f"Results for this area are exported in {dir_output_area}.")
         for action in actions:
             match action:
                 case "export_trajectories":
@@ -60,7 +62,7 @@ def hydro(
         areas: Annotated[list[str], typer.Argument(help="List of study areas (space-separated).")],
         mc_years: Annotated[str, typer.Option(help="Number of Monte-Carlo years to simulate.")] = "200",
         ts_selection: Annotated[str | None, typer.Option(help="List of TS to consider when calculating Bellman values, separated by coma, no space. Default is all TS.")] = None,
-        dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
+        dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = "./results",
         nb_turb: Annotated[int, typer.Option(help="Number of values on which to compute the cost function.")] = 25,
         alpha: Annotated[int, typer.Option(help="parameter for the computation of the costs value and the turbine vs pumping ratio")] = 2,
         penalty_factor: Annotated[float, typer.Option(help="factor to modulate how important it is to respect guidelines")] = 1,
@@ -79,7 +81,9 @@ def hydro(
         print(f"Computing area {area}")
         proxy = HydroAntaresProxy(dir_study, area, mc_years_list, ts_selection_list, nb_turb, alpha, penalty_factor)
         proxy.save_residual_loads()
-        dir_output_area = os.path.join(dir_output, "area")
+        dir_output_area = os.path.join(dir_output + datetime.datetime.now().strftime("_%Y-%m-%d-%H-%M-%S")
+, area)
+        print(f"Results for this area are exported in {dir_output_area}.")
         for action in actions:
             match action:
                 case "export_controls":
