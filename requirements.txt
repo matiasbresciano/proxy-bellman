@@ -6,3 +6,4 @@ pandas~=2.3.3
 antares_craft
 typer~=0.25.1
 typing_extensions~=4.15.0
+pyyaml>=6.0.3

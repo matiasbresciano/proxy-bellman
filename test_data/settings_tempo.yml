@@ -1,0 +1,8 @@
+tempo:
+  study: C:\Users\lydie.richaume\Documents\PlaneTerr\proxy-bellman\test_data\two_nodes
+  output_dir: ./test_data/results
+  areas:
+    - area
+  actions:
+    - export_controls
+    - export_trajectories

@@ -1,10 +1,12 @@
 import os
+from pathlib import Path
 import datetime
 
 import typer
 from typing_extensions import Annotated
 
 import numpy as np
+import yaml
 
 from tempo.proxy import TempoAntaresProxy
 from hydro.proxy import HydroAntaresProxy
@@ -81,8 +83,7 @@ def hydro(
         print(f"Computing area {area}")
         proxy = HydroAntaresProxy(dir_study, area, mc_years_list, ts_selection_list, nb_turb, alpha, penalty_factor)
         proxy.save_residual_loads()
-        dir_output_area = os.path.join(dir_output + datetime.datetime.now().strftime("_%Y-%m-%d-%H-%M-%S")
-, area)
+        dir_output_area = os.path.join(dir_output + datetime.datetime.now().strftime("_%Y-%m-%d-%H-%M-%S"), area)
         print(f"Results for this area are exported in {dir_output_area}.")
         for action in actions:
             match action:
@@ -96,6 +97,56 @@ def hydro(
                     proxy.undo_study()
                 case _:
                     print(f"Unknown action: {action}")
+
+@app.command()
+def yaml_settings(settings_path: Annotated[str, typer.Argument(help="Yaml settings path.")]) -> None:
+    with Path(settings_path).open() as file:
+        settings_yaml = yaml.safe_load(file)
+        if "hydro" in settings_yaml:
+            hydro_settings = settings_yaml["hydro"]
+
+            dir_study = hydro_settings["study"]
+            areas = hydro_settings["areas"]
+            output_dir = "./results"
+            if "output_dir" in hydro_settings:
+                output_dir = hydro_settings["output_dir"]
+            mc_years = "200"
+            if "mc_years" in hydro_settings:
+                mc_years = hydro_settings["mc_years"]
+            ts_selection = None
+            if "ts_selection" in hydro_settings:
+                ts_selection = hydro_settings["ts_selection"]
+            nb_turb = 25
+            if "nb_turb" in hydro_settings:
+                nb_turb = hydro_settings["nb_turb"]
+            alpha = 2
+            if "alpha" in hydro_settings:
+                alpha = hydro_settings["alpha"]
+            penalty_factor = 1
+            if "penalty_factor" in hydro_settings:
+                penalty_factor = hydro_settings["penalty_factor"]
+            actions = ["None"]
+            if "actions" in hydro_settings:
+                actions = hydro_settings["actions"]
+            hydro(dir_study, areas, mc_years, ts_selection, output_dir, nb_turb, alpha, penalty_factor, actions)
+
+        elif "tempo" in settings_yaml:
+            tempo_settings = settings_yaml["tempo"]
+            dir_study = tempo_settings["study"]
+            areas = tempo_settings["areas"]
+            output_dir = "./results"
+            if "output_dir" in tempo_settings:
+                output_dir = tempo_settings["output_dir"]
+            mc_years = "200"
+            if "mc_years" in tempo_settings:
+                mc_years = tempo_settings["mc_years"]
+            ts_selection = None
+            if "ts_selection" in tempo_settings:
+                ts_selection = tempo_settings["ts_selection"]
+            actions = ["None"]
+            if "actions" in tempo_settings:
+                actions = tempo_settings["actions"]
+            tempo(dir_study, areas, mc_years, ts_selection, output_dir, 1, actions)
 
 
 def parse_years(years: str | None) -> np.ndarray | None:
