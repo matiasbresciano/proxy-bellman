@@ -3,6 +3,7 @@ hydro:
   output_dir: ./test_data/results
   areas:
     - area
+    - area1
   actions:
     - export_controls
     - export_trajectories
