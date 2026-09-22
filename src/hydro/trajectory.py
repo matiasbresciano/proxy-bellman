@@ -1,6 +1,6 @@
 import numpy as np
 
-from hydro.bellman import HydroBellman
+from base.bellman import Bellman
 from hydro.reservoir import HydroReservoir
 from hydro.cost_function import HydroCostFunction
 from base.trajectory import Trajectory
@@ -17,7 +17,7 @@ class HydroTrajectory(Trajectory):
     """
 
     def __init__(self, list_sce: np.ndarray, reservoir: HydroReservoir, cost_function: HydroCostFunction,
-                 bellman: HydroBellman):
+                 bellman: Bellman):
         """
         Initialize OptimalTrajectories with a BellmanValuesProxy instance.
         Prepares data and computes optimal trajectories.
@@ -38,7 +38,6 @@ class HydroTrajectory(Trajectory):
         self.inflow_adjust_overflow = np.zeros((constants.RESULTS_SIZE, len(self._list_sce), constants.RESULTS_INTERVAL_HOURS))
 
         assert isinstance(self._reservoir, HydroReservoir)
-        assert isinstance(self._bellman, HydroBellman)
         assert isinstance(self._cost_function, HydroCostFunction)
 
         for i, s in enumerate(self._list_sce):

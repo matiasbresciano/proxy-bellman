@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 
 from hydro.trajectory import HydroTrajectory
-from hydro.bellman import HydroBellman
+from base.bellman import Bellman
 from hydro.cost_function import HydroCostFunction
 from hydro.reservoir import HydroReservoir
 import constants
@@ -23,7 +23,7 @@ def test_zero_net_load():
                                )
     net_load = np.zeros(shape=(constants.NB_HOURS, nb_sce), dtype=np.float64)
     cost_function = HydroCostFunction(net_load, reservoir)
-    bellman = HydroBellman(np.arange(nb_sce), 1., cost_function, reservoir)
+    bellman = Bellman(np.arange(nb_sce), cost_function, reservoir)
     traj = HydroTrajectory(np.arange(nb_sce), reservoir, cost_function, bellman)
     values = traj.get_trajectories()
     controls = traj.get_controls()
@@ -45,7 +45,7 @@ def test_one_net_load():
                                )
     net_load = np.ones(shape=(constants.NB_HOURS, nb_sce), dtype=np.float64) / (7 * 24)
     cost_function = HydroCostFunction(net_load, reservoir)
-    bellman = HydroBellman(np.arange(nb_sce), 1., cost_function, reservoir)
+    bellman = Bellman(np.arange(nb_sce), cost_function, reservoir)
     traj = HydroTrajectory(np.arange(nb_sce), reservoir, cost_function, bellman)
     values = traj.get_trajectories()
     controls = traj.get_controls()

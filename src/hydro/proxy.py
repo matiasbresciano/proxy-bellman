@@ -3,7 +3,7 @@ import typing
 
 from base.proxy import Proxy, AntaresProxy
 from hydro.trajectory import HydroTrajectory
-from hydro.bellman import HydroBellman
+from base.bellman import Bellman
 from hydro.cost_function import HydroCostFunction
 from hydro.reservoir import HydroReservoir
 import constants
@@ -35,9 +35,9 @@ class HydroProxy(Proxy):
             penalty_factor (float): factor to modulate how important it is to respect guidelines
         """
         super().__init__(residual_load, list(reservoir), mc_years, ts_selection)
-        cost_function = HydroCostFunction(self._residual_load, reservoir[0], turb_threshold, alpha)
+        cost_function = HydroCostFunction(self._residual_load, reservoir[0], turb_threshold, alpha, penalty_factor)
         self._cost_function.append(cost_function)
-        bellman = HydroBellman(self.ts_selection, penalty_factor, cost_function, reservoir[0])
+        bellman = Bellman(self.ts_selection, cost_function, reservoir[0])
         self._bellman.append(bellman)
         trajectories = HydroTrajectory(self.mc_years, reservoir[0], cost_function, bellman)
         self._trajectory.append(trajectories)

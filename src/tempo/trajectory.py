@@ -1,6 +1,6 @@
 import numpy as np
 
-from tempo.bellman import TempoBellman
+from base.bellman import Bellman
 from tempo.reservoir import TempoReservoir
 from tempo.cost_function import TempoCostFunction
 from base.trajectory import Trajectory
@@ -13,7 +13,7 @@ class TempoTrajectory(Trajectory):
     Computes and provides trajectories and control values for each scenario and each week.
     """
 
-    def __init__(self, list_sce: np.ndarray, reservoir: TempoReservoir, cost_function: TempoCostFunction, bellman: TempoBellman,
+    def __init__(self, list_sce: np.ndarray, reservoir: TempoReservoir, cost_function: TempoCostFunction, bellman: Bellman,
                  red_trajectory: Trajectory | None = None):
         super().__init__(list_sce, reservoir, cost_function, bellman)
         self.daily_trajectory: None | np.ndarray = None
@@ -66,7 +66,7 @@ class TempoTrajectory(Trajectory):
             # Future BV and penalty evaluated for all (scenario, control)
             future_value = self._bellman.get_bellman_values()[week_ind, next_stocks]
             future_value = np.where(next_stocks < 0, 0, future_value)
-            penalty = np.asarray([[self._bellman.get_penalty(week_ind, stc)
+            penalty = np.asarray([[self._cost_function.get_penalty(week_ind, stc)
                                    for stc in sce]
                                   for sce in next_stocks])
             total_values = costs + future_value + penalty

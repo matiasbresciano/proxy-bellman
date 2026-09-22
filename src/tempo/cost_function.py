@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.interpolate import interp1d
 
 from base.cost_function import CostFunction
 from tempo.reservoir import TempoReservoir
@@ -74,4 +75,19 @@ class TempoCostFunction(CostFunction):
             self._compute_cost_function()
         assert isinstance(self._cost_function, np.ndarray)
         return float(self._cost_function[week_ind, int(control), sce_ind])
+
+    def get_penalty(self, week: int, stock: int|float) -> float:
+        """Returns the penalty associated to a certain stock value for a given week.
+        """
+        assert isinstance(self._reservoir.upper_guide, np.ndarray)
+        penalty = interp1d([
+                self._reservoir.lower_guide[week] - 1,
+                self._reservoir.lower_guide[week],
+                self._reservoir.upper_guide[week],
+                self._reservoir.upper_guide[week] + 1,
+            ],
+            [1e9, 0, 0, 1e9],
+            kind='linear', fill_value='extrapolate')
+        # Alternative no penalty: penalty = lambda x: 0
+        return penalty(stock)
 

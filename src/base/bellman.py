@@ -2,7 +2,6 @@
 Base for the Bellman values computation classes
 """
 
-from abc import ABC, abstractmethod
 import numpy as np
 import typing
 import math
@@ -12,8 +11,8 @@ from base.reservoir import Reservoir
 import constants
 
 
-class Bellman(ABC):
-    """This abstract class is a model for Bellman values computation classes.
+class Bellman:
+    """This class is a model for Bellman values computation classes.
 
     Attributes:
         _list_sce (np.ndarray): indexes of the scenarii to consider
@@ -58,7 +57,7 @@ class Bellman(ABC):
             (best value, corresponding next stock, corresponding control)
         """
         cost = np.asarray([self._cost_function.get_cost(week_ind, sce_ind, ctrl) for ctrl in controls])
-        penalty = np.asarray([self.get_penalty(week_ind, stock) for stock in next_stock])
+        penalty = np.asarray([self._cost_function.get_penalty(week_ind, stock) for stock in next_stock])
         bellman_value = np.asarray([self.get_bellman_value(week_ind, stock) for stock in next_stock])
         total_value = cost + penalty + bellman_value
         if week_ind == 51:
@@ -102,7 +101,7 @@ class Bellman(ABC):
         ns = next_stock_grid[feasible]
         ctrl = controls[feasible]
 
-        penalty = [self.get_penalty(week_ind, stock) for stock in ns]
+        penalty = [self._cost_function.get_penalty(week_ind, stock) for stock in ns]
         cost = [self._cost_function.get_cost(week_ind, sce_ind, c) for c in ctrl]
 
         bellman_values = np.asarray([self.get_bellman_value(week_ind, stock) for stock in ns])
@@ -125,7 +124,7 @@ class Bellman(ABC):
         self._bellman_values = np.zeros(shape=(constants.RESULTS_SIZE, len(self._reservoir.possible_control_values)), dtype=np.float64)
 
         self._bellman_values[constants.RESULTS_SIZE - 1] = np.array([
-            self.get_penalty(constants.RESULTS_SIZE - 1, c)
+            self._cost_function.get_penalty(constants.RESULTS_SIZE - 1, c)
             for c in self._reservoir.possible_control_values
         ])
 
@@ -177,11 +176,6 @@ class Bellman(ABC):
             self._compute_bellman_values()
         assert isinstance(self._bellman_values, np.ndarray)
         return self._bellman_values
-
-    @abstractmethod
-    def get_penalty(self, week: int, stock: float|int) -> float:
-        """Returns the computed penalty for given week and stock"""
-        pass
 
     def get_usage_values(self) -> np.ndarray[tuple[int, int], np.dtype[np.float64]]:
         """Returns all usage values. Array is indexed as [week_index, level_index]."""

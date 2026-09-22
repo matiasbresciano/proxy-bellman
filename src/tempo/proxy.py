@@ -5,7 +5,7 @@ import pandas as pd
 
 from base.proxy import Proxy, AntaresProxy
 from tempo.trajectory import TempoTrajectory
-from tempo.bellman import TempoBellman
+from base.bellman import Bellman
 from tempo.cost_function import TempoCostFunction
 from tempo.reservoir import TempoReservoir
 import constants
@@ -88,7 +88,7 @@ class TempoProxy(Proxy):
         for res in reservoirs:
             cost_function = TempoCostFunction(self._residual_load, res)
             self._cost_function.append(cost_function)
-            bellman = TempoBellman(self.ts_selection, cost_function, res, c_var)
+            bellman = Bellman(self.ts_selection, cost_function, res)
             self._bellman.append(bellman)
             prev_traj = None
             if len(self._trajectory):

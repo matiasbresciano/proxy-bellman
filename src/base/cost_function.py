@@ -47,3 +47,8 @@ class CostFunction(ABC):
             self._compute_cost_function()
         assert isinstance(self._controls, np.ndarray)
         return self._controls[week_ind, sce_ind]
+
+    @abstractmethod
+    def get_penalty(self, week: int, stock: float|int) -> float:
+        """Returns the computed penalty for given week and stock"""
+        pass

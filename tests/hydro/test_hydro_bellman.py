@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from hydro.bellman import HydroBellman
+from base.bellman import Bellman
 from hydro.cost_function import HydroCostFunction
 from hydro.reservoir import HydroReservoir
 import constants
@@ -20,7 +20,7 @@ def test_zero_net_load():
                                )
     net_load = np.zeros(shape=(constants.NB_HOURS, nb_sce), dtype=np.float64)
     cost_function = HydroCostFunction(net_load, reservoir)
-    bellman = HydroBellman(np.arange(nb_sce), 1., cost_function, reservoir)
+    bellman = Bellman(np.arange(nb_sce), cost_function, reservoir)
     values = bellman.get_bellman_values()
     assert isinstance(values, np.ndarray)
     for i in range(constants.RESULTS_SIZE):

@@ -14,17 +14,19 @@ class HydroCostFunction(CostFunction):
     Attributes:
         turb_threshold (int): number of values on which the cost function is computed (default is 25).
         alpha (int): parameter for the computation of the costs value and the turbine vs pumping ratio.
+        penalty_factor (float): factor to modulate how important it is to respect guidelines.
         __max_costs (np.ndarray): maximum cost for each week to use as penalty.
         __exact_costs (np.ndarray): costs computed for stock values chosen for discretisation. These are the costs
             used for interpolation.
     """
     def __init__(self, residual_load: np.ndarray, reservoir: HydroReservoir, turb_threshold: int = 25,
-                 alpha: int = 2):
+                 alpha: int = 2, penalty_factor: float = 1):
         super().__init__(residual_load, reservoir)
         self.turb_threshold: int = turb_threshold
         self.alpha: int = alpha
         self.__max_costs: np.ndarray[tuple[int, int], np.dtype[np.number]] | None = None
         self.__exact_costs: np.ndarray[tuple[int, int, int], np.dtype[np.number]] | None = None
+        self.penalty_factor = penalty_factor
 
     def _compute_cost_function(self) -> None:
         """
@@ -206,3 +208,22 @@ class HydroCostFunction(CostFunction):
             self._compute_cost_function()
         assert isinstance(self.__exact_costs, np.ndarray)
         return self.__exact_costs[week, sce]
+
+    def get_penalty(self, week_idx: int, stock: float) -> float:
+        """
+        Returns a piecewise penalty function penalizing deviations outside the weekly lower and upper rule curves.
+        Penalties grow linearly beyond ±1% of reservoir capacity from the rule curves.
+        """
+        assert isinstance(self._reservoir.upper_guide, np.ndarray)
+
+        max_cost = self.max_cost(week_idx)
+        lower = self._reservoir.lower_guide[week_idx]
+        upper = self._reservoir.upper_guide[week_idx]
+        cap = self._reservoir.capacity
+        mid = 0.5 * (lower + upper)
+        alpha = self.alpha
+        if week_idx == constants.RESULTS_SIZE - 1:
+            res = 10 * max_cost * abs(stock - self._reservoir.final_level) / self._reservoir.capacity
+        else:
+            res = self.penalty_factor * self.max_cost(week_idx) * ((stock - mid) / cap) ** alpha
+        return res
