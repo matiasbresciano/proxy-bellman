@@ -94,7 +94,6 @@
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman._usage_value"><code class="docutils literal notranslate"><span class="pre">Bellman._usage_value</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.get_bellman_value"><code class="docutils literal notranslate"><span class="pre">Bellman.get_bellman_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.get_bellman_values"><code class="docutils literal notranslate"><span class="pre">Bellman.get_bellman_values()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.get_penalty"><code class="docutils literal notranslate"><span class="pre">Bellman.get_penalty()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.get_usage_values"><code class="docutils literal notranslate"><span class="pre">Bellman.get_usage_values()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.iterate_over_controls_vec"><code class="docutils literal notranslate"><span class="pre">Bellman.iterate_over_controls_vec()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.bellman.Bellman.iterate_over_stock_levels_vec"><code class="docutils literal notranslate"><span class="pre">Bellman.iterate_over_stock_levels_vec()</span></code></a></li>
@@ -110,6 +109,7 @@
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction._controls"><code class="docutils literal notranslate"><span class="pre">CostFunction._controls</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction.get_controls"><code class="docutils literal notranslate"><span class="pre">CostFunction.get_controls()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction.get_cost"><code class="docutils literal notranslate"><span class="pre">CostFunction.get_cost()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="base.html#base.cost_function.CostFunction.get_penalty"><code class="docutils literal notranslate"><span class="pre">CostFunction.get_penalty()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -192,23 +192,16 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="hydro.html">hydro package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hydro.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro.bellman">hydro.bellman module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman"><code class="docutils literal notranslate"><span class="pre">HydroBellman</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.penalty_factor"><code class="docutils literal notranslate"><span class="pre">HydroBellman.penalty_factor</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.bellman_function"><code class="docutils literal notranslate"><span class="pre">HydroBellman.bellman_function()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.bellman.HydroBellman.get_penalty"><code class="docutils literal notranslate"><span class="pre">HydroBellman.get_penalty()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="hydro.html#module-hydro.cost_function">hydro.cost_function module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.turb_threshold"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.turb_threshold</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.alpha"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.alpha</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.penalty_factor"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.penalty_factor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.__max_costs"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.__max_costs</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.__exact_costs"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.__exact_costs</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.get_cost"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.get_cost()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.get_exact_costs"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.get_exact_costs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.get_penalty"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.get_penalty()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hydro.html#hydro.cost_function.HydroCostFunction.max_cost"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction.max_cost()</span></code></a></li>
 </ul>
 </li>
@@ -275,18 +268,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tempo.html">tempo package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tempo.html#how-the-tempo-algorithm-handles-input-year">How the tempo algorithm handles input year</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tempo.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tempo.html#module-tempo.bellman">tempo.bellman module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tempo.html#tempo.bellman.TempoBellman"><code class="docutils literal notranslate"><span class="pre">TempoBellman</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.bellman.TempoBellman.c_var"><code class="docutils literal notranslate"><span class="pre">TempoBellman.c_var</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.bellman.TempoBellman.get_penalty"><code class="docutils literal notranslate"><span class="pre">TempoBellman.get_penalty()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="tempo.html#module-tempo.cost_function">tempo.cost_function module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tempo.html#tempo.cost_function.TempoCostFunction"><code class="docutils literal notranslate"><span class="pre">TempoCostFunction</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.cost_function.TempoCostFunction.get_cost"><code class="docutils literal notranslate"><span class="pre">TempoCostFunction.get_cost()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tempo.html#tempo.cost_function.TempoCostFunction.get_penalty"><code class="docutils literal notranslate"><span class="pre">TempoCostFunction.get_penalty()</span></code></a></li>
 </ul>
 </li>
 </ul>

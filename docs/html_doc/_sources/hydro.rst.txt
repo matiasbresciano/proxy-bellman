@@ -4,14 +4,6 @@ hydro package
 Submodules
 ----------
 
-hydro.bellman module
---------------------
-
-.. automodule:: hydro.bellman
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 hydro.cost\_function module
 ---------------------------
 

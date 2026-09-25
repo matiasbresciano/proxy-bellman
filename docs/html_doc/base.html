@@ -116,8 +116,8 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="base.bellman.Bellman">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">base.bellman.</span></span><span class="sig-name descname"><span class="pre">Bellman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.cost_function.CostFunction" title="base.cost_function.CostFunction"><span class="pre">CostFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#base.reservoir.Reservoir" title="base.reservoir.Reservoir"><span class="pre">Reservoir</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#base.bellman.Bellman" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
-<p>This abstract class is a model for Bellman values computation classes.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is a model for Bellman values computation classes.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="base.bellman.Bellman._list_sce">
 <span class="sig-name descname"><span class="pre">_list_sce</span></span><a class="headerlink" href="#base.bellman.Bellman._list_sce" title="Link to this definition"></a></dt>
@@ -183,12 +183,6 @@
 <dt class="sig sig-object py" id="base.bellman.Bellman.get_bellman_values">
 <span class="sig-name descname"><span class="pre">get_bellman_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#base.bellman.Bellman.get_bellman_values" title="Link to this definition"></a></dt>
 <dd><p>Returns all bellman values. Array is indexed as [week_index, level].</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="base.bellman.Bellman.get_penalty">
-<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#base.bellman.Bellman.get_penalty" title="Link to this definition"></a></dt>
-<dd><p>Returns the computed penalty for given week and stock</p>
 </dd></dl>
 
 <dl class="py method">
@@ -308,6 +302,12 @@ np.ndarray[tuple[int, int, int], np.dtype[np.float64]] for discrete use cases.</
 <dt class="sig sig-object py" id="base.cost_function.CostFunction.get_cost">
 <span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_cost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_ind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#base.cost_function.CostFunction.get_cost" title="Link to this definition"></a></dt>
 <dd><p>get the cost value linked to a week, a control and a scenario</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="base.cost_function.CostFunction.get_penalty">
+<span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#base.cost_function.CostFunction.get_penalty" title="Link to this definition"></a></dt>
+<dd><p>Returns the computed penalty for given week and stock</p>
 </dd></dl>
 
 </dd></dl>

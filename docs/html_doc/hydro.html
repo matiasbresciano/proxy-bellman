@@ -51,10 +51,6 @@
 <li class="toctree-l2"><a class="reference internal" href="constants.html">constants module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">hydro package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-hydro.bellman">hydro.bellman module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#hydro.bellman.HydroBellman"><code class="docutils literal notranslate"><span class="pre">HydroBellman</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-hydro.cost_function">hydro.cost_function module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#hydro.cost_function.HydroCostFunction"><code class="docutils literal notranslate"><span class="pre">HydroCostFunction</span></code></a></li>
 </ul>
@@ -114,46 +110,11 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="module-hydro.bellman">
-<span id="hydro-bellman-module"></span><h2>hydro.bellman module<a class="headerlink" href="#module-hydro.bellman" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="hydro.bellman.HydroBellman">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.bellman.</span></span><span class="sig-name descname"><span class="pre">HydroBellman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.cost_function.HydroCostFunction" title="hydro.cost_function.HydroCostFunction"><span class="pre">HydroCostFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.bellman.HydroBellman" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="base.html#base.bellman.Bellman" title="base.bellman.Bellman"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bellman</span></code></a></p>
-<p>Bellman class for hydro. Inherits from Bellman.</p>
-<p>Computes and provides bellman values and penalties for each week.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.penalty_factor">
-<span class="sig-name descname"><span class="pre">penalty_factor</span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.penalty_factor" title="Link to this definition"></a></dt>
-<dd><p>factor to modulate how important it is to respect guidelines.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.bellman_function">
-<span class="sig-name descname"><span class="pre">bellman_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">interp1d</span></span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.bellman_function" title="Link to this definition"></a></dt>
-<dd><p>Returns an interpolated Bellman value function for given week over reservoir stock levels.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hydro.bellman.HydroBellman.get_penalty">
-<span class="sig-name descname"><span class="pre">get_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#hydro.bellman.HydroBellman.get_penalty" title="Link to this definition"></a></dt>
-<dd><p>Returns a piecewise penalty function penalizing deviations outside the weekly lower and upper rule curves.
-Penalties grow linearly beyond ±1% of reservoir capacity from the rule curves.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="module-hydro.cost_function">
 <span id="hydro-cost-function-module"></span><h2>hydro.cost_function module<a class="headerlink" href="#module-hydro.cost_function" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.cost_function.</span></span><span class="sig-name descname"><span class="pre">HydroCostFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residual_load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">turb_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.cost_function.</span></span><span class="sig-name descname"><span class="pre">HydroCostFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">residual_load</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">turb_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">penalty_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="base.html#base.cost_function.CostFunction" title="base.cost_function.CostFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">CostFunction</span></code></a></p>
 <p>Cost function class for hydro. Inherits from CostFunction.</p>
 <p>Computes and provides cost values and maximum_cost over a week (for penalty values).</p>
@@ -175,6 +136,17 @@ Penalties grow linearly beyond ±1% of reservoir capacity from the rule curves.<
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.penalty_factor">
+<span class="sig-name descname"><span class="pre">penalty_factor</span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.penalty_factor" title="Link to this definition"></a></dt>
+<dd><p>factor to modulate how important it is to respect guidelines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
@@ -221,6 +193,13 @@ cost function computation first.</p>
 <dd><p>Returns the computed cost corresponding to the control values chosen for the
 discretisation of a given week and scenario.</p>
 <p>These values are the one used for the interpolation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hydro.cost_function.HydroCostFunction.get_penalty">
+<span class="sig-name descname"><span class="pre">get_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">week_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#hydro.cost_function.HydroCostFunction.get_penalty" title="Link to this definition"></a></dt>
+<dd><p>Returns a piecewise penalty function penalizing deviations outside the weekly lower and upper rule curves.
+Penalties grow linearly beyond ±1% of reservoir capacity from the rule curves.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -560,7 +539,7 @@ with the backup (_old.txt) if it exists.</p>
 <span id="hydro-trajectory-module"></span><h2>hydro.trajectory module<a class="headerlink" href="#module-hydro.trajectory" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="hydro.trajectory.HydroTrajectory">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.trajectory.</span></span><span class="sig-name descname"><span class="pre">HydroTrajectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.cost_function.HydroCostFunction" title="hydro.cost_function.HydroCostFunction"><span class="pre">HydroCostFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bellman</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.bellman.HydroBellman" title="hydro.bellman.HydroBellman"><span class="pre">HydroBellman</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.trajectory.HydroTrajectory" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hydro.trajectory.</span></span><span class="sig-name descname"><span class="pre">HydroTrajectory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_sce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reservoir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.reservoir.HydroReservoir" title="hydro.reservoir.HydroReservoir"><span class="pre">HydroReservoir</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hydro.cost_function.HydroCostFunction" title="hydro.cost_function.HydroCostFunction"><span class="pre">HydroCostFunction</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bellman</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="base.html#base.bellman.Bellman" title="base.bellman.Bellman"><span class="pre">Bellman</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hydro.trajectory.HydroTrajectory" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="base.html#base.trajectory.Trajectory" title="base.trajectory.Trajectory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Trajectory</span></code></a></p>
 <p>Trajectory class for hydro. Inherits from Trajectory.</p>
 <p>Computes and provides trajectories and control values for each scenario and each week.</p>

@@ -23,7 +23,7 @@ class TempoProxy(Proxy):
                  data_first_month: int, day_first_january: int,
                  mc_years: np.ndarray | None = None,
                  ts_selection: np.ndarray | None = None,
-                 leap_year: bool = False, c_var: float = 1.)\
+                 leap_year: bool = False)\
             -> None:
         """Initialises the proxy
 
@@ -37,7 +37,6 @@ class TempoProxy(Proxy):
             mc_years (np.ndarray(int)): List of years for which to compute trajectories.
             ts_selection (np.ndarray(int)): List of years to take into account to compute bellman values.
             leap_year (bool): Is the considered year a leap year?
-            c_var (float): Keeps only the percentage worst case scenarii to calculate bellman values.
         """
 
         if leap_year:
@@ -202,7 +201,7 @@ class TempoProxy(Proxy):
 class TempoAntaresProxy(AntaresProxy):
     """This class manages the computation of Bellman values and trajectory regarding a tempo reservoir
     using the scenarii of a given antares study."""
-    def __init__(self, study_path: str, area_name: str, mc_years: np.ndarray, sce_selection: np.ndarray | None = None, c_var: float = 1.):
+    def __init__(self, study_path: str, area_name: str, mc_years: np.ndarray, sce_selection: np.ndarray | None = None):
         super().__init__(study_path, area_name, mc_years, sce_selection)
         weekday_1_jan = AntaresProxy._int_from_antares_weekday(
             self.study.get_settings().general_parameters.january_first
@@ -230,7 +229,7 @@ class TempoAntaresProxy(AntaresProxy):
         self._proxy = TempoProxy(self._residual_load, [reservoir_red, reservoir_white],
                                  first_month, weekday_1_jan,
                                  mc_years, sce_selection,
-                                 self.study.get_settings().general_parameters.leap_year, c_var)
+                                 self.study.get_settings().general_parameters.leap_year)
 
     def export_controls(self, export_dir: str, filename: str = "controls.csv") -> None:
         """

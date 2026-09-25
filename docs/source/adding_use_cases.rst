@@ -16,9 +16,9 @@ You can run the tests to ensure everything works:
     pytest .\tests
 
 To create a new use case create a new directory in src: "my_use_case". In this directory,
-you will need to create the files for bellman, cost_function, proxy, reservoir, trajectory, in
-which you will create derivatives for all the classes in the base package such as "MyUseCaseBellman"
-(derivative from base.Bellman), "MyUseCaseCostFunction" (derivative from base.CostFunction), etc. Every
+you will need to create the files for cost_function, proxy, reservoir, trajectory, in
+which you will create derivatives for all the classes in the base package such as "MyUseCaseReservoir"
+(derivative from base.Reservoir), "MyUseCaseCostFunction" (derivative from base.CostFunction), etc. Every
 abstract function of these classes need to be overridden, other functions can be overridden if needed.
 
 You should add relevant tests for your code in the folder "tests".
