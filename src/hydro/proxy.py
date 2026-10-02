@@ -54,9 +54,9 @@ class HydroAntaresProxy(AntaresProxy):
                  alpha: int = 2,
                  penalty_factor: float = 1,
                  tmp_dir: str = "./tmp",
-                 host = None,
-                 token = None,
-                 study_id = None):
+                 host: str|None = None,
+                 token: str|None = None,
+                 study_id: str|None = None):
         """Initialises the proxy using an antares study.
 
         Parameters:
