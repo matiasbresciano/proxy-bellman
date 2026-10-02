@@ -26,7 +26,10 @@ def tempo(
         mc_years: Annotated[str, typer.Option(help="Number of Monte-Carlo years to simulate.")] = "200",
         ts_selection: Annotated[str | None, typer.Option(help="List of TS to consider when calculating Bellman values, separated by coma, no space. Default is all TS.")] = None,
         dir_output: Annotated[str, typer.Option(help="Directory used for outputs.")] = ".",
-        actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action from [export_trajectories, export_controls, ...]")] = ["None"]
+        actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action from [export_trajectories, export_controls, ...]")] = ["None"],
+        host: Annotated[str, typer.Option(help="Antares web host.")] = "",
+        token: Annotated[str, typer.Option(help="Antares web token.")] = "",
+        study_id: Annotated[str, typer.Option(help="Antares web study id.")] = ""
 ) -> None:
     """
     Launch Tempo trajectories generation.
@@ -39,8 +42,7 @@ def tempo(
 
     for area in areas:
         print(f"Computing area {area}")
-        proxy = TempoAntaresProxy(dir_study, area, mc_years_list, ts_selection_list)
-        proxy.save_residual_loads()
+        proxy = TempoAntaresProxy(dir_study, area, mc_years_list, ts_selection_list, host, token, study_id)
         dir_output_area = os.path.join(dir_output + datetime.datetime.now().strftime("_%Y-%m-%d-%H-%M-%S")
 , area)
         print(f"Results for this area are exported in {dir_output_area}.")
@@ -67,7 +69,11 @@ def hydro(
         nb_turb: Annotated[int, typer.Option(help="Number of values on which to compute the cost function.")] = 25,
         alpha: Annotated[int, typer.Option(help="parameter for the computation of the costs value and the turbine vs pumping ratio")] = 2,
         penalty_factor: Annotated[float, typer.Option(help="factor to modulate how important it is to respect guidelines")] = 1,
-        actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action")] = ["None"]
+        actions: Annotated[list[str], typer.Option(help="Actions to perform. Use --actions once for each action")] = ["None"],
+        tmp_dir: Annotated[str, typer.Option(help="directory for putting back up files when modifying the study, or when to fetch them for rolling back")] = "./",
+        host: Annotated[str, typer.Option(help="Antares web host.")] = "",
+        token: Annotated[str, typer.Option(help="Antares web token.")] = "",
+        study_id: Annotated[str, typer.Option(help="Antares web study id.")] = ""
 ) -> None:
     """
     Launch the generation of storage trajectories for one or multiple areas.
@@ -80,8 +86,7 @@ def hydro(
 
     for area in areas:
         print(f"Computing area {area}")
-        proxy = HydroAntaresProxy(dir_study, area, mc_years_list, ts_selection_list, nb_turb, alpha, penalty_factor)
-        proxy.save_residual_loads()
+        proxy = HydroAntaresProxy(dir_study, area, mc_years_list, ts_selection_list, nb_turb, alpha, penalty_factor, tmp_dir, host, token, study_id)
         dir_output_area = os.path.join(dir_output + datetime.datetime.now().strftime("_%Y-%m-%d-%H-%M-%S"), area)
         print(f"Results for this area are exported in {dir_output_area}.")
         for action in actions:
@@ -104,11 +109,24 @@ def yaml_settings(settings_path: Annotated[str, typer.Argument(help="Yaml settin
         if "hydro" in settings_yaml:
             hydro_settings = settings_yaml["hydro"]
 
-            dir_study = hydro_settings["study"]
+            dir_study = ""
+            host = ""
+            study_id = ""
+            if "study" in hydro_settings:
+                dir_study = hydro_settings["study"]
+            else:
+                host = hydro_settings["host"]
+                token = ""
+                if "token" in hydro_settings:
+                    token = hydro_settings["token"]
+                study_id = hydro_settings["study_id"]
             areas = hydro_settings["areas"]
             output_dir = "./results"
             if "output_dir" in hydro_settings:
                 output_dir = hydro_settings["output_dir"]
+            tmp_dir = "./"
+            if "tmp_dir" in hydro_settings:
+                tmp_dir = hydro_settings["tmp_dir"]
             mc_years = "200"
             if "mc_years" in hydro_settings:
                 mc_years = hydro_settings["mc_years"]
@@ -127,11 +145,21 @@ def yaml_settings(settings_path: Annotated[str, typer.Argument(help="Yaml settin
             actions = ["None"]
             if "actions" in hydro_settings:
                 actions = hydro_settings["actions"]
-            hydro(dir_study, areas, mc_years, ts_selection, output_dir, nb_turb, alpha, penalty_factor, actions)
+            hydro(dir_study, areas, mc_years, ts_selection, output_dir, nb_turb, alpha, penalty_factor, actions, tmp_dir, host, token, study_id)
 
         elif "tempo" in settings_yaml:
             tempo_settings = settings_yaml["tempo"]
-            dir_study = tempo_settings["study"]
+            dir_study = ""
+            host = ""
+            study_id = ""
+            if "study" in tempo_settings:
+                dir_study = tempo_settings["study"]
+            else:
+                host = tempo_settings["host"]
+                token = ""
+                if "token" in tempo_settings:
+                    token = tempo_settings["token"]
+                study_id = tempo_settings["study_id"]
             areas = tempo_settings["areas"]
             output_dir = "./results"
             if "output_dir" in tempo_settings:
@@ -145,7 +173,7 @@ def yaml_settings(settings_path: Annotated[str, typer.Argument(help="Yaml settin
             actions = ["None"]
             if "actions" in tempo_settings:
                 actions = tempo_settings["actions"]
-            tempo(dir_study, areas, mc_years, ts_selection, output_dir, 1, actions)
+            tempo(dir_study, areas, mc_years, ts_selection, output_dir, actions, host, token, study_id)
 
 
 def parse_years(years: str | None) -> np.ndarray | None:

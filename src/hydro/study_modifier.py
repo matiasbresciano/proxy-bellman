@@ -19,22 +19,22 @@ class StudyModifier:
         reservoir (HydroReservoir): Reservoir describing the stock.
         trajectories (HydroTrajectory): Object computing the trajectories.
         nb_scenarios (int): Number of scenarii considered.
-        study_path (str): Path to the considered antares study.
+        tmp_dir (str): Path to the considered antares study.
         study (Study): The study to modify.
         area_name (str): Name of the considered area.
         area (Area): Antares object representing the considered area.
         storage (STStorage): Antares object representing the short term storage we use for applying our modifications.
     """
-    def __init__(self, nb_sce: int, res: HydroReservoir, trajectories: HydroTrajectory,
-                 study_path: str, name_area: str):
+    def __init__(self, study: ac.Study, nb_sce: int, res: HydroReservoir, trajectories: HydroTrajectory,
+                 tmp_dir: str, name_area: str):
         """
         Initialize the class with BellmanValuesProxy, optimal trajectories, and the target area.
         """
         self.reservoir = res
         self.trajectories = trajectories
         self.nb_scenarios = nb_sce
-        self.study_path = study_path
-        self.study = ac.read_study_local(Path(study_path))
+        self.tmp_dir = tmp_dir
+        self.study = study
         self.area_name = name_area
         self.area = self.study.get_areas()[self.area_name]
         self.storage: STStorage | None = None
@@ -43,6 +43,7 @@ class StudyModifier:
         """
         Execute all the steps to modify the Antares study.
         """
+        os.makedirs(self.tmp_dir, exist_ok=True)
         self.overwrite_pmax()
         self.create_st_cluster()
         self.create_pmax_file()
@@ -66,12 +67,11 @@ class StudyModifier:
         """
         max_power = self.area.hydro.get_maxpower()
 
-        pmax_path = os.path.join(self.study_path, "input", "hydro", "common", "capacity"
-                                 , f"maxpower_{self.area_name}.txt")
-        pmax_backup_path = pmax_path.replace(".txt", "_old.txt")
+        pmax_backup_path = os.path.join(self.tmp_dir, f"maxpower_{self.area_name}_old.pkl")
 
-        if os.path.exists(pmax_path):
-            shutil.copy(pmax_path, pmax_backup_path)
+        pmax_backup_path = os.path.abspath(pmax_backup_path)
+
+        max_power.to_pickle(pmax_backup_path)
 
         max_power[0] = 0
         max_power[2] = 0
@@ -126,20 +126,18 @@ class StudyModifier:
 
     def modify_scenario_builder(self) -> None:
         """
-        Create a text file in user/tmp/scenariobuilder_lines listing
+        Create a text file in tmp/scenariobuilder_lines listing
         the lines needed to assign ST clusters and to MC scenarios.
         """
-        config = ConfigParser(strict=False)
-        config.read(os.path.join(self.study_path, "settings", "generaldata.ini"))
-        nbyears = int(config["general"]["nbyears"])
+        nb_years = self.study.get_settings().general_parameters.nb_years
 
         lines = []
-        for mc in range(nbyears):
+        for mc in range(nb_years):
             trajectory = (mc % self.nb_scenarios) + 1
             lines.append(f"sts,{self.area_name},{mc},lt_stock_proxy_{self.area_name}={trajectory}")
             lines.append(f"s,{self.area_name},{mc},lt_stock_proxy_{self.area_name}={trajectory}")
 
-        sb_dir = os.path.join(self.study_path, "user", "tmp", "scenariobuilder_lines")
+        sb_dir = os.path.join(self.tmp_dir, "scenariobuilder_lines")
         os.makedirs(sb_dir, exist_ok=True)
         with open(os.path.join(sb_dir, f"{self.area_name}.txt"), "w") as f:
             f.write("\n".join(lines) + "\n")
@@ -224,33 +222,20 @@ class StudyModifier:
         Complies with spillage constraint. Negative net load is transfered to solar producion and
         max(turbining capacity,pumping capacity) is added to net load and misc-gen (fatal production).
         """
-        miscgen_path = os.path.join(self.study_path, "input", "misc-gen", f"miscgen-{self.area_name}.txt")
-        load_path = os.path.join(self.study_path, "input", "load", "series", f"load_{self.area_name}.txt")
-        solar_path = os.path.join(self.study_path, "input", "solar", "series", f"solar_{self.area_name}.txt")
 
-        miscgen_backup_path = miscgen_path.replace(".txt", "_old.txt")
-        load_backup_path = load_path.replace(".txt", "_old.txt")
-        solar_backup_path = solar_path.replace(".txt", "_old.txt")
+        miscgen_backup_path = os.path.join(self.tmp_dir, f"miscgen_{self.area_name}_old.pkl")
+        load_backup_path = os.path.join(self.tmp_dir, f"load_{self.area_name}_old.pkl")
+        solar_backup_path = os.path.join(self.tmp_dir, f"solar_{self.area_name}_old.pkl")
 
-        s = self.nb_scenarios
+        # On fait les back-up
+        self.area.get_misc_gen_matrix().to_pickle(miscgen_backup_path)
+        self.area.get_load_matrix().to_pickle(load_backup_path)
+        self.area.get_solar_matrix().to_pickle(solar_backup_path)
 
         miscgen_data = self.area.get_misc_gen_matrix().values
         miscgen_data = np.asarray(miscgen_data, dtype=np.float64)
         load_data = self.area.get_load_matrix().values
         solar_data = self.area.get_solar_matrix().values
-
-        # On fait les back-up
-        if os.path.exists(miscgen_path):
-            if not os.path.exists(miscgen_backup_path):
-                shutil.copy(miscgen_path, miscgen_backup_path)
-
-        if os.path.exists(load_path):
-            if not os.path.exists(load_backup_path):
-                shutil.copy(load_path, load_backup_path)
-
-        if os.path.exists(solar_path):
-            if not os.path.exists(solar_backup_path):
-                shutil.copy(solar_path, solar_backup_path)
 
         negatives = np.minimum(load_data, 0.0)
         transfer = -negatives
@@ -274,15 +259,13 @@ class StudyModifier:
         Restore the pmax file (maxpower_area.txt) by replacing the current version
         with the backup (_old.txt) if it exists.
         """
-        pmax_path = os.path.join(
-            self.study_path, "input", "hydro", "common", "capacity", f"maxpower_{self.area_name}.txt"
-        )
-        pmax_backup_path = pmax_path.replace(".txt", "_old.txt")
-        if os.path.exists(pmax_backup_path):
-            if os.path.exists(pmax_path):
-                os.remove(pmax_path)
-            shutil.copy(pmax_backup_path, pmax_path)
-            os.remove(pmax_backup_path)
+        pmax_backup_path = os.path.join(self.tmp_dir, f"maxpower_{self.area_name}_old.pkl")
+
+        max_power = pd.read_pickle(pmax_backup_path)
+
+        self.area.hydro.set_maxpower(max_power)
+        os.remove(pmax_backup_path)
+
 
     def remove_st_cluster_section(self) -> None:
         """
@@ -312,26 +295,25 @@ class StudyModifier:
         (this file may have been created when negative load was transferred to solar per scenario).
         Missing backups are ignored; existing current files are overwritten or removed as needed.
         """
-        miscgen_path = os.path.join(self.study_path, "input", "misc-gen", f"miscgen-{self.area_name}.txt")
-        miscgen_backup_path = miscgen_path.replace(".txt", "_old.txt")
-        if os.path.exists(miscgen_backup_path):
-            if os.path.exists(miscgen_path):
-                os.remove(miscgen_path)
-            shutil.copy(miscgen_backup_path, miscgen_path)
-            os.remove(miscgen_backup_path)
+        miscgen_backup_path = os.path.join(self.tmp_dir, f"miscgen_{self.area_name}_old.pkl")
 
-        load_path = os.path.join(self.study_path, "input", "load", "series", f"load_{self.area_name}.txt")
-        load_backup_path = load_path.replace(".txt", "_old.txt")
-        if os.path.exists(load_backup_path):
-            if os.path.exists(load_path):
-                os.remove(load_path)
-            shutil.copy(load_backup_path, load_path)
-            os.remove(load_backup_path)
+        miscgen = pd.read_pickle(miscgen_backup_path)
 
-        solar_path = os.path.join(self.study_path, "input", "solar", "series", f"solar_{self.area_name}.txt")
-        solar_backup_path = solar_path.replace(".txt", "_old.txt")
-        if os.path.exists(solar_backup_path):
-            if os.path.exists(solar_path):
-                os.remove(solar_path)
-            shutil.copy(solar_backup_path, solar_path)
-            os.remove(solar_backup_path)
+        self.area.set_misc_gen(miscgen)
+        os.remove(miscgen_backup_path)
+
+
+        load_backup_path = os.path.join(self.tmp_dir, f"load_{self.area_name}_old.pkl")
+
+        load = pd.read_pickle(load_backup_path)
+
+        self.area.set_load(load)
+        os.remove(load_backup_path)
+
+
+        solar_backup_path = os.path.join(self.tmp_dir, f"solar_{self.area_name}_old.pkl")
+
+        solar = pd.read_pickle(solar_backup_path)
+
+        self.area.set_solar(solar)
+        os.remove(solar_backup_path)

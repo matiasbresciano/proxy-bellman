@@ -8,10 +8,10 @@ from hydro.proxy import HydroAntaresProxy
 dir_study = "test_data/two_nodes"
 area1 = "area1"
 
-back_up_hydro_filepath = os.path.join(dir_study, "input", "hydro", "common", "capacity", "maxpower_area1_old.txt")
-miscgen_backup_path = os.path.join(dir_study, "input", "misc-gen", "miscgen-area1_old.txt")
-load_backup_path = os.path.join(dir_study, "input", "load", "series", "load_area1_old.txt")
-solar_path = os.path.join(dir_study, "input", "solar", "series", "solar_area1_old.txt")
+back_up_hydro_filepath = os.path.join("./tmp", "maxpower_area1_old.pkl")
+miscgen_backup_path = os.path.join("./tmp", "miscgen_area1_old.pkl")
+load_backup_path = os.path.join("./tmp", "load_area1_old.pkl")
+solar_path = os.path.join("./tmp", "solar_area1_old.pkl")
 
 loads_filepath = os.path.join(dir_study, "user", "residual_loads.txt")
 

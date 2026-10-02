@@ -118,10 +118,22 @@ class AntaresProxy(ABC):
         _proxy (Proxy): computation unit.
     """
 
-    def __init__(self, study_path: str, area: str, mc_years: np.ndarray, sce_selection: np.ndarray | None) -> None:
+    def __init__(self, study_path: str, area: str, mc_years: np.ndarray, sce_selection: np.ndarray | None,
+                 host: str|None = None, token: str|None = None, study_id: str|None = None) -> None:
         self.study_path: str = study_path
+        self.host: str|None = host
+        self.token: str|None = token
+        self.study_id: str|None = study_id
         self.area: str = area
-        self.study: Study = ac.read_study_local(Path(study_path))
+        self.study: Study
+        if self.study_path != "":
+            self.study = ac.read_study_local(Path(study_path))
+        else:
+            assert isinstance(self.host, str)
+            assert isinstance(self.token, str)
+            assert isinstance(self.study_id, str)
+            conf = ac.APIconf(api_host=self.host, token=self.token, verify=False)
+            self.study = ac.read_study_api(conf, self.study_id)
         self.mc_years: np.ndarray = mc_years
         self.sce_selection: np.ndarray = mc_years
         if sce_selection is not None:

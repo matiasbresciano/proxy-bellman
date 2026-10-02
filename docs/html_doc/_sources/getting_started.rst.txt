@@ -43,12 +43,21 @@ To use the hydro algorithm, the yaml file must contain:
 +========================+=================+======================================================================================+==========+
 | hydro                  |                 | Main field containing all settings.                                                  | No       |
 +------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| study                  | Path            | Path to the study on which to run the algorithm.                                     | No       |
+| study                  | Path            | Path to the study on which to run the algorithm. Mandatory if no host field.         | Yes      |
++------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
+| host                   | string          | Host for antares web server. Mandatory if no study field.                            | Yes      |
++------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
+| token                  | string          | token for antares web server. Usefull (but optional) only with host field.           | Yes      |
++------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
+| study_id               | string          | Study id for antares web server. Mandatory with host field.                          | Yes      |
 +------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
 | areas                  | list(string)    | List of areas two compute. Each item must contain the name of one area of the study. | No       |
 |                        |                 | Must contain at least one item.                                                      |          |
 +------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
 | output_dir             | Path            | Path to the results folder. Will be appended by the date and time.                   | No       |
++------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
+| tmp_dir                | Path            | Path to the folder where to put back up files for modify or undo actions.            | Yes      |
+|                        |                 | "./tmp" if not provided.                                                             |          |
 +------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
 | mc_years               | int or interval | List of years for which to compute trajectories.                                     | No       |
 |                        | or list(int)    |                                                                                      |          |
@@ -79,7 +88,13 @@ To use the tempo algorithm, the yaml file must contain:
 +========================+=================+======================================================================================+==========+
 | tempo                  |                 | Main field containing all settings.                                                  | No       |
 +------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| study                  | Path            | Path to the study on which to run the algorithm.                                     | No       |
+| study                  | Path            | Path to the study on which to run the algorithm. Mandatory if no host field.         | Yes      |
++------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
+| host                   | string          | Host for antares web server. Mandatory if no study field.                            | Yes      |
++------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
+| token                  | string          | token for antares web server. Usefull (but optional) only with host field.           | Yes      |
++------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
+| study_id               | string          | Study id for antares web server. Mandatory with host field.                          | Yes      |
 +------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
 | areas                  | list(string)    | List of areas two compute. Each item must contain the name of one area of the study. | No       |
 |                        |                 | Must contain at least one item.                                                      |          |

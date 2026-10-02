@@ -122,19 +122,40 @@
 </tr>
 <tr class="row-odd"><td><p>study</p></td>
 <td><p>Path</p></td>
-<td><p>Path to the study on which to run the algorithm.</p></td>
-<td><p>No</p></td>
+<td><p>Path to the study on which to run the algorithm. Mandatory if no host field.</p></td>
+<td><p>Yes</p></td>
 </tr>
-<tr class="row-even"><td><p>areas</p></td>
+<tr class="row-even"><td><p>host</p></td>
+<td><p>string</p></td>
+<td><p>Host for antares web server. Mandatory if no study field.</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>token</p></td>
+<td><p>string</p></td>
+<td><p>token for antares web server. Usefull (but optional) only with host field.</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>study_id</p></td>
+<td><p>string</p></td>
+<td><p>Study id for antares web server. Mandatory with host field.</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>areas</p></td>
 <td><p>list(string)</p></td>
 <td><p>List of areas two compute. Each item must contain the name of one area of the study.
 Must contain at least one item.</p></td>
 <td><p>No</p></td>
 </tr>
-<tr class="row-odd"><td><p>output_dir</p></td>
+<tr class="row-even"><td><p>output_dir</p></td>
 <td><p>Path</p></td>
 <td><p>Path to the results folder. Will be appended by the date and time.</p></td>
 <td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>tmp_dir</p></td>
+<td><p>Path</p></td>
+<td><p>Path to the folder where to put back up files for modify or undo actions.
+“./tmp” if not provided.</p></td>
+<td><p>Yes</p></td>
 </tr>
 <tr class="row-even"><td><p>mc_years</p></td>
 <td><p>int or interval
@@ -194,33 +215,48 @@ or list(int)</p></td>
 </tr>
 <tr class="row-odd"><td><p>study</p></td>
 <td><p>Path</p></td>
-<td><p>Path to the study on which to run the algorithm.</p></td>
-<td><p>No</p></td>
+<td><p>Path to the study on which to run the algorithm. Mandatory if no host field.</p></td>
+<td><p>Yes</p></td>
 </tr>
-<tr class="row-even"><td><p>areas</p></td>
+<tr class="row-even"><td><p>host</p></td>
+<td><p>string</p></td>
+<td><p>Host for antares web server. Mandatory if no study field.</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>token</p></td>
+<td><p>string</p></td>
+<td><p>token for antares web server. Usefull (but optional) only with host field.</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>study_id</p></td>
+<td><p>string</p></td>
+<td><p>Study id for antares web server. Mandatory with host field.</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>areas</p></td>
 <td><p>list(string)</p></td>
 <td><p>List of areas two compute. Each item must contain the name of one area of the study.
 Must contain at least one item.</p></td>
 <td><p>No</p></td>
 </tr>
-<tr class="row-odd"><td><p>output_dir</p></td>
+<tr class="row-even"><td><p>output_dir</p></td>
 <td><p>Path</p></td>
 <td><p>Path to the results folder. Will be appended by the date and time.</p></td>
 <td><p>No</p></td>
 </tr>
-<tr class="row-even"><td><p>mc_years</p></td>
+<tr class="row-odd"><td><p>mc_years</p></td>
 <td><p>int or interval
 or list(int)</p></td>
 <td><p>List of years for which to compute trajectories.</p></td>
 <td><p>No</p></td>
 </tr>
-<tr class="row-odd"><td><p>ts_selection</p></td>
+<tr class="row-even"><td><p>ts_selection</p></td>
 <td><p>int or interval
 or list(int)</p></td>
 <td><p>List of years to take into account for computing bellman values.</p></td>
 <td><p>No</p></td>
 </tr>
-<tr class="row-even"><td><p>actions</p></td>
+<tr class="row-odd"><td><p>actions</p></td>
 <td><p>list(string)</p></td>
 <td><p>Actions to perform. Each item must contain an action. Must contain at least one item.</p></td>
 <td><p>Yes</p></td>

@@ -201,8 +201,9 @@ class TempoProxy(Proxy):
 class TempoAntaresProxy(AntaresProxy):
     """This class manages the computation of Bellman values and trajectory regarding a tempo reservoir
     using the scenarii of a given antares study."""
-    def __init__(self, study_path: str, area_name: str, mc_years: np.ndarray, sce_selection: np.ndarray | None = None):
-        super().__init__(study_path, area_name, mc_years, sce_selection)
+    def __init__(self, study_path: str, area_name: str, mc_years: np.ndarray, sce_selection: np.ndarray | None = None,
+                 host = None, token = None, study_id = None):
+        super().__init__(study_path, area_name, mc_years, sce_selection, host, token, study_id)
         weekday_1_jan = AntaresProxy._int_from_antares_weekday(
             self.study.get_settings().general_parameters.january_first
         )

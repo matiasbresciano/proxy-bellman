@@ -52,18 +52,28 @@ class HydroAntaresProxy(AntaresProxy):
                  sce_selection: np.ndarray | None = None,
                  turb_threshold: int = 25,
                  alpha: int = 2,
-                 penalty_factor: float = 1):
+                 penalty_factor: float = 1,
+                 tmp_dir: str = "./tmp",
+                 host = None,
+                 token = None,
+                 study_id = None):
         """Initialises the proxy using an antares study.
 
         Parameters:
+            study_path (str): path to considered study
             area_name (str): name of the area to consider.
             mc_years (np.ndarray): list of scenarii for which we want to compute the trajectory.
             sce_selection (np.ndarray | None): list of scenarii to take into account for the computation of the bellman values.
             turb_threshold (int): number of values on which the cost function is discretised (default is 25).
             alpha (int): parameter for the computation of the costs value and the turbine vs pumping ratio.
             penalty_factor (float): factor to modulate how important it is to respect guidelines.
+            tmp_dir (str): directory for putting back up files when modifying the study, or when to fetch them for rolling back
+            host (str): antares web host. Ignored if study_path is not ""
+            token (str): antares web token. Ignored if study_path is not ""
+            study_id (str): antares web study id. Ignored if study_path is not ""
         """
-        super().__init__(study_path, area_name, mc_years, sce_selection)
+        super().__init__(study_path, area_name, mc_years, sce_selection, host, token, study_id)
+        self.tmp_dir = tmp_dir
         area = self.study.get_areas()[self.area]
         capacity = area.hydro.properties.reservoir_capacity
         lower_guide = area.hydro.get_reservoir()[0][7::7].values * capacity
@@ -110,7 +120,7 @@ class HydroAntaresProxy(AntaresProxy):
         nb_sce = self._residual_load.shape[1]
         traj = self._proxy._trajectory[0]
         assert isinstance(traj, HydroTrajectory)
-        study_modifier = StudyModifier(nb_sce, self._reservoir, traj, self.study_path, self.area)
+        study_modifier = StudyModifier(self.study, nb_sce, self._reservoir, traj, self.tmp_dir, self.area)
         study_modifier.apply_all()
 
     def undo_study(self) -> None:
@@ -118,6 +128,6 @@ class HydroAntaresProxy(AntaresProxy):
         nb_sce = self._residual_load.shape[1]
         traj = self._proxy._trajectory[0]
         assert isinstance(traj, HydroTrajectory)
-        study_modifier = StudyModifier(nb_sce, self._reservoir, traj, self.study_path, self.area)
+        study_modifier = StudyModifier(self.study, nb_sce, self._reservoir, traj, self.tmp_dir, self.area)
         study_modifier.undo_all()
 
