@@ -21,18 +21,18 @@ the following preprocess is done by the app:
 
       .. image:: preprocess_july.png
 
-     * If the first month of the input year is between October and Marsh, cut it between 30 August and 31st August, then
-       put the first half of the input year (from starting month to August 30) after the second half of the input year.
-       The second half of the input year gets shifted by one day (for example, August 31st becomes September 1st). The
-       following figure shows this process on an example with an input year starting in January.
+    * If the first month of the input year is between October and Marsh, cut it between 30 August and 31st August, then
+      put the first half of the input year (from starting month to August 30) after the second half of the input year.
+      The second half of the input year gets shifted by one day (for example, August 31st becomes September 1st). The
+      following figure shows this process on an example with an input year starting in January.
 
       .. image:: preprocess_january.png
 
-     * If the first month of the input year is April, the preprocess is the same as in the previous case, except that
-       the first day of the input year is removed in place of the last.
+    * If the first month of the input year is April, the preprocess is the same as in the previous case, except that
+      the first day of the input year is removed in place of the last.
 
-     * If the first month of the input year is September, the last day of the input year (August 31st) won't be
-       taken into account, but no preprocessing is necessary.
+    * If the first month of the input year is September, the last day of the input year (August 31st) won't be
+      taken into account, but no preprocessing is necessary.
 
 
 After the computations, controls and trajectories are returned in the same order as the input year, only one day (in

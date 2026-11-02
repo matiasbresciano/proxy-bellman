@@ -30,6 +30,10 @@ In the same directory, create a new file "file.py". Inside you can write your sc
 
     proxy.export_trajectories()
 
+
+Using the command-line
+----------------------
+
 The command line works with a yaml setting file:
 
 .. code-block::
@@ -38,41 +42,41 @@ The command line works with a yaml setting file:
 
 To use the hydro algorithm, the yaml file must contain:
 
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| field                  | Type            | Description                                                                          | Optional |
-+========================+=================+======================================================================================+==========+
-| hydro                  |                 | Main field containing all settings.                                                  | No       |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| study                  | Path            | Path to the study on which to run the algorithm. Mandatory if no host field.         | Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| host                   | string          | Host for antares web server. Mandatory if no study field.                            | Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| token                  | string          | token for antares web server. Usefull (but optional) only with host field.           | Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| study_id               | string          | Study id for antares web server. Mandatory with host field.                          | Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| areas                  | list(string)    | List of areas two compute. Each item must contain the name of one area of the study. | No       |
-|                        |                 | Must contain at least one item.                                                      |          |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| output_dir             | Path            | Path to the results folder. Will be appended by the date and time.                   | No       |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| tmp_dir                | Path            | Path to the folder where to put back up files for modify or undo actions.            | Yes      |
-|                        |                 | "./tmp" if not provided.                                                             |          |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| mc_years               | int or interval | List of years for which to compute trajectories.                                     | No       |
-|                        | or list(int)    |                                                                                      |          |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| ts_selection           | int or interval | List of years to take into account for computing bellman values.                     | No       |
-|                        | or list(int)    |                                                                                      |          |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| nb_turb                | int             | Number of values on which to compute the cost function.                              | No       |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| alpha                  | int             | Parameter for the computation of the costs value and the turbine vs pumping ratio.   | No       |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| penalty_factor         | float           | Factor to modulate how important it is to respect guidelines.                        | No       |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| actions                | list(string)    | Actions to perform. Each item must contain an action. Must contain at least one item.| Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| field                  | Type            | Optional | Default value | Description                                                                          |
++========================+=================+==========+===============+======================================================================================+
+| hydro                  |                 | No       |               |Main field containing all settings.                                                   |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| study                  | Path            | Yes      | (see desc)    | Path to the study on which to run the algorithm. Mandatory if no host field.         |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| host                   | string          | Yes      | (see desc)    | Host for antares web server. Mandatory if no study field.                            |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| token                  | string          | Yes      | (see desc)    | Token for antares web server. Usefull (but optional) only with host field.           |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| study_id               | string          | Yes      | (see desc)    | Study id for antares web server. Mandatory with host field.                          |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| areas                  | list(string)    | No       |               | List of areas two compute. Each item must contain the name of one area of the study. |
+|                        |                 |          |               | Must contain at least one item.                                                      |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| output_dir             | Path            | Yes      | "./results"   | Path to the results folder. Will be appended by the date and time.                   |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| tmp_dir                | Path            | Yes      | "./tmp"       | Path to the folder where to put back up files for modify or undo actions.            |
+|                        |                 |          |               | "./tmp" if not provided.                                                             |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| mc_years               | int or interval | Yes      | 200           | List of years for which to compute trajectories.                                     |
+|                        | or list(int)    |          |               |                                                                                      |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| ts_selection           | int or interval | Yes      | None          | List of years to take into account for computing bellman values.                     |
+|                        | or list(int)    |          |               |                                                                                      |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| nb_turb                | int             | Yes      | 25            | Number of values on which to compute the cost function.                              |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| alpha                  | int             | Yes      | 2             | Parameter for the computation of the costs value and the turbine vs pumping ratio.   |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| penalty_factor         | float           | Yes      | 1             | Factor to modulate how important it is to respect guidelines.                        |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| actions                | list(string)    | Yes      | None          | Actions to perform. Each item must contain an action. Must contain at least one item.|
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
 
 Possible actions are :
 
@@ -83,32 +87,32 @@ Possible actions are :
 
 To use the tempo algorithm, the yaml file must contain:
 
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| field                  | Type            | Description                                                                          | Optional |
-+========================+=================+======================================================================================+==========+
-| tempo                  |                 | Main field containing all settings.                                                  | No       |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| study                  | Path            | Path to the study on which to run the algorithm. Mandatory if no host field.         | Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| host                   | string          | Host for antares web server. Mandatory if no study field.                            | Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| token                  | string          | token for antares web server. Usefull (but optional) only with host field.           | Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| study_id               | string          | Study id for antares web server. Mandatory with host field.                          | Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| areas                  | list(string)    | List of areas two compute. Each item must contain the name of one area of the study. | No       |
-|                        |                 | Must contain at least one item.                                                      |          |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| output_dir             | Path            | Path to the results folder. Will be appended by the date and time.                   | No       |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| mc_years               | int or interval | List of years for which to compute trajectories.                                     | No       |
-|                        | or list(int)    |                                                                                      |          |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| ts_selection           | int or interval | List of years to take into account for computing bellman values.                     | No       |
-|                        | or list(int)    |                                                                                      |          |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
-| actions                | list(string)    | Actions to perform. Each item must contain an action. Must contain at least one item.| Yes      |
-+------------------------+-----------------+--------------------------------------------------------------------------------------+----------+
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| field                  | Type            | Optional | Default value | Description                                                                          |
++========================+=================+==========+===============+======================================================================================+
+| tempo                  |                 | No       |               | Main field containing all settings.                                                  |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| study                  | Path            | Yes      | (see desc)    | Path to the study on which to run the algorithm. Mandatory if no host field.         |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| host                   | string          | Yes      | (see desc)    | Host for antares web server. Mandatory if no study field.                            |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| token                  | string          | Yes      | (see desc)    | token for antares web server. Usefull (but optional) only with host field.           |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| study_id               | string          | Yes      | (see desc)    | Study id for antares web server. Mandatory with host field.                          |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| areas                  | list(string)    | No       |               | List of areas two compute. Each item must contain the name of one area of the study. |
+|                        |                 |          |               | Must contain at least one item.                                                      |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| output_dir             | Path            | Yes      | "./results"   | Path to the results folder. Will be appended by the date and time.                   |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| mc_years               | int or interval | Yes      | 200           | List of years for which to compute trajectories.                                     |
+|                        | or list(int)    |          |               |                                                                                      |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| ts_selection           | int or interval | Yes      | None          | List of years to take into account for computing bellman values.                     |
+|                        | or list(int)    |          |               |                                                                                      |
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
+| actions                | list(string)    | Yes      | None          | Actions to perform. Each item must contain an action. Must contain at least one item.|
++------------------------+-----------------+----------+---------------+--------------------------------------------------------------------------------------+
 
 Possible actions are :
 

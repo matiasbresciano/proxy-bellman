@@ -124,7 +124,7 @@ def yaml_settings(settings_path: Annotated[str, typer.Argument(help="Yaml settin
             output_dir = "./results"
             if "output_dir" in hydro_settings:
                 output_dir = hydro_settings["output_dir"]
-            tmp_dir = "./"
+            tmp_dir = "./tmp"
             if "tmp_dir" in hydro_settings:
                 tmp_dir = hydro_settings["tmp_dir"]
             mc_years = "200"

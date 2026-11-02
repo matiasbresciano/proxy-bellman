@@ -9,6 +9,7 @@
   <title>tempo package &mdash; ProxyBellman 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=547657ed" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -119,24 +120,17 @@ by one day (for example, August 31st becomes August 30). The following figure sh
 with an input year starting in July.</p>
 <img alt="_images/preprocess_july.png" src="_images/preprocess_july.png" />
 </li>
-</ul>
-<blockquote>
-<div><ul class="simple">
 <li><p>If the first month of the input year is between October and Marsh, cut it between 30 August and 31st August, then
 put the first half of the input year (from starting month to August 30) after the second half of the input year.
 The second half of the input year gets shifted by one day (for example, August 31st becomes September 1st). The
-following figure shows this process on an example with an input year starting in January.</p></li>
-</ul>
-<blockquote>
-<div><img alt="_images/preprocess_january.png" src="_images/preprocess_january.png" />
-</div></blockquote>
-<ul class="simple">
+following figure shows this process on an example with an input year starting in January.</p>
+<img alt="_images/preprocess_january.png" src="_images/preprocess_january.png" />
+</li>
 <li><p>If the first month of the input year is April, the preprocess is the same as in the previous case, except that
 the first day of the input year is removed in place of the last.</p></li>
 <li><p>If the first month of the input year is September, the last day of the input year (August 31st) won’t be
 taken into account, but no preprocessing is necessary.</p></li>
 </ul>
-</div></blockquote>
 </li>
 </ol>
 <p>After the computations, controls and trajectories are returned in the same order as the input year, only one day (in
@@ -177,7 +171,7 @@ April or a blue tempo day on the 31st of Marsh that should have been red.</p>
 <span id="tempo-proxy-module"></span><h2>tempo.proxy module<a class="headerlink" href="#module-tempo.proxy" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="tempo.proxy.TempoAntaresProxy">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tempo.proxy.</span></span><span class="sig-name descname"><span class="pre">TempoAntaresProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">study_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">study_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tempo.proxy.TempoAntaresProxy" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">tempo.proxy.</span></span><span class="sig-name descname"><span class="pre">TempoAntaresProxy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">study_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_years</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sce_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">study_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tempo.proxy.TempoAntaresProxy" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="base.html#base.proxy.AntaresProxy" title="base.proxy.AntaresProxy"><code class="xref py py-class docutils literal notranslate"><span class="pre">AntaresProxy</span></code></a></p>
 <p>This class manages the computation of Bellman values and trajectory regarding a tempo reservoir
 using the scenarii of a given antares study.</p>
